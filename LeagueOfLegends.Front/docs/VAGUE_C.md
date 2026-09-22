@@ -22,17 +22,16 @@ Roadmap Platform : **Vague G**.
 
 - **Plafonds** : au plus **1 captain**, **1 coach**, **1 manager**, et **5** membres en slot
   joueur (`captain` + `player`). Pas de remplaçants dans cette vague.
-- **Appartenance** : `TeamMember` est la seule source de vérité.
-  - Slot joueur (`captain`, `player`) : `IdSummoner` **obligatoire**. Un invocateur = une team.
-  - Slot staff (`coach`, `manager`) : rattaché au `Player`, `IdSummoner` null. Un joueur ne peut
-    pas être staff de deux teams à la fois (ni staff + joueur sur deux teams différentes — un
-    `Player` a au plus une membership staff).
-- **Captain** : `Team.IdCaptain` pointe l’invocateur fondateur (région de la fiche team) et doit
-  toujours avoir un `TeamMember` `captain` en regard. Écrits dans la même transaction.
+- **Appartenance** : `TeamMember` est la seule source de vérité, toujours rattaché au `Player`.
+  Un joueur peut être dans **plusieurs** teams (slot joueur et/ou staff). Unicité : un seul
+  `TeamMember` par couple (`Team`, `Player`).
+- **Captain** : `Team.IdCaptain` pointe le joueur fondateur (région de la fiche team = région
+  du joueur) et doit toujours avoir un `TeamMember` `captain` en regard. Écrits dans la même
+  transaction.
 - **Candidatures** : `TeamApplication` (statut `pending` / `accepted` / `rejected` / `withdrawn`).
-  - Candidature joueur : `IdSummoner` + lane visée.
+  - Candidature joueur : `IdPlayer` + lane visée.
   - Candidature staff : `IdPlayer` + rang demandé (`coach` ou `manager`).
-  - Une seule `pending` par couple (team, invocateur) ou (team, player+rang staff).
+  - Une seule `pending` par couple (team, player).
 - **Mur modéré** : `GamePost` + `GamePostStatus` (`pending` / `approved` / `rejected`). Captain,
   coach et manager publient en `approved` ; les `player` passent en `pending`. File visible
   captain / coach / manager.
@@ -53,8 +52,8 @@ Roadmap Platform : **Vague G**.
       statuts, `TeamLink`, colonnes de modération sur `GamePost`, `LayoutJson`
 - [ ] Seed `TeamRank` (`captain`, `coach`, `manager`, `player`) + `TeamApplicationStatus`
 - [ ] `Teams.Search` (public) : nom / tag, filtres région / lane recherchée, pagination curseur
-- [ ] `Teams.Create` (auth) : invocateur fondateur sans team, handle unique, member `captain`
-      dans la même transaction ; région = région de l’invocateur
+- [ ] `Teams.Create` (auth) : joueur fondateur, handle unique, member `captain` dans la même
+      transaction ; région = région du joueur
 - [ ] `Teams.Update` (auth) : description, tag, liens, captain + manager
 - [ ] `Teams.SetRank` (auth) : captain uniquement ; interdit de casser les plafonds (2 captains,
       6 joueurs, 2 coaches…)
@@ -68,7 +67,8 @@ Roadmap Platform : **Vague G**.
       couvertes par le roster
 - [ ] `TeamApplications` : `Create` / `ListMine` / `Withdraw` (candidat), `List` / `Review`
       (captain / coach / manager)
-- [ ] Acceptation joueur refusée si le slot 5 est plein, ou si l’invocateur est déjà en team
+- [ ] Acceptation joueur refusée si le slot 5 est plein, ou si le joueur est déjà membre de
+      cette team
 - [ ] Acceptation staff refusée si le poste coach/manager est déjà pris
 - [ ] Front : annuaire `/league-of-legends/teams` (recherche, filtres, fondation)
 - [ ] Front : fiche (badges de rang, roster 5 + staff, réglages, candidature)
@@ -88,7 +88,7 @@ Roadmap Platform : **Vague G**.
 
 - [ ] `LfgAds.Search` (public) : filtres `kind` / région / lane, pagination curseur
 - [ ] `LfgAds.Create` estampille région + lane (team : région de la team + lanes manquantes ;
-      joueur : région + lane prioritaire de l’invocateur principal)
+      joueur : région + lane prioritaire du joueur)
 - [ ] Page `/league-of-legends/lfg` : board filtrable, séparé du rail temps réel du hub
 - [ ] Annonce team → fiche team (parcours de contact)
 - [ ] Annonce joueur → fiche joueur → profil Platform
@@ -129,7 +129,7 @@ Roadmap Platform : **Vague G**.
 
 ## Hors scope C
 
-- Events in-game et inscription d’invocateurs — Vague D
+- Events in-game et inscription joueur — Vague D
 - Centre de notifications, partage / SEO — Vague D
 - Remplaçants (`substitute`) — Vague D
 - `Platform.UserGroupRole` et badges team côté shell — Vague D

@@ -1,6 +1,6 @@
 # Vague D — Events in-game, notifs, polish
 
-Scrims et tournois côté LoL, inscription par invocateur, badges team dans le shell, centre de
+Scrims et tournois côté LoL, inscription par joueur, badges team dans le shell, centre de
 notifications. Reprend le hors-scope des Vagues B/C (équivalent WoW « Vague D », jamais rédigée
 côté Platform).
 
@@ -10,11 +10,11 @@ Roadmap Platform : **Vague H**.
 
 - **Events LoL** : entité `Event` dans le microservice jeu (pas les events site Platform).
   Kinds seedés : `scrim`, `tournament`, `custom`.
-- **Inscription** : un `EventParticipant` pointe un `Summoner` (slot joueur) ou un `Player`
-  (coach / manager staff de la team hôte). La team hôte est optionnelle (`Event.IdTeam`) : un
-  joueur solo peut créer un custom.
+- **Inscription** : un `EventParticipant` pointe un `Player` (slot joueur ou staff), avec
+  `Champion` + `Lane` optionnels pour un slot joueur. La team hôte est optionnelle
+  (`Event.IdTeam`) : un joueur solo peut créer un custom.
 - **AuthZ événement** : captain / manager de la team hôte créent et éditent ; coach peut gérer
-  le roster d’inscription ; les `player` s’inscrivent eux-mêmes avec un invocateur de la team.
+  le roster d’inscription ; les `player` s’inscrivent eux-mêmes.
 - **Notifications** : kinds jeu (`lfg`, `team-app`, `event`, `wall-moderation`) poussés vers
   Platform `Notifications` (contrat existant) plutôt qu’une boîte LoL parallèle.
 - **Badges shell** : `Platform.UserGroupRole` câblé sur `Team.Id` pour afficher captain / coach /
@@ -28,8 +28,7 @@ Roadmap Platform : **Vague H**.
 
 - [ ] `Event` + `EventParticipant` + kinds
 - [ ] `Events.Search` / `Get` (public), `Create` / `Update` / `Delete` (auth, staff team ou auteur)
-- [ ] `EventParticipants.Join` / `Leave` (auth) : invocateur cohérent avec la team hôte si
-      présente
+- [ ] `EventParticipants.Join` / `Leave` (auth) : joueur membre de la team hôte si présente
 - [ ] Front : `/league-of-legends/events`, détail, inscription, rail hub B4 branché sur le réel
 - [ ] MSW + Gateway resources
 

@@ -1,6 +1,6 @@
 # GamersCommunity.Games.LeagueOfLegends
 
-Remote **League of Legends** (MOBA) : fiche joueur, invocateurs, teams, LFG.
+Remote **League of Legends** (MOBA) : fiche joueur, teams, LFG.
 
 Tickets : [LeagueOfLegends.Front/docs](LeagueOfLegends.Front/docs/PRODUCT_VISION.md)
 ([B](LeagueOfLegends.Front/docs/VAGUE_B.md) · [C](LeagueOfLegends.Front/docs/VAGUE_C.md) ·
