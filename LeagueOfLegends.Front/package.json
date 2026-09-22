@@ -1,0 +1,65 @@
+{
+  "name": "leagueoflegends.front",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "ng serve --port 4202",
+    "start:mocks": "ng serve --port 4202",
+    "start:api": "ng serve --port 4202 --configuration api",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "i18n": "ng extract-i18n --build-target=leagueoflegends.front:esbuild --output-path src/locale --out-file source.json --format=json",
+    "workspace:validate": "gc-workspace validate --all",
+    "workspace:edit": "gc-workspace edit"
+  },
+  "gcWorkspace": {
+    "defaultTarget": "player",
+    "targets": {
+      "player": {}
+    }
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "21.2.17",
+    "@angular/cdk": "21.0.6",
+    "@angular/common": "21.2.17",
+    "@angular/compiler": "21.2.17",
+    "@angular/core": "21.2.17",
+    "@angular/forms": "21.2.17",
+    "@angular/localize": "21.2.17",
+    "@angular/platform-browser": "21.2.17",
+    "@angular/router": "21.2.17",
+    "@bari77/gc-msw": "0.8.31",
+    "@bari77/gc-playground": "0.8.31",
+    "@bari77/gc-sdk": "0.8.31",
+    "@bari77/gc-theme": "0.8.31",
+    "@bari77/gc-ui": "0.8.31",
+    "@bari77/gc-widgets": "0.8.31",
+    "@nebular/eva-icons": "^17.0.0",
+    "@nebular/theme": "^17.0.0",
+    "angular-gridster2": "^21.0.1",
+    "es-module-shims": "^2.8.0",
+    "eva-icons": "^1.1.3",
+    "msw": "^2.7.0",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1",
+    "zone.js": "0.15.1"
+  },
+  "overrides": {
+    "@angular/cdk": "21.0.6"
+  },
+  "devDependencies": {
+    "@angular-architects/native-federation-v4": "^21.2.3",
+    "@angular-devkit/build-angular": "21.2.15",
+    "@angular/build": "21.2.15",
+    "@angular/cli": "21.2.15",
+    "@angular/compiler-cli": "21.2.17",
+    "@bari77/gc-workspace-editor": "0.8.31",
+    "@softarc/native-federation-orchestrator": "^4.2.2",
+    "typescript": "~5.9.2"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+---
+description: États de chargement - garder la structure affichée et squelettiser la donnée
+globs: LeagueOfLegends.Front/src/**/*.{html,ts,scss}
+alwaysApply: false
+---
+
+# Chargement de données : squelette, jamais de disparition
+
+## Règles
+
+1. **La structure reste toujours affichée.** Un menu, un bouton de navigation, un onglet, un
+   en-tête de section, une carte, un en-tête de tableau ou un cadre de fiche ne doit jamais être
+   retiré du DOM parce que ses données ne sont pas encore arrivées. L'utilisateur doit retrouver
+   les mêmes repères aux mêmes endroits avant et après le chargement.
+2. **Tout contenu issu d'une requête serveur est rendu en squelette pendant le chargement** :
+   menus, fiches, listes, tableaux, compteurs, avatars, libellés. Pas de zone vide, pas de
+   contenu masqué, pas de spinner plein bloc à la place du contenu.
+3. **Le squelette reprend la forme du contenu réel** : mêmes classes de conteneur, même nombre
+   approximatif de lignes et de colonnes, mêmes dimensions. L'arrivée des données ne doit
+   provoquer aucun saut de mise en page.
+4. **Un conteneur qui ne dépend pas du serveur s'affiche immédiatement**, sans attendre le reste
+   de la page.
+5. **Pas de bloqueur de navigation** (resolver, overlay plein écran) pour masquer une page qui
+   possède déjà des skeletons. Le chargement initial se fait au montage du composant.
+
+## Comment faire
+
+- Utiliser `<gc-skeleton>` et `<gc-skeleton-text>` de `@bari77/gc-ui`, composants standalone à
+  importer dans le composant. `gc-skeleton` accepte `width`, `height`, `radius` et
+  `shape` (`"rect" | "circle"`) ; `gc-skeleton-text` accepte `lines`, `lineHeight`, `gap` et
+  `lastLineWidth`. Ils portent déjà l'animation grise de shimmer.
+- Ne pas recréer de composant squelette local : toute primitive UI muette et agnostique de la
+  donnée va dans `@bari77/gc-ui` (repo `GamersCommunity.DevKit`, `packages/ui`).
+- Réutiliser les classes du vrai élément et ajouter un modificateur `--skeleton` qui neutralise
+  l'interaction (`cursor: default; pointer-events: none;`).
+- Marquer le conteneur en cours de chargement avec `aria-busy="true"`.
+- Pour un `resource()`, l'état de chargement doit couvrir `idle` en plus de `loading`, sinon la
+  vue affiche un contenu vide pendant le premier cycle de détection de changement. Il doit en
+  revanche exclure `reloading`, où la valeur précédente reste affichable : un squelette y
+  masquerait une donnée déjà à l'écran après une action utilisateur.
+
+## Exemples
+
+```html
+<!-- ❌ MAUVAIS : le menu disparaît, l'utilisateur perd ses repères -->
+@if (store.loading()) {
+    <gc-skeleton width="5.5rem" height="2.5rem" />
+} @else {
+    <button [nbPopover]="menu">Summoners</button>
+}
+
+<!-- ✅ BON : le menu reste en place, seul son contenu est squelettisé -->
+<button [nbPopover]="menu">Summoners</button>
+
+<ng-template #menu>
+    @if (store.loading()) {
+        @for (item of itemPlaceholders; track item) {
+            <div class="menu-item menu-item--skeleton" aria-busy="true">
+                <gc-skeleton width="20px" height="20px" radius="4px" />
+                <gc-skeleton width="8rem" height="0.9rem" />
+            </div>
+        }
+    }
+    @for (item of store.items(); track item.id) { ... }
+</ng-template>
+```
+
+```html
+<!-- ❌ MAUVAIS : bloc générique qui ne ressemble pas au contenu final -->
+<gc-skeleton width="100%" height="12rem" />
+
+<!-- ✅ BON : le squelette a la forme de la vraie carte -->
+<div class="item-card item-card--skeleton">
+    <gc-skeleton width="3.5rem" height="3.5rem" radius="0.5rem" />
+    <div class="item-card__meta">
+        <gc-skeleton width="45%" height="0.7rem" />
+        <gc-skeleton width="75%" height="1.05rem" />
+    </div>
+</div>
+```
+
+Pour un tableau, garder l'en-tête de colonnes réel et squelettiser les cellules de quelques
+lignes fictives. Pour une fiche, garder le cadre, les titres de section et les libellés
+statiques, et squelettiser uniquement les valeurs venant du serveur.

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>LeagueOfLegends</title>
+        <base href="/" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            html,
+            body {
+                margin: 0;
+                min-height: 100%;
+                background: #06060c;
+            }
+
+            #app-splash {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                background: radial-gradient(circle at center, #101020 0%, #06060c 100%);
+                color: #9aa7ff;
+                transition: opacity 0.2s ease;
+            }
+
+            #app-splash.is-hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            #app-splash h1 {
+                margin: 0 0 1rem;
+                font-family: system-ui, sans-serif;
+                font-size: clamp(1.5rem, 4vw, 2.5rem);
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: #66aaff;
+                text-shadow: 0 0 15px rgb(102 170 255 / 60%);
+            }
+
+            #app-splash p {
+                margin: 0;
+                font-family: system-ui, sans-serif;
+                font-size: 1.05rem;
+                letter-spacing: 0.06em;
+                animation: gc-splash-blink 1.2s infinite steps(2, start);
+            }
+
+            @keyframes gc-splash-blink {
+                50% {
+                    opacity: 0.5;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app-splash" aria-live="polite" aria-busy="true">
+            <h1>LeagueOfLegends</h1>
+            <p>Loading…</p>
+        </div>
+        <lol-root></lol-root>
+    </body>
+</html>

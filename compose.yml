@@ -1,0 +1,75 @@
+# Game-full stack. Set GITHUB_TOKEN (read:packages) before build/pull.
+
+name: gc-leagueoflegends-dev
+
+services:
+  rabbitmq:
+    image: docker.io/library/rabbitmq:3.13-management-alpine
+    user: "0:0"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-admin}
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-gc-leagueoflegends-dev}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - leagueoflegends
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "${MSSQL_HOST_PORT:-14333}:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-Your_password123}
+    networks:
+      - leagueoflegends
+
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ConnectionStrings__Database: "Server=mssql;User Id=sa;Password=${MSSQL_SA_PASSWORD:-Your_password123};Initial Catalog=LeagueOfLegends;TrustServerCertificate=True;Encrypt=True;"
+      RabbitMQ__Hostname: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-admin}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD:-admin}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mssql:
+        condition: service_started
+    networks:
+      - leagueoflegends
+
+  devgateway:
+    image: ghcr.io/bari77/gc-devgateway:${DEVGATEWAY_VERSION:-latest}
+    ports:
+      - "8083:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      RabbitMQ__Hostname: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-admin}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD:-admin}
+      DevGateway__MicroserviceId: leagueoflegends
+      DevGateway__Queue: leagueoflegends_queue
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      consumer:
+        condition: service_started
+    networks:
+      - leagueoflegends
+
+networks:
+  leagueoflegends:
+    driver: bridge

@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "pages": [
+    {
+      "id": "home",
+      "title": "Home",
+      "locked": true,
+      "widgets": [
+        { "id": "w-links", "type": "gc-links", "x": 0, "y": 0, "cols": 6, "rows": 3, "settings": {} }
+      ]
+    }
+  ]
+}

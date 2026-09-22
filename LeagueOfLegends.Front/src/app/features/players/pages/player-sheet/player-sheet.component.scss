@@ -1,0 +1,24 @@
+:host {
+    display: block;
+    padding: 1rem;
+}
+
+.player-sheet {
+    width: 100%;
+    max-width: 72rem;
+    margin: 0 auto;
+    overflow-x: clip;
+
+    --gc-widget-border: rgb(255 255 255 / 10%);
+    --gc-widget-background: var(--gc-surface-2);
+    --gc-widget-editing-border: rgb(120 170 255 / 55%);
+    --gc-widget-accent: #3366ff;
+    --gc-widget-danger: #ff3d71;
+    --gc-widget-hover: rgb(255 255 255 / 6%);
+}
+
+.player-sheet gc-widget-workspace,
+.player-sheet gc-widget-grid {
+    display: block;
+    width: 100%;
+}

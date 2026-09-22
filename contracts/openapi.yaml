@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: LeagueOfLegends API (gateway contract)
+  version: 0.1.0
+  description: >
+    HTTP contracts exposed via Gateway / DevGateway for the leagueoflegends microservice.
+servers:
+  - url: http://localhost:8083
+    description: Local DevGateway
+  - url: http://localhost:5000
+    description: Platform Gateway
+paths:
+  /api/leagueoflegends/Players/actions/Resolve:
+    post:
+      operationId: resolvePlayer
+      summary: Resolve a LoL sheet from a Platform user public id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                platformUserPublicId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: '{ playerPublicId?, hasSheet }'
+  /api/health:
+    get:
+      operationId: health
+      summary: DevGateway health
+      responses:
+        '200':
+          description: Healthy

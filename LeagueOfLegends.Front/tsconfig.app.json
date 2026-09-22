@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": ["@angular/localize"]
+  },
+  "files": ["src/main.ts"],
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "node_modules/@bari77/gc-sdk/src/**/*.ts",
+    "node_modules/@bari77/gc-msw/src/**/*.ts",
+    "node_modules/@bari77/gc-playground/src/**/*.ts",
+    "node_modules/@bari77/gc-ui/src/**/*.ts",
+    "node_modules/@bari77/gc-widgets/src/**/*.ts"
+  ]
+}

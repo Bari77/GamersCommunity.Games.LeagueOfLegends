@@ -1,0 +1,12 @@
+<section class="player-sheet">
+    <gc-widget-workspace
+        [workspace]="workspace()"
+        [catalog]="catalog"
+        [canEdit]="true"
+        [columns]="columns"
+        [rowHeight]="rowHeight"
+        [(editing)]="editing"
+        navLabel="Pages"
+        (save)="onSave($event)"
+    />
+</section>

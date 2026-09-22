@@ -1,0 +1,9 @@
+/* Game-specific global overrides (shared skin: @bari77/gc-theme) */
+:root {
+    --game-accent: #c8aa6e;
+}
+
+/* gridster paints its own item background, which would sit on top of the widget chrome. */
+gc-widget-grid gridster-item {
+    background: transparent;
+}

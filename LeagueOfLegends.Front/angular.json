@@ -1,0 +1,118 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "analytics": false
+  },
+  "projects": {
+    "leagueoflegends.front": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "lol",
+      "architect": {
+        "build": {
+          "builder": "@angular-architects/native-federation-v4:build",
+          "options": {
+            "cacheExternalArtifacts": false
+          },
+          "configurations": {
+            "production": {
+              "target": "leagueoflegends.front:esbuild:production"
+            },
+            "development": {
+              "target": "leagueoflegends.front:esbuild:development",
+              "dev": true
+            },
+            "api": {
+              "target": "leagueoflegends.front:esbuild:api",
+              "dev": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-architects/native-federation-v4:build",
+          "options": {
+            "target": "leagueoflegends.front:serve-original:development",
+            "rebuildDelay": 500,
+            "cacheExternalArtifacts": false,
+            "dev": true,
+            "devServer": true,
+            "port": 0
+          },
+          "configurations": {
+            "api": {
+              "target": "leagueoflegends.front:serve-original:api",
+              "dev": true,
+              "devServer": true
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n",
+          "options": {
+            "buildTarget": "leagueoflegends.front:esbuild"
+          }
+        },
+        "esbuild": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [{ "glob": "**/*", "input": "public" }],
+            "styles": [
+              "node_modules/@nebular/theme/styles/prebuilt/cosmic.css",
+              "node_modules/@bari77/gc-theme/src/global.scss",
+              "src/styles.scss"
+            ],
+            "polyfills": ["zone.js", "@angular/localize/init", "es-module-shims"]
+          },
+          "configurations": {
+            "production": { "outputHashing": "all" },
+            "development": { "optimization": false, "extractLicenses": false, "sourceMap": true },
+            "api": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.api.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-original": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "leagueoflegends.front:esbuild:production"
+            },
+            "development": {
+              "buildTarget": "leagueoflegends.front:esbuild:development"
+            },
+            "api": {
+              "buildTarget": "leagueoflegends.front:esbuild:api"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4202,
+            "prebundle": {
+              "exclude": [
+                "@bari77/gc-playground",
+                "@bari77/gc-sdk",
+                "@bari77/gc-msw",
+                "@bari77/gc-ui",
+                "@bari77/gc-widgets"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
