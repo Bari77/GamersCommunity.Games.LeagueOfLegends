@@ -13,4 +13,18 @@ export const mockPlayerSheet: PlayerSheetDto = {
     presentationIg: null,
     creationDate: new Date().toISOString(),
     layoutJson: null,
+    gameName: "Hide on bush",
+    tagLine: "KR1",
+    region: { id: 4, code: "kr" },
+    primaryLane: { id: 3, code: "mid" },
+    secondaryLanes: [
+        { id: 2, code: "jungle" },
+        { id: 5, code: "support" },
+    ],
+    solo: { tier: "challenger", division: null, lp: 1247 },
+    flex: { tier: "diamond", division: "1", lp: 42 },
+    champions: [
+        { id: 2, code: "ahri", kind: "main" },
+        { id: 85, code: "zed", kind: "pool" },
+    ],
 };

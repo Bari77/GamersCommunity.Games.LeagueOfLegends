@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
 import {
     PlayerLoadRequestDto,
+    PlayerOptionsDto,
     PlayerResolveResultDto,
     PlayerSheetDto,
     PlayerUpdateRequestDto,
 } from "@features/players/dto/player.dto";
-import { PlayerResolveResult, PlayerSheet } from "@features/players/models/player.model";
+import { PlayerOptions, PlayerResolveResult, PlayerSheet } from "@features/players/models/player.model";
 import { BaseService } from "@shared/services/base.service";
 import { Observable } from "rxjs";
 
@@ -31,5 +32,9 @@ export class PlayersService extends BaseService {
 
     public update(publicId: string, data: PlayerUpdateRequestDto): Observable<PlayerSheet> {
         return this.put<PlayerSheetDto, PlayerSheet>(PlayerSheet, publicId, data);
+    }
+
+    public options(): Observable<PlayerOptions> {
+        return this.post<PlayerOptionsDto, PlayerOptions>(PlayerOptions, "actions/Options", {});
     }
 }

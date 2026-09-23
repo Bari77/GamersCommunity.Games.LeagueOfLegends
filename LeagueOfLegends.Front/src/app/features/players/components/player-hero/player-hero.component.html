@@ -24,10 +24,20 @@
                     <ul class="player-hero__menu" role="listbox">
                         @for (game of otherGames(); track game.id) {
                             <li>
-                                <a class="player-hero__menu-item" [routerLink]="gameLink(game)" (click)="closeMenu()">
-                                    <img [src]="game.iconUrl" alt="" />
-                                    <span>{{ game.title }}</span>
-                                </a>
+                                @if (game.available) {
+                                    <a class="player-hero__menu-item" [routerLink]="gameLink(game)" (click)="closeMenu()">
+                                        <img [src]="game.iconUrl" alt="" />
+                                        <span>{{ game.title }}</span>
+                                    </a>
+                                } @else {
+                                    <span
+                                        class="player-hero__menu-item player-hero__menu-item--unavailable"
+                                        [attr.title]="unavailableLabel"
+                                    >
+                                        <img [src]="game.iconUrl" alt="" />
+                                        <span>{{ game.title }}</span>
+                                    </span>
+                                }
                             </li>
                         }
                     </ul>
@@ -52,8 +62,18 @@
                 {{ handle() }}
             </a>
             <p class="player-hero__meta">
-                <span i18n="@@lol.player.since">Membre depuis</span>
-                {{ sheet.creationDate | date: "mediumDate" }}
+                @if (sheet.riotId) {
+                    <span class="player-hero__riot">{{ sheet.riotId }}</span>
+                    @if (sheet.region) {
+                        <span>{{ sheet.region.code.toUpperCase() }}</span>
+                    }
+                    @if (sheet.primaryLane) {
+                        <span>{{ sheet.primaryLane.code | gameTerm }}</span>
+                    }
+                } @else {
+                    <span i18n="@@lol.player.since">Membre depuis</span>
+                    {{ sheet.creationDate | date: "mediumDate" }}
+                }
             </p>
         </div>
     </div>

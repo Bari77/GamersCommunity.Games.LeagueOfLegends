@@ -9,7 +9,9 @@ import {
 import defaultLayout from "../../../../../../config/player/workspace.default.json";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
 import { PlayerHeroComponent } from "@features/players/components/player-hero/player-hero.component";
-import { PlayerSheet } from "@features/players/models/player.model";
+import { PlayerIdentityComponent } from "@features/players/components/player-identity/player-identity.component";
+import { PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
+import { PlayerOptions, PlayerSheet } from "@features/players/models/player.model";
 import { PlayersService } from "@features/players/services/players.service";
 import {
     PLAYER_WIDGET_CATALOG,
@@ -22,7 +24,7 @@ import { firstValueFrom } from "rxjs";
 @Component({
     standalone: true,
     selector: "lol-player-sheet",
-    imports: [SkeletonComponent, WidgetWorkspaceComponent, PlayerHeroComponent],
+    imports: [SkeletonComponent, WidgetWorkspaceComponent, PlayerHeroComponent, PlayerIdentityComponent],
     templateUrl: "./player-sheet.component.html",
     styleUrl: "./player-sheet.component.scss",
 })
@@ -52,6 +54,13 @@ export class PlayerSheetComponent {
     public readonly editing = signal(false);
     public readonly saving = signal(false);
     public readonly saveFailed = signal(false);
+    public readonly identitySaving = signal(false);
+    public readonly identityError = signal<string | null>(null);
+
+    public readonly options = resource({
+        loader: () => firstValueFrom(this.players.options()),
+        defaultValue: undefined as PlayerOptions | undefined,
+    });
 
     public readonly workspace = computed(
         () =>
@@ -80,6 +89,26 @@ export class PlayerSheetComponent {
                 this.saveFailed.set(false);
             });
         });
+    }
+
+    public async onIdentitySave(data: PlayerUpdateRequestDto, identity: PlayerIdentityComponent): Promise<void> {
+        const current = this.sheet.value();
+        if (!current) {
+            return;
+        }
+
+        this.identitySaving.set(true);
+        this.identityError.set(null);
+        try {
+            await firstValueFrom(this.players.update(current.publicId, data));
+            this.sheet.reload();
+            identity.editing.set(false);
+        } catch (error: unknown) {
+            const code = (error as { error?: { code?: string } })?.error?.code;
+            this.identityError.set(code ?? "SAVE_FAILED");
+        } finally {
+            this.identitySaving.set(false);
+        }
     }
 
     public async onSave(workspace: WidgetWorkspace): Promise<void> {

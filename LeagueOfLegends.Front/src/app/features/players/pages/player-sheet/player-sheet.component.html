@@ -2,6 +2,18 @@
     @if (sheet.value(); as player) {
         <lol-player-hero [player]="player" />
 
+        @if (options.value(); as catalog) {
+            <lol-player-identity
+                [player]="player"
+                [options]="catalog"
+                [editable]="isOwner()"
+                [saving]="identitySaving()"
+                [errorCode]="identityError()"
+                (save)="onIdentitySave($event, identity)"
+                #identity
+            />
+        }
+
         @if (saveFailed()) {
             <p class="player-sheet__error" role="alert" i18n="@@lol.player.layout.saveFailed">
                 La mise en page n’a pas pu être enregistrée. Réessaie.

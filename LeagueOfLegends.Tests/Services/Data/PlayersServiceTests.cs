@@ -107,6 +107,118 @@ public class PlayersServiceTests
     }
 
     [Fact]
+    public async Task Options_ReturnsCatalog()
+    {
+        await using var context = FakeDataset.CreateContext();
+        var svc = new PlayersService(context);
+
+        var json = await svc.HandleAsync(new BusMessage
+        {
+            Type = BusServiceTypeEnum.DATA,
+            Resource = "Players",
+            Action = "Options",
+        });
+
+        Assert.Contains("\"code\":\"top\"", json, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"code\":\"euw\"", json, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"code\":\"ahri\"", json, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"code\":\"main\"", json, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Update_SavesRiotIdentityLanesRankAndPool()
+    {
+        await using var context = FakeDataset.CreateContext();
+        var player = await SeedPlayerAsync(context);
+        var svc = new PlayersService(context);
+
+        var json = await svc.HandleAsync(new BusMessage
+        {
+            Type = BusServiceTypeEnum.DATA,
+            Resource = "Players",
+            Action = "Update",
+            PublicId = player.PublicId,
+            Data = """
+                {
+                  "gameName":"Hide on bush",
+                  "tagLine":"kr1",
+                  "idRegion":4,
+                  "idPrimaryLane":3,
+                  "secondaryLaneIds":[2,5],
+                  "solo":{"tier":"challenger","lp":1247},
+                  "champions":[{"idChampion":2,"kind":"main"},{"idChampion":85,"kind":"pool"}]
+                }
+                """,
+            Caller = new CallerIdentity { Subject = KeycloakId.ToString() },
+        });
+
+        Assert.Contains("Hide on bush", json, StringComparison.Ordinal);
+        Assert.Contains("\"tagLine\":\"KR1\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"code\":\"kr\"", json, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"code\":\"mid\"", json, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"code\":\"jungle\"", json, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"tier\":\"challenger\"", json, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"kind\":\"main\"", json, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("Hide on bush", context.Players.Single().GameName);
+        Assert.Equal("KR1", context.Players.Single().TagLine);
+        Assert.Equal(4, context.Players.Single().IdRegion);
+        Assert.Equal(3, context.Players.Single().IdPrimaryLane);
+    }
+
+    [Fact]
+    public async Task Update_RejectsDuplicateRiotIdInSameRegion()
+    {
+        await using var context = FakeDataset.CreateContext();
+        var player = await SeedPlayerAsync(context);
+        context.Players.Add(new Player
+        {
+            PublicId = Guid.NewGuid(),
+            IdKeycloak = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            PlatformUserPublicId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            IdUser = 2,
+            GameName = "Hide on bush",
+            TagLine = "KR1",
+            IdRegion = 4,
+            CreationDate = DateTime.UtcNow,
+            ModificationDate = DateTime.UtcNow,
+        });
+        await context.SaveChangesAsync();
+        var svc = new PlayersService(context);
+
+        var error = await Assert.ThrowsAsync<BadRequestException>(() => svc.HandleAsync(new BusMessage
+        {
+            Type = BusServiceTypeEnum.DATA,
+            Resource = "Players",
+            Action = "Update",
+            PublicId = player.PublicId,
+            Data = """{"gameName":"Hide on bush","tagLine":"kr1","idRegion":4}""",
+            Caller = new CallerIdentity { Subject = KeycloakId.ToString() },
+        }));
+
+        Assert.Equal("RIOT_ID_TAKEN", error.Code);
+    }
+
+    [Fact]
+    public async Task Update_RejectsSecondaryEqualToPrimary()
+    {
+        await using var context = FakeDataset.CreateContext();
+        var player = await SeedPlayerAsync(context);
+        var svc = new PlayersService(context);
+
+        var error = await Assert.ThrowsAsync<BadRequestException>(() => svc.HandleAsync(new BusMessage
+        {
+            Type = BusServiceTypeEnum.DATA,
+            Resource = "Players",
+            Action = "Update",
+            PublicId = player.PublicId,
+            Data = """{"idPrimaryLane":3,"secondaryLaneIds":[3]}""",
+            Caller = new CallerIdentity { Subject = KeycloakId.ToString() },
+        }));
+
+        Assert.Equal("LANE_OVERLAP", error.Code);
+    }
+
+    [Fact]
     public async Task Load_RequiresAuthenticatedCaller()
     {
         await using var context = FakeDataset.CreateContext();

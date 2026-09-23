@@ -1,4 +1,62 @@
-import { PlayerResolveResultDto, PlayerSheetDto } from "@features/players/dto/player.dto";
+import {
+    CatalogItemDto,
+    PlayerChampionDto,
+    PlayerLaneDto,
+    PlayerOptionsDto,
+    PlayerRankDto,
+    PlayerResolveResultDto,
+    PlayerSheetDto,
+} from "@features/players/dto/player.dto";
+
+export class CatalogItem {
+    public constructor(
+        public id: number,
+        public code: string,
+    ) {}
+
+    public static fromDto(dto: CatalogItemDto): CatalogItem {
+        return new CatalogItem(dto.id, dto.code);
+    }
+}
+
+export class PlayerLane {
+    public constructor(
+        public id: number,
+        public code: string,
+    ) {}
+
+    public static fromDto(dto: PlayerLaneDto): PlayerLane {
+        return new PlayerLane(dto.id, dto.code);
+    }
+}
+
+export class PlayerChampion {
+    public constructor(
+        public id: number,
+        public code: string,
+        public kind: string,
+    ) {}
+
+    public static fromDto(dto: PlayerChampionDto): PlayerChampion {
+        return new PlayerChampion(dto.id, dto.code, dto.kind);
+    }
+}
+
+export class PlayerRank {
+    public constructor(
+        public tier: string | null,
+        public division: string | null,
+        public lp: number | null,
+    ) {}
+
+    public static fromDto(dto: PlayerRankDto | null | undefined): PlayerRank | null {
+        if (!dto?.tier) {
+            return null;
+        }
+
+        return new PlayerRank(dto.tier, dto.division ?? null, dto.lp ?? null);
+    }
+}
 
 export class PlayerSheet {
     public constructor(
@@ -11,10 +69,22 @@ export class PlayerSheet {
         public presentationIg: string | null,
         public creationDate: Date,
         public layoutJson: string | null,
+        public gameName: string | null,
+        public tagLine: string | null,
+        public region: CatalogItem | null,
+        public primaryLane: PlayerLane | null,
+        public secondaryLanes: PlayerLane[],
+        public solo: PlayerRank | null,
+        public flex: PlayerRank | null,
+        public champions: PlayerChampion[],
     ) {}
 
     public get handle(): string {
         return this.discriminator ? `${this.nickname}#${this.discriminator}` : this.nickname;
+    }
+
+    public get riotId(): string | null {
+        return this.gameName && this.tagLine ? `${this.gameName}#${this.tagLine}` : null;
     }
 
     public static fromDto(dto: PlayerSheetDto): PlayerSheet {
@@ -28,6 +98,14 @@ export class PlayerSheet {
             dto.presentationIg ?? null,
             new Date(dto.creationDate),
             dto.layoutJson ?? null,
+            dto.gameName ?? null,
+            dto.tagLine ?? null,
+            dto.region ? CatalogItem.fromDto(dto.region) : null,
+            dto.primaryLane ? PlayerLane.fromDto(dto.primaryLane) : null,
+            (dto.secondaryLanes ?? []).map((lane) => PlayerLane.fromDto(lane)),
+            PlayerRank.fromDto(dto.solo),
+            PlayerRank.fromDto(dto.flex),
+            (dto.champions ?? []).map((champion) => PlayerChampion.fromDto(champion)),
         );
     }
 }
@@ -40,5 +118,27 @@ export class PlayerResolveResult {
 
     public static fromDto(dto: PlayerResolveResultDto): PlayerResolveResult {
         return new PlayerResolveResult(dto.playerPublicId ?? null, dto.hasSheet);
+    }
+}
+
+export class PlayerOptions {
+    public constructor(
+        public lanes: CatalogItem[],
+        public regions: CatalogItem[],
+        public champions: CatalogItem[],
+        public championKinds: CatalogItem[],
+        public tiers: CatalogItem[],
+        public divisions: CatalogItem[],
+    ) {}
+
+    public static fromDto(dto: PlayerOptionsDto): PlayerOptions {
+        return new PlayerOptions(
+            dto.lanes.map(CatalogItem.fromDto),
+            dto.regions.map(CatalogItem.fromDto),
+            dto.champions.map(CatalogItem.fromDto),
+            dto.championKinds.map(CatalogItem.fromDto),
+            dto.tiers.map(CatalogItem.fromDto),
+            dto.divisions.map(CatalogItem.fromDto),
+        );
     }
 }

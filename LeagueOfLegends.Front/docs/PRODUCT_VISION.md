@@ -30,5 +30,5 @@ The site identity, profile wall, friends, DMs, site events and notifications liv
 
 ## Display vs technical keys
 
-- **Display** : `League Of Legends`, human labels (`Top`, `Ahri`, …)
-- **Technical** : `UrlValue` `/league-of-legends`, codes (`top`, `ahri`, `euw`) for routes, assets, i18n (`lol.*`)
+- **Display** : `League Of Legends`, `gameTerm` from catalog codes (`kaisa` → `Kai'Sa`)
+- **Technical** : `UrlValue` `/league-of-legends`, codes (`top`, `ahri`, `euw`) for routes, assets, i18n keys

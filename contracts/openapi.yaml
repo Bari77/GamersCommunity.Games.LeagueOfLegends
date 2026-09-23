@@ -27,6 +27,13 @@ paths:
       responses:
         '200':
           description: '{ playerPublicId?, hasSheet }'
+  /api/leagueoflegends/Players/actions/Options:
+    post:
+      operationId: playerOptions
+      summary: Catalog for Riot ID, lanes, ranks and champions
+      responses:
+        '200':
+          description: '{ lanes, regions, champions, championKinds, tiers, divisions }'
   /api/health:
     get:
       operationId: health

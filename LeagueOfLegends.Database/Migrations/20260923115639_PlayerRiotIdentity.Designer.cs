@@ -4,6 +4,7 @@ using LeagueOfLegends.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeagueOfLegends.Database.Migrations
 {
     [DbContext(typeof(LeagueOfLegendsDbContext))]
-    partial class LeagueOfLegendsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260923115639_PlayerRiotIdentity")]
+    partial class PlayerRiotIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +41,11 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Entitled")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<DateTime>("ModificationDate")
                         .HasColumnType("datetime");
 
@@ -54,6 +62,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 1,
                             Code = "aatrox",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Aatrox",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -61,6 +70,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 2,
                             Code = "ahri",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Ahri",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -68,6 +78,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 3,
                             Code = "akali",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Akali",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -75,6 +86,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 4,
                             Code = "alistar",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Alistar",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -82,6 +94,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 5,
                             Code = "amumu",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Amumu",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -89,6 +102,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 6,
                             Code = "anivia",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Anivia",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -96,6 +110,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 7,
                             Code = "annie",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Annie",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -103,6 +118,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 8,
                             Code = "aphelios",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Aphelios",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -110,6 +126,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 9,
                             Code = "ashe",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Ashe",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -117,6 +134,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 10,
                             Code = "azir",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Azir",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -124,6 +142,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 11,
                             Code = "bard",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Bard",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -131,6 +150,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 12,
                             Code = "blitzcrank",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Blitzcrank",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -138,6 +158,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 13,
                             Code = "brand",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Brand",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -145,6 +166,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 14,
                             Code = "braum",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Braum",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -152,6 +174,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 15,
                             Code = "caitlyn",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Caitlyn",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -159,6 +182,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 16,
                             Code = "camille",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Camille",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -166,6 +190,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 17,
                             Code = "cassiopeia",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Cassiopeia",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -173,6 +198,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 18,
                             Code = "darius",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Darius",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -180,6 +206,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 19,
                             Code = "diana",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Diana",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -187,6 +214,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 20,
                             Code = "draven",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Draven",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -194,6 +222,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 21,
                             Code = "ekko",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Ekko",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -201,6 +230,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 22,
                             Code = "evelynn",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Evelynn",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -208,6 +238,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 23,
                             Code = "ezreal",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Ezreal",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -215,6 +246,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 24,
                             Code = "fiora",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Fiora",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -222,6 +254,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 25,
                             Code = "fizz",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Fizz",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -229,6 +262,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 26,
                             Code = "gnar",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Gnar",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -236,6 +270,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 27,
                             Code = "graves",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Graves",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -243,6 +278,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 28,
                             Code = "hecarim",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Hecarim",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -250,6 +286,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 29,
                             Code = "illaoi",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Illaoi",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -257,6 +294,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 30,
                             Code = "irelia",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Irelia",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -264,6 +302,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 31,
                             Code = "janna",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Janna",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -271,6 +310,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 32,
                             Code = "jarvaniv",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Jarvan IV",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -278,6 +318,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 33,
                             Code = "jax",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Jax",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -285,6 +326,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 34,
                             Code = "jhin",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Jhin",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -292,6 +334,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 35,
                             Code = "jinx",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Jinx",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -299,6 +342,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 36,
                             Code = "kaisa",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Kai'Sa",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -306,6 +350,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 37,
                             Code = "karma",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Karma",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -313,6 +358,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 38,
                             Code = "kassadin",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Kassadin",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -320,6 +366,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 39,
                             Code = "katarina",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Katarina",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -327,6 +374,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 40,
                             Code = "kayle",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Kayle",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -334,6 +382,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 41,
                             Code = "kayn",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Kayn",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -341,6 +390,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 42,
                             Code = "khazix",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Kha'Zix",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -348,6 +398,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 43,
                             Code = "kindred",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Kindred",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -355,6 +406,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 44,
                             Code = "leblanc",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "LeBlanc",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -362,6 +414,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 45,
                             Code = "leesin",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Lee Sin",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -369,6 +422,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 46,
                             Code = "leona",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Leona",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -376,6 +430,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 47,
                             Code = "lulu",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Lulu",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -383,6 +438,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 48,
                             Code = "lux",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Lux",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -390,6 +446,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 49,
                             Code = "malphite",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Malphite",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -397,6 +454,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 50,
                             Code = "missfortune",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Miss Fortune",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -404,6 +462,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 51,
                             Code = "mordekaiser",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Mordekaiser",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -411,6 +470,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 52,
                             Code = "morgana",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Morgana",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -418,6 +478,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 53,
                             Code = "nami",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Nami",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -425,6 +486,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 54,
                             Code = "nasus",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Nasus",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -432,6 +494,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 55,
                             Code = "nautilus",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Nautilus",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -439,6 +502,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 56,
                             Code = "nidalee",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Nidalee",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -446,6 +510,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 57,
                             Code = "orianna",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Orianna",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -453,6 +518,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 58,
                             Code = "ornn",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Ornn",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -460,6 +526,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 59,
                             Code = "pyke",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Pyke",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -467,6 +534,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 60,
                             Code = "rakan",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Rakan",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -474,6 +542,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 61,
                             Code = "renekton",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Renekton",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -481,6 +550,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 62,
                             Code = "riven",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Riven",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -488,6 +558,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 63,
                             Code = "senna",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Senna",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -495,6 +566,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 64,
                             Code = "seraphine",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Seraphine",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -502,6 +574,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 65,
                             Code = "sett",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Sett",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -509,6 +582,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 66,
                             Code = "sion",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Sion",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -516,6 +590,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 67,
                             Code = "sivir",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Sivir",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -523,6 +598,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 68,
                             Code = "sona",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Sona",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -530,6 +606,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 69,
                             Code = "soraka",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Soraka",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -537,6 +614,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 70,
                             Code = "syndra",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Syndra",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -544,6 +622,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 71,
                             Code = "thresh",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Thresh",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -551,6 +630,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 72,
                             Code = "tristana",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Tristana",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -558,6 +638,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 73,
                             Code = "twitch",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Twitch",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -565,6 +646,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 74,
                             Code = "varus",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Varus",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -572,6 +654,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 75,
                             Code = "vayne",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Vayne",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -579,6 +662,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 76,
                             Code = "veigar",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Veigar",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -586,6 +670,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 77,
                             Code = "viego",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Viego",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -593,6 +678,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 78,
                             Code = "viktor",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Viktor",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -600,6 +686,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 79,
                             Code = "warwick",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Warwick",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -607,6 +694,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 80,
                             Code = "xayah",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Xayah",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -614,6 +702,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 81,
                             Code = "xinzhao",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Xin Zhao",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -621,6 +710,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 82,
                             Code = "yasuo",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Yasuo",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -628,6 +718,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 83,
                             Code = "yone",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Yone",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -635,6 +726,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 84,
                             Code = "yuumi",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Yuumi",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -642,6 +734,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 85,
                             Code = "zed",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Zed",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -649,6 +742,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 86,
                             Code = "zeri",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Zeri",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -656,6 +750,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 87,
                             Code = "zoe",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Zoe",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -663,6 +758,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 88,
                             Code = "zyra",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Zyra",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
@@ -683,6 +779,11 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Entitled")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<DateTime>("ModificationDate")
                         .HasColumnType("datetime");
 
@@ -702,6 +803,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 1,
                             Code = "top",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Top",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 1
                         },
@@ -710,6 +812,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 2,
                             Code = "jungle",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Jungle",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 2
                         },
@@ -718,6 +821,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 3,
                             Code = "mid",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Mid",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 3
                         },
@@ -726,6 +830,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 4,
                             Code = "bottom",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Bottom",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 4
                         },
@@ -734,6 +839,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 5,
                             Code = "support",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Support",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 5
                         });
@@ -923,6 +1029,11 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Entitled")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<DateTime>("ModificationDate")
                         .HasColumnType("datetime");
 
@@ -942,6 +1053,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 1,
                             Code = "main",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Main",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 1
                         },
@@ -950,6 +1062,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 2,
                             Code = "pool",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Pool",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 2
                         },
@@ -958,6 +1071,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 3,
                             Code = "learning",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Learning",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 3
                         });
@@ -1013,6 +1127,11 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Entitled")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<DateTime>("ModificationDate")
                         .HasColumnType("datetime");
 
@@ -1032,6 +1151,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 1,
                             Code = "euw",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "EU West",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 1
                         },
@@ -1040,6 +1160,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 2,
                             Code = "eune",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "EU Nordic & East",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 2
                         },
@@ -1048,6 +1169,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 3,
                             Code = "na",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "North America",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 3
                         },
@@ -1056,6 +1178,7 @@ namespace LeagueOfLegends.Database.Migrations
                             Id = 4,
                             Code = "kr",
                             CreationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Entitled = "Korea",
                             ModificationDate = new DateTime(2026, 9, 23, 0, 0, 0, 0, DateTimeKind.Utc),
                             SortOrder = 4
                         });

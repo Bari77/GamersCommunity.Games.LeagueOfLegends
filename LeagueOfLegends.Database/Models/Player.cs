@@ -23,4 +23,32 @@ public class Player : IKeyTable
     public Guid? PlatformUserPublicId { get; set; }
 
     public string? LayoutJson { get; set; }
+
+    public string? GameName { get; set; }
+
+    public string? TagLine { get; set; }
+
+    public int? IdRegion { get; set; }
+
+    public int? IdPrimaryLane { get; set; }
+
+    public string? SoloTier { get; set; }
+
+    public string? SoloDivision { get; set; }
+
+    public int? SoloLp { get; set; }
+
+    public string? FlexTier { get; set; }
+
+    public string? FlexDivision { get; set; }
+
+    public int? FlexLp { get; set; }
+
+    public virtual Region? IdRegionNavigation { get; set; }
+
+    public virtual Lane? IdPrimaryLaneNavigation { get; set; }
+
+    public virtual ICollection<PlayerLane> PlayerLanes { get; set; } = [];
+
+    public virtual ICollection<PlayerChampion> PlayerChampions { get; set; } = [];
 }

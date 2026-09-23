@@ -4,10 +4,9 @@
   "routePrefix": "/league-of-legends",
   "remoteEntryDev": "http://localhost:4202/remoteEntry.json",
   "resources": [
-    { "type": "DATA", "name": "Players", "actions": ["Get", "Resolve", "Load", "Update"] },
+    { "type": "DATA", "name": "Players", "actions": ["Get", "Resolve", "Options", "Load", "Update"] },
     { "type": "DATA", "name": "HomeFeed", "actions": ["Get"] },
     { "type": "DATA", "name": "LfgAds", "actions": ["ListRecent", "Create"] },
-    { "type": "DATA", "name": "Summoners", "actions": ["Get", "List", "Options", "Create", "Update", "Delete"] },
     { "type": "DATA", "name": "PlayerPictures", "actions": ["List", "Create", "Update", "Delete"] },
     { "type": "DATA", "name": "PlayerVideos", "actions": ["List", "Create", "Update", "Delete"] },
     { "type": "DATA", "name": "PlayerStreams", "actions": ["List", "Create", "Update", "Delete"] }

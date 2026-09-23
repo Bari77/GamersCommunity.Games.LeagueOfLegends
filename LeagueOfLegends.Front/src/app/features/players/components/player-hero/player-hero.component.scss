@@ -116,6 +116,15 @@
     background: rgba(255, 255, 255, 0.06);
 }
 
+.player-hero__menu-item--unavailable,
+.player-hero__menu-item--unavailable:hover {
+    filter: grayscale(1);
+    opacity: 0.55;
+    cursor: default;
+    background: none;
+}
+
+
 .player-hero__identity {
     display: flex;
     align-items: center;
@@ -154,6 +163,12 @@
 .player-hero__handle:focus-visible {
     color: var(--gc-accent, var(--game-accent, #c8aa6e));
     text-decoration: underline;
+}
+
+.player-hero__riot {
+    color: var(--gc-accent, var(--game-accent, #c8aa6e));
+    opacity: 1;
+    font-weight: 600;
 }
 
 .player-hero__meta {

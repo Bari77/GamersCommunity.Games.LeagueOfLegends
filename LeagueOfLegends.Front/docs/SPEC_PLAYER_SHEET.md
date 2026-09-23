@@ -39,11 +39,11 @@ Pont identité shell ↔ microservice, fiche joueur publique (le joueur **est** 
 
 ## B2 — Riot ID, lanes, champions
 
-- [ ] Seeds `Lane` (5), `Region`, `Champion`, `PlayerChampionKind`
-- [ ] `Players.Update` : Riot ID, région, lanes, rang saisi, pool
-- [ ] `Players.Options` (public)
-- [ ] Validations : Riot ID unique par région ; une lane prioritaire ; secondaires ⊂ restantes ; pool = catalogue
-- [ ] UI fiche : identité Riot, lanes, rang, pool
+- [x] Seeds `Lane` (5), `Region`, `Champion`, `PlayerChampionKind`
+- [x] `Players.Update` : Riot ID, région, lanes, rang saisi, pool
+- [x] `Players.Options` (public)
+- [x] Validations : Riot ID unique par région ; une lane prioritaire ; secondaires ⊂ restantes ; pool = catalogue
+- [x] UI fiche : identité Riot, lanes, rang, pool
 
 ## B3 — Médias profil & layout widgets
 
