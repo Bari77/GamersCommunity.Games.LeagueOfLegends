@@ -1,5 +1,6 @@
 using GamersCommunity.Core.Database;
 using GamersCommunity.Core.Logging;
+using GamersCommunity.Core.Platform;
 using GamersCommunity.Core.Rabbit;
 using GamersCommunity.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -44,8 +45,7 @@ public class Program
                     });
                     services.AddSingleton<Serilog.ILogger>(sp => Log.Logger);
                     services.AddSingleton<IRealtimeEventPublisher, RealtimeEventPublisher>();
-                    services.AddSingleton<IPlatformConversationsClient, PlatformConversationsClient>();
-                    services.AddSingleton<IPlatformSanctionsClient, PlatformSanctionsClient>();
+                    services.AddPlatformRpcClients();
                     services.AddScoped<ITeamWhispers, TeamWhispers>();
                     services.Scan(scan => scan
                         .FromAssembliesOf(typeof(AppSettings))

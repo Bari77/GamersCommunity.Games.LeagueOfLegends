@@ -1,5 +1,6 @@
 using GamersCommunity.Core.Enums;
 using GamersCommunity.Core.Exceptions;
+using GamersCommunity.Core.Platform;
 using GamersCommunity.Core.Rabbit;
 using GamersCommunity.Core.Serialization;
 using GamersCommunity.Core.Services;

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using GamersCommunity.Core.Platform;
 using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Models;
 
