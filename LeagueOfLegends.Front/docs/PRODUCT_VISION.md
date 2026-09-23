@@ -1,67 +1,34 @@
 # League of Legends — product vision (locked)
 
-Remote MOBA. Même contrat social que WoW (fiche joueur, organisation, LFG, mur modéré, events),
-sans en copier le modèle MMO. Pas d’API Riot au lancement — le joueur saisit sa feuille à la
-main.
+MOBA remote. Player sheet, teams, LFG, moderated team wall, in-game events. No Riot API at launch — the player enters their sheet by hand.
 
-Roadmap Platform : **Vague F** = B ici, **G** = C, **H** = D. Les tickets vivent dans ce repo.
+The player **is** the summoner: Riot ID, region, lanes and champion pool live on `Player`. There is no child account. The role played is `Champion` + `Lane`. A player may belong to several teams (player slot and/or staff). There are no guilds ; the workspace target is `team`.
 
-## Positionnement
+## This remote owns
 
-L’identité jeu, c’est la fiche `Player` : Riot ID, région, lanes et pool de champions. Pas de
-compte enfant à côté.
+Hub, player sheet, teams, LFG, moderated team wall, in-game events and player signup.
 
-L’équivalent WoW `Character` est le **rôle joué** — `Champion` + `Lane`. Le catalogue
-(`Champion`, `Lane`) et les préférences (lane prioritaire / secondaires, pool `main` / `pool` /
-`learning`) appartiennent à la fiche.
+The site identity, profile wall, friends, DMs, site events and notifications live on the shell.
 
-Une **team** remplace la guilde. Un joueur peut appartenir à **plusieurs** teams (slot joueur
-et/ou staff). Les guildes n’existent pas ; le scope workspace `guild` devient `team`.
+## Content
 
-## Correspondance WoW → LoL
-
-| WoW | LoL |
-|-----|-----|
-| MMORPG | MOBA |
-| `Character` (perso serveur / race / classe / spec) | `Champion` + `Lane` (sur la fiche joueur) |
-| Race / classe / spec (catalogue) | `Champion` + `Lane` (catalogue) |
-| Spec principale / secondaire | Lane prioritaire / lanes secondaires |
-| `Guild` + `leader` / `officer` / `member` | `Team` + `captain` / `coach` / `manager` / `player` |
-| Un perso = une guilde | Un joueur peut avoir plusieurs teams |
-| Mur de guilde | Mur d’équipe |
-| LFG serveur / rôle tank-heal-dps | LFG région / lane |
-| Events + inscription perso | Events (scrim / tournoi) + inscription joueur |
-
-## Dual-layer
-
-| Layer | Owns |
-|-------|------|
-| **Platform.Front (shell)** | Identité, mur profil, amis, DMs, events site, catalogue, notifications |
-| **LoL remote** | Hub, fiche joueur (Riot ID, lanes, pool), teams, LFG, mur d’équipe, events in-game |
-
-`Platform.UserGroupRole.IdGroup` référence un `Team.Id` LoL. Les teams ne sont pas dupliquées
-dans Platform. Un même joueur peut porter plusieurs badges team.
-
-## Contenu
-
-| Contenu | Owner |
+| Content | Owner |
 |---------|-------|
-| Mur profil | Platform |
-| Notifications | Platform |
-| Hub / mur d’équipe + LFG | LoL |
-| Events site + RSVP | Platform |
-| Events in-game + inscription joueur | LoL |
+| Hub / team wall + LFG | This remote |
+| In-game events + player signup | This remote |
+| Profile wall, friends, DMs, site events, notifications | Shell |
 
-## Roadmap
+`UserGroupRole.IdGroup` references a `Team.Id`. Teams are not duplicated on the shell. A player may hold several team badges.
 
-| Vague | Focus | Platform |
-|-------|--------|----------|
-| **B** | Branchement shell / Gateway, fiche joueur, lanes, champions, médias, hub | F |
-| **C** | Teams (5 + coach + manager, multi-teams par joueur), mur modéré, board LFG, mute RPC (Core) | G |
-| **D** | Events in-game, notifs, badges shell, remplaçants si besoin | H |
+## Specs
+
+| Spec | Focus |
+|------|--------|
+| Player sheet | Shell / Gateway wiring, lanes, champions, media, hub |
+| Teams | 5 + coach + manager, several per player, moderated wall, LFG, mute RPC |
+| Events | In-game events, notifications, shell badges, substitutes |
 
 ## Display vs technical keys
 
-- **Display** : `Game.Title` = `League Of Legends`, labels humains (`Top`, `Ahri`, …)
-- **Technical** : `UrlValue` = `/league-of-legends`, codes stables (`top`, `ahri`, `euw`) pour
-  routes, assets, i18n (`lol.*`)
+- **Display** : `League Of Legends`, human labels (`Top`, `Ahri`, …)
+- **Technical** : `UrlValue` `/league-of-legends`, codes (`top`, `ahri`, `euw`) for routes, assets, i18n (`lol.*`)

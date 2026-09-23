@@ -2,9 +2,7 @@
 
 Remote **League of Legends** (MOBA) : fiche joueur, teams, LFG.
 
-Tickets : [LeagueOfLegends.Front/docs](LeagueOfLegends.Front/docs/PRODUCT_VISION.md)
-([B](LeagueOfLegends.Front/docs/VAGUE_B.md) · [C](LeagueOfLegends.Front/docs/VAGUE_C.md) ·
-[D](LeagueOfLegends.Front/docs/VAGUE_D.md)).
+Specs : LeagueOfLegends.Front/docs (PRODUCT_VISION, SPEC_PLAYER_SHEET, SPEC_TEAMS, SPEC_EVENTS).
 
 Identity : Pascal `LeagueOfLegends`, id `leagueoflegends`, queue `leagueoflegends_queue`,
 compose `gc-leagueoflegends-dev`, ports front **4202** / DevGateway **8083**, CSS prefix `lol`.
