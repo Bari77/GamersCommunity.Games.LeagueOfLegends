@@ -24,6 +24,7 @@ export default withNativeFederation({
     // SCSS-only package — bundled via angular.json styles, not federation.
     '@bari77/gc-theme',
     // Ship raw .ts: the Angular compiler must see them, the federation bundler cannot.
+    '@bari77/gc-sdk',
     '@bari77/gc-widgets',
     'rxjs/ajax', 'rxjs/fetch', 'rxjs/testing', 'rxjs/webSocket',
     '@angular/cdk/schematics', 'zone.js/node', 'zone.js/testing',
