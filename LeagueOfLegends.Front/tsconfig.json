@@ -16,12 +16,16 @@
     "target": "ES2022",
     "module": "ES2022",
     "baseUrl": "./src",
-    "paths": { "@core/*": ["app/core/*"] }
+    "paths": {
+      "@core/*": ["app/core/*"],
+      "@shared/*": ["app/shared/*"],
+      "@features/*": ["app/features/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictLeagueOfLegendss": true
+    "strictTemplates": true
   }
 }

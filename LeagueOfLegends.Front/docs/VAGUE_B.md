@@ -54,13 +54,13 @@ Roadmap Platform : **Vague F**.
 
 ## B1 — Identité & fiche joueur LoL
 
-- [ ] Migration `Player` : `IdKeycloak`, `PlatformUserPublicId` (index uniques filtrés),
+- [x] Migration `Player` : `IdKeycloak`, `PlatformUserPublicId` (index uniques filtrés),
       `PresentationIrl` / `PresentationIg`, `LayoutJson`
-- [ ] `Players.Load` (auth) : get-or-create par Keycloak + ids Platform
-- [ ] `Players.Get` (public) : fiche par `Player.PublicId`
-- [ ] `Players.Resolve` (public) : `{ platformUserPublicId }` → `{ playerPublicId? }`
-- [ ] `Players.Update` (auth) : présentations IRL / IG, propre fiche uniquement
-- [ ] Routes : `/league-of-legends/sheet` (ma fiche), `/league-of-legends/players/:publicId`
+- [x] `Players.Load` (auth) : get-or-create par Keycloak + ids Platform
+- [x] `Players.Get` (public) : fiche par `Player.PublicId`
+- [x] `Players.Resolve` (public) : `{ platformUserPublicId }` → `{ playerPublicId? }`
+- [x] `Players.Update` (auth) : présentations IRL / IG, propre fiche uniquement
+- [x] Routes : `/league-of-legends/sheet` (ma fiche), `/league-of-legends/players/:publicId`
 
 ## B2 — Riot ID, lanes, champions
 

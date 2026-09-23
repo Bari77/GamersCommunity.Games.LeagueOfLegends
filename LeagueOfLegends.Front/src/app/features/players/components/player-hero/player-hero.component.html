@@ -1,0 +1,60 @@
+@let sheet = player();
+
+<header class="player-hero">
+    <div class="player-hero__game">
+        @if (currentGame(); as game) {
+            <img class="player-hero__game-icon" [src]="game.iconUrl" alt="" />
+        }
+        <div class="player-hero__game-text">
+            <p class="player-hero__kicker" i18n="@@lol.player.hero.kicker">Fiche joueur</p>
+            @if (canSwitch()) {
+                <button
+                    type="button"
+                    class="player-hero__game-toggle"
+                    [attr.aria-expanded]="menuOpen()"
+                    [attr.aria-label]="switchLabel"
+                    (click)="toggleMenu()"
+                >
+                    <span class="player-hero__game-name">{{ currentGame()?.title ?? "League of Legends" }}</span>
+                    <svg class="player-hero__chevron" viewBox="0 0 12 8" aria-hidden="true">
+                        <path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                @if (menuOpen()) {
+                    <ul class="player-hero__menu" role="listbox">
+                        @for (game of otherGames(); track game.id) {
+                            <li>
+                                <a class="player-hero__menu-item" [routerLink]="gameLink(game)" (click)="closeMenu()">
+                                    <img [src]="game.iconUrl" alt="" />
+                                    <span>{{ game.title }}</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+            } @else {
+                <p class="player-hero__game-name">{{ currentGame()?.title ?? "League of Legends" }}</p>
+            }
+        </div>
+    </div>
+
+    <div class="player-hero__identity">
+        @if (sheet.avatarUrl) {
+            <img class="player-hero__avatar" [src]="sheet.avatarUrl" alt="" />
+        }
+        <div class="player-hero__who">
+            <a
+                class="player-hero__handle gc-display"
+                [routerLink]="['/users', sheet.platformUserPublicId]"
+                title="Ouvrir le profil communauté"
+                i18n-title="@@lol.player.hero.profileHint"
+            >
+                {{ handle() }}
+            </a>
+            <p class="player-hero__meta">
+                <span i18n="@@lol.player.since">Membre depuis</span>
+                {{ sheet.creationDate | date: "mediumDate" }}
+            </p>
+        </div>
+    </div>
+</header>

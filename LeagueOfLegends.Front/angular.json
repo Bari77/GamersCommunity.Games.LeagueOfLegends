@@ -106,7 +106,6 @@
                 "@bari77/gc-playground",
                 "@bari77/gc-sdk",
                 "@bari77/gc-msw",
-                "@bari77/gc-ui",
                 "@bari77/gc-widgets"
               ]
             }

@@ -15,6 +15,7 @@ export default withNativeFederation({
           '@angular/animations': { singleton: true, strictVersion: true, requiredVersion: 'auto', build: 'package', includeSecondaries: { keepAll: true } },
           '@angular/cdk': { singleton: true, strictVersion: true, requiredVersion: '21.0.6', build: 'package', includeSecondaries: { keepAll: true } },
           'zone.js': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+          '@bari77/gc-ui': { singleton: true, strictVersion: true, requiredVersion: 'auto', build: 'package' },
         },
       },
     ),
@@ -23,7 +24,6 @@ export default withNativeFederation({
     // SCSS-only package — bundled via angular.json styles, not federation.
     '@bari77/gc-theme',
     // Ship raw .ts: the Angular compiler must see them, the federation bundler cannot.
-    '@bari77/gc-ui',
     '@bari77/gc-widgets',
     'rxjs/ajax', 'rxjs/fetch', 'rxjs/testing', 'rxjs/webSocket',
     '@angular/cdk/schematics', 'zone.js/node', 'zone.js/testing',

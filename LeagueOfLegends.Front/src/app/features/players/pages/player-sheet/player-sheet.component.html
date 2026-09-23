@@ -1,12 +1,64 @@
-<section class="player-sheet">
-    <gc-widget-workspace
-        [workspace]="workspace()"
-        [catalog]="catalog"
-        [canEdit]="true"
-        [columns]="columns"
-        [rowHeight]="rowHeight"
-        [(editing)]="editing"
-        navLabel="Pages"
-        (save)="onSave($event)"
-    />
+<section class="player-sheet gc-enter">
+    @if (sheet.value(); as player) {
+        <lol-player-hero [player]="player" />
+
+        @if (saveFailed()) {
+            <p class="player-sheet__error" role="alert" i18n="@@lol.player.layout.saveFailed">
+                La mise en page n’a pas pu être enregistrée. Réessaie.
+            </p>
+        }
+
+        <gc-widget-workspace
+            [workspace]="workspace()"
+            [catalog]="catalog"
+            [canEdit]="isOwner()"
+            [saving]="saving()"
+            [columns]="columns"
+            [rowHeight]="rowHeight"
+            [(editing)]="editing"
+            navLabel="Pages du profil"
+            addPageLabel="Nouvelle page"
+            removePageLabel="Supprimer la page"
+            moveUpLabel="Monter"
+            moveDownLabel="Descendre"
+            addWidgetLabel="Ajouter un widget"
+            editLabel="Modifier"
+            cancelLabel="Annuler"
+            saveLabel="Enregistrer"
+            emptyPageLabel="Cette page n’a pas encore de widget."
+            hintLabel="Glisse un widget par son en-tête, ou son coin bas-droit pour le redimensionner."
+            newPageTitle="Nouvelle page"
+            settingsLabel="Configurer ce widget"
+            editDataLabel="Modifier les données"
+            removeWidgetLabel="Retirer le widget"
+            widgetTitleLabel="Titre du widget"
+            widgetTitleHint="Laisse vide pour masquer l’en-tête."
+            doneLabel="Terminé"
+            (save)="onSave($event)"
+        />
+    } @else if (sheet.error()) {
+        <p i18n="@@lol.player.notFound">Fiche joueur LoL introuvable.</p>
+    } @else {
+        <header class="player-hero player-hero--skeleton" aria-busy="true">
+            <div class="player-hero__game">
+                <gc-skeleton width="3rem" height="3rem" radius="0.6rem" />
+                <div class="player-hero__game-text">
+                    <gc-skeleton width="5rem" height="0.65rem" />
+                    <gc-skeleton width="9rem" height="1rem" />
+                </div>
+            </div>
+            <div class="player-hero__identity">
+                <gc-skeleton width="3.5rem" height="3.5rem" shape="circle" />
+                <div class="player-hero__who">
+                    <gc-skeleton width="11rem" height="1.5rem" />
+                    <gc-skeleton width="8rem" height="0.85rem" />
+                </div>
+            </div>
+        </header>
+
+        <div class="player-sheet__workspace-skeleton" aria-busy="true">
+            <gc-skeleton width="12rem" height="2rem" radius="0.25rem" />
+            <gc-skeleton width="100%" height="18rem" radius="0.75rem" />
+        </div>
+    }
 </section>

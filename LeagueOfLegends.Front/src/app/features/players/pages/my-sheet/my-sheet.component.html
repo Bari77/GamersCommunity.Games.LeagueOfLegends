@@ -1,0 +1,16 @@
+<section class="my-sheet">
+    @if (loading()) {
+        <header class="my-sheet__hero" aria-busy="true">
+            <div class="my-sheet__hero-row">
+                <gc-skeleton width="3.5rem" height="3.5rem" shape="circle" />
+                <div class="my-sheet__hero-text">
+                    <gc-skeleton width="11rem" height="1.5rem" />
+                    <gc-skeleton width="8rem" height="0.85rem" />
+                </div>
+            </div>
+        </header>
+    } @else if (needsLogin()) {
+        <p>Connecte-toi sur GamersCommunity pour ouvrir ta fiche LoL.</p>
+        <a href="/users/login" nbButton status="primary">Se connecter</a>
+    }
+</section>

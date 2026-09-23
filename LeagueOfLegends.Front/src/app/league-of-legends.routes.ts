@@ -6,6 +6,11 @@ export const leagueOfLegendsRoutes: Routes = [
   {
     path: "sheet",
     loadComponent: () =>
+      import("./features/players/pages/my-sheet/my-sheet.component").then((m) => m.MySheetComponent),
+  },
+  {
+    path: "players/:publicId",
+    loadComponent: () =>
       import("./features/players/pages/player-sheet/player-sheet.component").then(
         (m) => m.PlayerSheetComponent,
       ),

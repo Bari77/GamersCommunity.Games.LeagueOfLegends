@@ -2,37 +2,163 @@ using GamersCommunity.Core.Enums;
 using GamersCommunity.Core.Exceptions;
 using GamersCommunity.Core.Rabbit;
 using LeagueOfLegends.Consumer.Services.Data;
+using LeagueOfLegends.Database.Models;
 using Xunit;
 
 namespace LeagueOfLegends.Tests.Services.Data;
 
 public class PlayersServiceTests
 {
+    private static readonly Guid KeycloakId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    private static readonly Guid PlatformPublicId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+
     [Fact]
-    public async Task Resolve_ReturnsNoSheetUntilB1()
+    public async Task Resolve_ReturnsNoSheet_WhenPlayerMissing()
     {
-        var svc = new PlayersService();
-        var json = await svc.HandleAsync(new BusMessage
-        {
-            Type = BusServiceTypeEnum.DATA,
-            Resource = "Players",
-            Action = "Resolve",
-            Data = """{"platformUserPublicId":"11111111-1111-1111-1111-111111111111"}""",
-        });
+        await using var context = FakeDataset.CreateContext();
+        var svc = new PlayersService(context);
+
+        var json = await svc.HandleAsync(ResolveMessage());
 
         Assert.Contains("\"hasSheet\":false", json, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("playerPublicId", json, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public async Task Load_IsNotImplementedYet()
+    public async Task Load_CreatesSheet_ThenResolveFindsIt()
     {
-        var svc = new PlayersService();
-        await Assert.ThrowsAsync<InternalServerErrorException>(() => svc.HandleAsync(new BusMessage
+        await using var context = FakeDataset.CreateContext();
+        var svc = new PlayersService(context);
+
+        var created = await svc.HandleAsync(LoadMessage());
+        Assert.Contains(PlatformPublicId.ToString(), created, StringComparison.OrdinalIgnoreCase);
+
+        var resolved = await svc.HandleAsync(ResolveMessage());
+        Assert.Contains("\"hasSheet\":true", resolved, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("playerPublicId", resolved, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Get_ReturnsSheetByPublicId()
+    {
+        await using var context = FakeDataset.CreateContext();
+        var player = await SeedPlayerAsync(context);
+        var svc = new PlayersService(context);
+
+        var json = await svc.HandleAsync(new BusMessage
+        {
+            Type = BusServiceTypeEnum.DATA,
+            Resource = "Players",
+            Action = "Get",
+            PublicId = player.PublicId,
+        });
+
+        Assert.Contains(player.PublicId.ToString(), json, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"nickname\":\"Faker\"", json, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Update_SavesPresentations_ForOwner()
+    {
+        await using var context = FakeDataset.CreateContext();
+        var player = await SeedPlayerAsync(context);
+        var svc = new PlayersService(context);
+
+        var json = await svc.HandleAsync(new BusMessage
+        {
+            Type = BusServiceTypeEnum.DATA,
+            Resource = "Players",
+            Action = "Update",
+            PublicId = player.PublicId,
+            Data = """{"presentationIrl":"<p>Hello IRL</p>"}""",
+            Caller = new CallerIdentity { Subject = KeycloakId.ToString() },
+        });
+
+        Assert.Contains("Hello IRL", json, StringComparison.Ordinal);
+        Assert.Equal("<p>Hello IRL</p>", context.Players.Single().PresentationIrl);
+    }
+
+    [Fact]
+    public async Task Update_RejectsOtherPlayer()
+    {
+        await using var context = FakeDataset.CreateContext();
+        var player = await SeedPlayerAsync(context);
+        context.Players.Add(new Player
+        {
+            PublicId = Guid.NewGuid(),
+            IdKeycloak = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            PlatformUserPublicId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            IdUser = 2,
+            CreationDate = DateTime.UtcNow,
+            ModificationDate = DateTime.UtcNow,
+        });
+        await context.SaveChangesAsync();
+        var svc = new PlayersService(context);
+
+        await Assert.ThrowsAsync<ForbiddenException>(() => svc.HandleAsync(new BusMessage
+        {
+            Type = BusServiceTypeEnum.DATA,
+            Resource = "Players",
+            Action = "Update",
+            PublicId = player.PublicId,
+            Data = """{"presentationIg":"nope"}""",
+            Caller = new CallerIdentity { Subject = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb" },
+        }));
+    }
+
+    [Fact]
+    public async Task Load_RequiresAuthenticatedCaller()
+    {
+        await using var context = FakeDataset.CreateContext();
+        var svc = new PlayersService(context);
+
+        await Assert.ThrowsAsync<UnauthorizedException>(() => svc.HandleAsync(new BusMessage
         {
             Type = BusServiceTypeEnum.DATA,
             Resource = "Players",
             Action = "Load",
+            Data = $$"""{"platformUserId":1,"platformUserPublicId":"{{PlatformPublicId}}"}""",
         }));
+    }
+
+    private static BusMessage LoadMessage() => new()
+    {
+        Type = BusServiceTypeEnum.DATA,
+        Resource = "Players",
+        Action = "Load",
+        Data = $$"""{"platformUserId":1,"platformUserPublicId":"{{PlatformPublicId}}"}""",
+        Caller = new CallerIdentity { Subject = KeycloakId.ToString() },
+    };
+
+    private static BusMessage ResolveMessage() => new()
+    {
+        Type = BusServiceTypeEnum.DATA,
+        Resource = "Players",
+        Action = "Resolve",
+        Data = $$"""{"platformUserPublicId":"{{PlatformPublicId}}"}""",
+    };
+
+    private static async Task<Player> SeedPlayerAsync(LeagueOfLegends.Database.Context.LeagueOfLegendsDbContext context)
+    {
+        var player = new Player
+        {
+            PublicId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+            IdKeycloak = KeycloakId,
+            PlatformUserPublicId = PlatformPublicId,
+            IdUser = 1,
+            CreationDate = DateTime.UtcNow,
+            ModificationDate = DateTime.UtcNow,
+        };
+        context.Players.Add(player);
+        context.PlatformUserSnapshots.Add(new PlatformUserSnapshot
+        {
+            PlatformUserPublicId = PlatformPublicId,
+            Nickname = "Faker",
+            Discriminator = "0001",
+            AvatarUrl = "https://example.test/faker.png",
+            UpdatedAt = DateTime.UtcNow,
+        });
+        await context.SaveChangesAsync();
+        return player;
     }
 }

@@ -1,7 +1,25 @@
 <nb-card class="lol-hub">
     <nb-card-header>League of Legends</nb-card-header>
     <nb-card-body>
-        <p>MOBA hub — summoner sheet, teams and LFG ship in waves B–D.</p>
-        <a nbButton status="primary" routerLink="sheet">My profile</a>
+        <p>Hub MOBA — fiche joueur, teams et LFG arrivent avec les vagues B à D.</p>
+        @if (membership.needsSheet()) {
+            <lol-create-sheet-wall variant="inline" [message]="wallHomeMessage" />
+        } @else if (membership.hasSheet()) {
+            <a nbButton status="primary" routerLink="sheet">Ma fiche</a>
+        }
     </nb-card-body>
 </nb-card>
+
+<gc-decision-prompt
+    [open]="promptOpen()"
+    [heading]="promptHeading"
+    [message]="promptMessage"
+    [primaryLabel]="promptCreateLabel"
+    [secondaryLabel]="promptBrowseLabel"
+    [optOutLabel]="promptOptOutLabel"
+    [busyLabel]="promptBusyLabel"
+    [busy]="membership.creating()"
+    [(optOut)]="optOut"
+    (primary)="onPromptCreate()"
+    (secondary)="onPromptDismiss()"
+/>
