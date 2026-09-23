@@ -25,6 +25,8 @@ export const appConfig: ApplicationConfig = {
       },
       playerSheetApi: PlayersService,
     }),
+    // Required next to the kernel: GAME_PLAYER_SHEET_API is useExisting → PlayersService.
+    PlayersService,
     providePlaygroundUi("cosmic"),
   ],
 };

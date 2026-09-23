@@ -702,4 +702,14 @@ export const handlers = [
         };
         return HttpResponse.json(player);
     }),
+    http.post(gatewayUrl(environment.apiUrl, "platform", "users", "actions", "Touch"), () =>
+        HttpResponse.json({
+            id: 1,
+            publicId: PLATFORM_USER_PUBLIC_ID,
+            nickname: mockPlayerSheet.nickname,
+            discriminator: mockPlayerSheet.discriminator,
+            avatarUrl: mockPlayerSheet.avatarUrl,
+            activeMute: null,
+        }),
+    ),
 ];

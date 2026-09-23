@@ -25,4 +25,14 @@ export const routes: Routes = [
         },
         children: leagueOfLegendsRoutes,
     },
+    {
+        path: "users/login",
+        loadComponent: () =>
+            import("./playground/playground-session.component").then((m) => m.PlaygroundSessionComponent),
+    },
+    {
+        path: "users/:publicId",
+        loadComponent: () =>
+            import("./playground/playground-user-profile.component").then((m) => m.PlaygroundUserProfileComponent),
+    },
 ];

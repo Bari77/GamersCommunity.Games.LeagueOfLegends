@@ -2,16 +2,30 @@ import { EnvironmentProviders, importProvidersFrom, makeEnvironmentProviders } f
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 import {
-  NbButtonModule, NbCardModule, NbIconModule, NbLayoutModule, NbSpinnerModule, NbThemeModule,
+    NbButtonModule,
+    NbCardModule,
+    NbFormFieldModule,
+    NbIconModule,
+    NbInputModule,
+    NbLayoutModule,
+    NbSpinnerModule,
+    NbThemeModule,
 } from "@nebular/theme";
 
 /** Standalone playground only — shell already owns NbThemeModule.forRoot() when federated. */
 export function providePlaygroundUi(themeName = "cosmic"): EnvironmentProviders {
-  return makeEnvironmentProviders([
-    provideAnimations(),
-    importProvidersFrom(
-      NbThemeModule.forRoot({ name: themeName }),
-      NbLayoutModule, NbEvaIconsModule, NbCardModule, NbSpinnerModule, NbButtonModule, NbIconModule,
-    ),
-  ]);
+    return makeEnvironmentProviders([
+        provideAnimations(),
+        importProvidersFrom(
+            NbThemeModule.forRoot({ name: themeName }),
+            NbLayoutModule,
+            NbEvaIconsModule,
+            NbCardModule,
+            NbSpinnerModule,
+            NbButtonModule,
+            NbIconModule,
+            NbFormFieldModule,
+            NbInputModule,
+        ),
+    ]);
 }
