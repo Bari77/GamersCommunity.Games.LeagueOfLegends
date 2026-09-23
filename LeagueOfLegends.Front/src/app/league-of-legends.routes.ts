@@ -1,13 +1,7 @@
 /// <reference types="@angular/localize" />
 
 import { Routes } from "@angular/router";
-import {
-  GameMembershipStore,
-  PlatformGamesService,
-  PlatformSessionService,
-  PlayerMediaService,
-  provideGameRemoteKernel,
-} from "@bari77/gc-sdk";
+import { provideGameRemoteKernel } from "@bari77/gc-sdk";
 import { LOL_GAME_ID, LOL_GAME_URL } from "@core/constants/game.constants";
 import { HomeFeedService } from "@features/home/services/home-feed.service";
 import { LfgChatService, PostableTeamsService } from "@features/lfg/services/lfg-chat.service";
@@ -23,6 +17,7 @@ import { HomeContainerComponent } from "./pages/home-container/home-container.co
 /**
  * Game services live on this remote injector (not providedIn: "root") so federation
  * into the Platform shell does not resolve them against the host root.
+ * SDK kernel services come from provideGameRemoteKernel.
  */
 const lolRemoteProviders = [
   provideGameRemoteKernel({
@@ -37,10 +32,6 @@ const lolRemoteProviders = [
     },
     playerSheetApi: PlayersService,
   }),
-  PlatformSessionService,
-  PlatformGamesService,
-  GameMembershipStore,
-  PlayerMediaService,
   HomeFeedService,
   PlayersService,
   TeamsService,
