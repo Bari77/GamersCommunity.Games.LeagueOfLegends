@@ -51,4 +51,12 @@ public class Player : IKeyTable
     public virtual ICollection<PlayerLane> PlayerLanes { get; set; } = [];
 
     public virtual ICollection<PlayerChampion> PlayerChampions { get; set; } = [];
+
+    public virtual ICollection<PlayerPicture> PlayerPictures { get; set; } = [];
+
+    public virtual ICollection<PlayerVideo> PlayerVideos { get; set; } = [];
+
+    public virtual ICollection<PlayerStream> PlayerStreams { get; set; } = [];
+
+    public virtual ICollection<LfgAd> LfgAds { get; set; } = [];
 }

@@ -1,21 +1,33 @@
 import { Component, computed, inject, signal } from "@angular/core";
-import { RouterLink } from "@angular/router";
-import { DecisionPromptComponent } from "@bari77/gc-ui";
+import { DecisionPromptComponent, SkeletonComponent, SkeletonTextComponent } from "@bari77/gc-ui";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
+import { HomeLatestPlayersComponent } from "@features/home/components/home-latest-players/home-latest-players.component";
+import { HomeFeedStore } from "@features/home/stores/home-feed.store";
+import { LfgChatComponent } from "@features/lfg/components/lfg-chat/lfg-chat.component";
 import { CreateSheetWallComponent } from "@shared/components/create-sheet-wall/create-sheet-wall.component";
-import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
-import { NbButtonModule } from "@nebular/theme";
+import { NbCardModule } from "@nebular/theme";
 
 @Component({
     selector: "lol-home-container",
     standalone: true,
-    imports: [NbButtonModule, RouterLink, CreateSheetWallComponent, DecisionPromptComponent, LaneIconComponent],
+    imports: [
+        NbCardModule,
+        CreateSheetWallComponent,
+        DecisionPromptComponent,
+        LfgChatComponent,
+        HomeLatestPlayersComponent,
+        SkeletonComponent,
+        SkeletonTextComponent,
+    ],
+    providers: [HomeFeedStore],
     templateUrl: "./home-container.component.html",
     styleUrl: "./home-container.component.scss",
 })
 export class HomeContainerComponent {
+    public readonly store = inject(HomeFeedStore);
     public readonly membership = inject(GameMembershipStore);
 
+    public readonly feedLoading = computed(() => this.store.loading() || this.membership.creating());
     public readonly promptOpen = computed(() => this.membership.shouldPromptSheetCreation() && !this.promptAnswered());
 
     public readonly promptHeading = $localize`:@@lol.sheet.prompt.heading:Create your player profile?`;
@@ -25,7 +37,7 @@ export class HomeContainerComponent {
     public readonly promptOptOutLabel = $localize`:@@lol.sheet.prompt.optOut:Don't ask again`;
     public readonly promptBusyLabel = $localize`:@@lol.sheet.prompt.creating:Creating…`;
     public readonly wallHomeMessage = $localize`:@@lol.sheet.wall.homeMessage:Create your player profile to take part in the game community.`;
-    public readonly lanes = ["top", "jungle", "mid", "bottom", "support"] as const;
+    protected readonly rowPlaceholders = [0, 1, 2];
 
     public readonly optOut = signal(false);
 

@@ -34,6 +34,7 @@
     "@bari77/gc-theme": "0.8.35",
     "@bari77/gc-ui": "0.8.35",
     "@bari77/gc-widgets": "0.8.35",
+    "@microsoft/signalr": "^10.0.11",
     "@nebular/eva-icons": "^17.0.0",
     "@nebular/theme": "^17.0.0",
     "angular-gridster2": "^21.0.1",

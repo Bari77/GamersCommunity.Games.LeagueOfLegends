@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using LeagueOfLegends.Consumer.Configuration;
 using LeagueOfLegends.Consumer.Integration;
+using LeagueOfLegends.Consumer.Realtime;
 using LeagueOfLegends.Consumer.Services.Infra;
 using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Seed;
@@ -42,6 +43,7 @@ public class Program
                         options.UseGamersCommunitySqlServer(connectionString);
                     });
                     services.AddSingleton<Serilog.ILogger>(sp => Log.Logger);
+                    services.AddSingleton<IRealtimeEventPublisher, RealtimeEventPublisher>();
                     services.Scan(scan => scan
                         .FromAssembliesOf(typeof(AppSettings))
                         .AddClasses(c => c.AssignableTo<IBusService>())

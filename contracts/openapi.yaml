@@ -34,6 +34,34 @@ paths:
       responses:
         '200':
           description: '{ lanes, regions, champions, championKinds, tiers, divisions }'
+  /api/leagueoflegends/HomeFeed/actions/Get:
+    post:
+      operationId: getHomeFeed
+      summary: Hub rails — latest LFG and player sheets
+      responses:
+        '200':
+          description: '{ latestLfg, latestPlayers }'
+  /api/leagueoflegends/LfgAds/actions/ListRecent:
+    post:
+      operationId: listRecentLfgAds
+      summary: Latest active LFG messages for the global rail
+      responses:
+        '200':
+          description: LfgAdSummary[]
+  /api/leagueoflegends/LfgAds/actions/ListBefore:
+    post:
+      operationId: listBeforeLfgAds
+      summary: Older LFG messages for the chronological rail
+      responses:
+        '200':
+          description: LfgAdSummary[]
+  /api/leagueoflegends/LfgAds/actions/Create:
+    post:
+      operationId: createLfgAd
+      summary: Post a player LFG message (auth)
+      responses:
+        '200':
+          description: LfgAdSummary
   /api/health:
     get:
       operationId: health

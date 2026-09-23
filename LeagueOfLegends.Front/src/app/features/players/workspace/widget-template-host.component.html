@@ -57,3 +57,42 @@
         (save)="saveChampions($event)"
     />
 </ng-template>
+
+<ng-template gcWidget="photos" gcWidgetEditable let-editingData="editingData">
+    @if (preview()) {
+        <gc-media-gallery kind="photo" [items]="previewPhotos" [emptyLabel]="previewPhotosEmpty" />
+    } @else if (canEditFields() && editingData) {
+        <lol-media-admin [playerPublicId]="view().publicId" kind="photo" />
+    } @else {
+        <lol-media-manager [playerPublicId]="view().publicId" kind="photo" />
+    }
+</ng-template>
+
+<ng-template gcWidget="videos" gcWidgetEditable let-editingData="editingData">
+    @if (preview()) {
+        <gc-media-gallery kind="video" [items]="previewVideos" [emptyLabel]="previewVideosEmpty" />
+    } @else if (canEditFields() && editingData) {
+        <lol-media-admin [playerPublicId]="view().publicId" kind="video" />
+    } @else {
+        <lol-media-manager [playerPublicId]="view().publicId" kind="video" />
+    }
+</ng-template>
+
+<ng-template gcWidget="streams" gcWidgetEditable let-editingData="editingData">
+    @if (preview()) {
+        <div class="widget-host__streams">
+            @for (stream of previewStreams; track stream.url) {
+                <figure class="widget-host__stream">
+                    <gc-twitch-embed [channel]="stream.url" />
+                    @if (stream.title) {
+                        <figcaption>{{ stream.title }}</figcaption>
+                    }
+                </figure>
+            }
+        </div>
+    } @else if (canEditFields() && editingData) {
+        <lol-media-admin [playerPublicId]="view().publicId" kind="stream" />
+    } @else {
+        <lol-media-manager [playerPublicId]="view().publicId" kind="stream" />
+    }
+</ng-template>

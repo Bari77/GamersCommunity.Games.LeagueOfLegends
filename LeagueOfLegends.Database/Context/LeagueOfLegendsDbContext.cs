@@ -25,6 +25,14 @@ public partial class LeagueOfLegendsDbContext : DbContext
 
     public virtual DbSet<PlayerChampion> PlayerChampions { get; set; } = null!;
 
+    public virtual DbSet<PlayerPicture> PlayerPictures { get; set; } = null!;
+
+    public virtual DbSet<PlayerVideo> PlayerVideos { get; set; } = null!;
+
+    public virtual DbSet<PlayerStream> PlayerStreams { get; set; } = null!;
+
+    public virtual DbSet<LfgAd> LfgAds { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PlatformUserSnapshot>(entity =>
@@ -129,6 +137,109 @@ public partial class LeagueOfLegendsDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(e => e.IdLaneNavigation)
                 .WithMany(l => l.PlayerChampions)
+                .HasForeignKey(e => e.IdLane)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        ConfigurePlayerMedia(modelBuilder);
+        ConfigureLfgAds(modelBuilder);
+    }
+
+    private static void ConfigurePlayerMedia(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<PlayerPicture>(entity =>
+        {
+            entity.ToTable("PlayerPictures");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Url).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.Title).HasMaxLength(150).IsRequired();
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasIndex(e => e.IdPlayer);
+            entity.HasOne(e => e.IdPlayerNavigation)
+                .WithMany(p => p.PlayerPictures)
+                .HasForeignKey(e => e.IdPlayer)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PlayerVideo>(entity =>
+        {
+            entity.ToTable("PlayerVideos");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Url).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.Title).HasMaxLength(150).IsRequired();
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasIndex(e => e.IdPlayer);
+            entity.HasOne(e => e.IdPlayerNavigation)
+                .WithMany(p => p.PlayerVideos)
+                .HasForeignKey(e => e.IdPlayer)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PlayerStream>(entity =>
+        {
+            entity.ToTable("PlayerStreams");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Url).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.Description).HasMaxLength(150);
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasIndex(e => e.IdPlayer);
+            entity.HasOne(e => e.IdPlayerNavigation)
+                .WithMany(p => p.PlayerStreams)
+                .HasForeignKey(e => e.IdPlayer)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureLfgAds(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<LfgAd>(entity =>
+        {
+            entity.ToTable("LfgAds");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Kind).HasMaxLength(32).IsRequired();
+            entity.Property(e => e.Title).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.Body).HasMaxLength(2000).IsRequired();
+            entity.Property(e => e.ExpiresAt).HasColumnType("datetime");
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasIndex(e => new { e.IsActive, e.ExpiresAt, e.Kind, e.CreationDate });
+            entity.HasOne(e => e.IdPlayerNavigation)
+                .WithMany(p => p.LfgAds)
+                .HasForeignKey(e => e.IdPlayer)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.IdRegionNavigation)
+                .WithMany(r => r.LfgAds)
+                .HasForeignKey(e => e.IdRegion)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdLaneNavigation)
+                .WithMany(l => l.LfgAds)
                 .HasForeignKey(e => e.IdLane)
                 .OnDelete(DeleteBehavior.Restrict);
         });

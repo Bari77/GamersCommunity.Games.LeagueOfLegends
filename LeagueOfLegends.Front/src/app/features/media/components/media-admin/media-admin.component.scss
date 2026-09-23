@@ -1,0 +1,51 @@
+.media-admin {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.media-admin__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.media-admin__form input {
+    flex: 1 1 12rem;
+    min-width: 0;
+}
+
+.media-admin__error {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #ff8fa8;
+}
+
+.media-admin__empty {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.55;
+}
+
+.media-admin__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.media-admin__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+}
+
+.media-admin__row input {
+    flex: 1 1 10rem;
+    min-width: 0;
+}

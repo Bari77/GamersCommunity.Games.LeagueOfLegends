@@ -1,43 +1,48 @@
 :host {
     display: block;
+    --gc-accent: var(--game-accent, #c8aa6e);
 }
 
-.lol-hub__banner {
+lol-create-sheet-wall {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+lol-lfg-chat {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.lol-hub__grid {
     display: grid;
-    gap: 1.25rem;
-    padding: 1.6rem 1.5rem 1.7rem;
-    border: 1px solid rgb(255 255 255 / 9%);
-    border-radius: 1.1rem;
-    background:
-        radial-gradient(90% 140% at 0% 0%, rgb(200 170 110 / 28%), transparent 52%),
-        radial-gradient(70% 120% at 100% 100%, rgb(10 80 120 / 22%), transparent 55%),
-        var(--gc-surface-2, rgb(255 255 255 / 4%));
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
 }
 
-.lol-hub__lanes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    opacity: 0.85;
+.lol-hub__rail {
+    border-color: color-mix(in srgb, var(--game-accent, #c8aa6e) 18%, transparent);
 }
 
-.lol-hub__kicker {
-    margin: 0 0 0.25rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    opacity: 0.55;
-}
-
-.lol-hub__copy h1 {
-    margin: 0 0 0.4rem;
+.lol-hub__rail ::ng-deep nb-card-header {
+    color: var(--game-accent, #c8aa6e);
     font-family: var(--gc-font-display, inherit);
-    font-size: 1.7rem;
-    font-weight: 700;
+    letter-spacing: 0.04em;
 }
 
-.lol-hub__copy p {
-    margin: 0 0 1rem;
-    max-width: 36rem;
-    opacity: 0.78;
+.lol-hub__row-skeletons {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.lol-hub__row-skeleton {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.6rem;
+    height: 7.25rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 7%);
+    background: var(--gc-surface-2, rgb(255 255 255 / 4%));
+    pointer-events: none;
 }

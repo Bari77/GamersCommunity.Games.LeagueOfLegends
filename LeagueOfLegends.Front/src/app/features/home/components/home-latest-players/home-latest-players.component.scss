@@ -1,0 +1,45 @@
+:host {
+    display: block;
+}
+
+.latest-players {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.latest-players__empty {
+    margin: 0;
+    padding: 0.5rem 0;
+    color: rgb(160 170 200 / 68%);
+    font-size: 0.9rem;
+}
+
+.latest-players__avatar {
+    display: block;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.3rem;
+    overflow: hidden;
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.latest-players__initials {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background: color-mix(in srgb, var(--game-accent, #c8aa6e) 28%, var(--gc-surface-2, #1a2234));
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}

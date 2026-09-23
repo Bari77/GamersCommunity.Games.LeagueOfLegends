@@ -53,6 +53,54 @@
           "settings": {}
         }
       ]
+    },
+    {
+      "id": "videos",
+      "title": "Videos",
+      "widgets": [
+        {
+          "id": "w-videos",
+          "type": "videos",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
+      ],
+      "visibility": "friends"
+    },
+    {
+      "id": "photos",
+      "title": "Photos",
+      "widgets": [
+        {
+          "id": "w-photos",
+          "type": "photos",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
+      ],
+      "visibility": "friends"
+    },
+    {
+      "id": "links",
+      "title": "Links",
+      "widgets": [
+        {
+          "id": "w-links",
+          "type": "gc-links",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
+      ],
+      "visibility": "friends"
     }
   ]
 }

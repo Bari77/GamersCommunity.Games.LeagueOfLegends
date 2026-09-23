@@ -3,4 +3,5 @@ export interface Environment {
   apiUrl: string;
   useMocks?: boolean;
   assetsBaseUrl: string;
+  hubUrl?: string;
 }

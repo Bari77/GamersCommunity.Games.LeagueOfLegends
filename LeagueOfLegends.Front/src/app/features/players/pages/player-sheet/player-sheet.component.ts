@@ -8,6 +8,7 @@ import {
 } from "@bari77/gc-widgets";
 import defaultLayout from "../../../../../../config/player/workspace.default.json";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
+import { PlayerMediaStores } from "@features/media/stores/player-media-stores";
 import { PlayerHeroComponent } from "@features/players/components/player-hero/player-hero.component";
 import { PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
 import { PlayerOptions, PlayerSheet } from "@features/players/models/player.model";
@@ -26,6 +27,7 @@ import { firstValueFrom } from "rxjs";
     standalone: true,
     selector: "lol-player-sheet",
     imports: [PlayerHeroComponent, SkeletonComponent, LolWidgetTemplateHostComponent, WidgetWorkspaceComponent],
+    providers: [PlayerMediaStores],
     templateUrl: "./player-sheet.component.html",
     styleUrl: "./player-sheet.component.scss",
 })

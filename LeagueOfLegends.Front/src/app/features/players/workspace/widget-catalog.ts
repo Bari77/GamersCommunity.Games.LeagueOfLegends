@@ -16,6 +16,10 @@ export const PLAYER_WIDGETS = {
     presentationIg: "presentation-ig",
     stats: "stats",
     champions: "champions",
+    photos: "photos",
+    videos: "videos",
+    streams: "streams",
+    twitch: "gc-twitch",
     links: "gc-links",
 } as const;
 
@@ -58,8 +62,43 @@ export const gameWorkspaceRegistry = {
             unique: true,
         },
         {
+            type: PLAYER_WIDGETS.photos,
+            label: $localize`:@@lol.player.widget.photos:Photo gallery`,
+            cols: 12,
+            rows: 6,
+        },
+        {
+            type: PLAYER_WIDGETS.videos,
+            label: $localize`:@@lol.player.widget.videos:Video gallery`,
+            cols: 12,
+            rows: 6,
+        },
+        {
+            type: PLAYER_WIDGETS.streams,
+            label: $localize`:@@lol.player.widget.streams:My streams`,
+            description: $localize`:@@lol.player.widget.streams.desc:Twitch channels saved on your profile.`,
+            cols: 12,
+            rows: 6,
+        },
+        {
+            type: PLAYER_WIDGETS.twitch,
+            label: $localize`:@@lol.player.widget.twitch:Twitch player`,
+            description: $localize`:@@lol.player.widget.twitch.desc:Embeds a single channel of your choice.`,
+            cols: 6,
+            rows: 5,
+            fields: [
+                {
+                    key: "channel",
+                    type: "url",
+                    label: $localize`:@@lol.player.widget.twitch.channel:Channel or twitch.tv address`,
+                    placeholder: "https://twitch.tv/…",
+                },
+            ],
+        },
+        {
             type: PLAYER_WIDGETS.links,
             label: $localize`:@@lol.player.widget.links:Links`,
+            description: $localize`:@@lol.player.widget.links.desc:YouTube, X, Instagram, Discord…`,
             cols: 6,
             rows: 3,
         },

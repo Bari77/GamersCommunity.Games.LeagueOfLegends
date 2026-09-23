@@ -5,4 +5,5 @@ export const environment: Environment = {
   apiUrl: "http://localhost:8083/api",
   useMocks: false,
   assetsBaseUrl: "https://host.bariserv.net/GamersCommunity",
+  hubUrl: "http://localhost:5000/hubs/lol-lfg",
 };

@@ -47,18 +47,18 @@ Pont identité shell ↔ microservice, fiche joueur publique (le joueur **est** 
 
 ## B3 — Médias profil & layout widgets
 
-- [ ] `PlayerPicture` / `PlayerVideo` / `PlayerStream`
-- [ ] `LayoutJson` via `Players.Update`
-- [ ] Widgets : identité, présentations, stats, rôles, galeries, streams, Twitch, liens
-- [ ] Pages par défaut : accueil (verrouillée), rôles, vidéos, photos, liens
-- [ ] Target workspace `player` ; pas de target `team` avant spec Teams.
-- [ ] MSW handlers standalone
+- [x] `PlayerPicture` / `PlayerVideo` / `PlayerStream`
+- [x] `LayoutJson` via `Players.Update`
+- [x] Widgets : identité, présentations, stats, rôles, galeries, streams, Twitch, liens
+- [x] Pages par défaut : accueil (verrouillée), champions, vidéos, photos, liens
+- [x] Target workspace `player` ; pas de target `team` avant spec Teams.
+- [x] MSW handlers standalone
 
 ## B4 — Home (rails)
 
-- [ ] `HomeFeed.Get` : LFG, fiches, events (vide jusqu’à spec Events)
-- [ ] Rail LFG + SignalR (`/hubs/lol-lfg`)
-- [ ] Hub `/league-of-legends` + accent CSS
+- [x] `HomeFeed.Get` : LFG, fiches (events : spec Events)
+- [x] Rail LFG + SignalR (`/hubs/lol-lfg`)
+- [x] Hub `/league-of-legends` + accent CSS
 
 ## Gateway
 
@@ -66,7 +66,7 @@ Pont identité shell ↔ microservice, fiche joueur publique (le joueur **est** 
 |----------|--------|----------------|
 | Players | Get, Resolve, Options | Load, Update |
 | HomeFeed | Get | — |
-| LfgAds | ListRecent | Create |
+| LfgAds | ListRecent, ListBefore | Create |
 | PlayerPictures | List | Create, Update, Delete |
 | PlayerVideos | List | Create, Update, Delete |
 | PlayerStreams | List | Create, Update, Delete |

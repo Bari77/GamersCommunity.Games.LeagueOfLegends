@@ -1,0 +1,28 @@
+<a class="entity-row" [routerLink]="link()">
+    <span class="entity-row__visual" aria-hidden="true">
+        <ng-content select="[rowVisual]" />
+    </span>
+
+    <span class="entity-row__main">
+        <span class="entity-row__head">
+            <span class="entity-row__identity">
+                <span class="entity-row__name gc-display">{{ name() }}</span>
+                @if (subtitle()) {
+                    <span class="entity-row__subtitle" [class.entity-row__subtitle--muted]="subtitleMuted()">
+                        {{ subtitle() }}
+                    </span>
+                }
+            </span>
+        </span>
+
+        @if (description(); as text) {
+            <span class="entity-row__description" [class.entity-row__description--muted]="descriptionMuted()">
+                {{ text }}
+            </span>
+        }
+    </span>
+
+    @if (date(); as created) {
+        <time class="entity-row__date">{{ created | date: "mediumDate" }}</time>
+    }
+</a>

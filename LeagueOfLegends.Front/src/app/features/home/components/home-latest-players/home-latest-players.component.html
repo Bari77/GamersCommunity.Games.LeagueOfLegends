@@ -1,0 +1,24 @@
+<ul class="latest-players">
+    @for (player of players(); track player.publicId) {
+        <li>
+            <lol-entity-row
+                [link]="['/league-of-legends/players', player.publicId]"
+                [name]="player.handleLabel()"
+                [subtitle]="player.riotId() || (player.regionCode | gameTerm) || null"
+                [date]="player.creationDate"
+                [description]="player.presentationIrl || discoverLabel"
+                [descriptionMuted]="!player.presentationIrl"
+            >
+                <span rowVisual class="latest-players__avatar">
+                    @if (player.avatarUrl) {
+                        <img [src]="player.avatarUrl" alt="" />
+                    } @else {
+                        <span class="latest-players__initials">{{ player.initials() }}</span>
+                    }
+                </span>
+            </lol-entity-row>
+        </li>
+    } @empty {
+        <li class="latest-players__empty" i18n="@@lol.home.players.empty">No player sheets yet.</li>
+    }
+</ul>

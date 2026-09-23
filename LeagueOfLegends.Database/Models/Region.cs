@@ -15,4 +15,6 @@ public class Region : IKeyTable
     public int SortOrder { get; set; }
 
     public virtual ICollection<Player> Players { get; set; } = null!;
+
+    public virtual ICollection<LfgAd> LfgAds { get; set; } = [];
 }

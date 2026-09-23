@@ -1,21 +1,29 @@
-<section class="lol-hub">
-    <header class="lol-hub__banner">
-        <div class="lol-hub__lanes" aria-hidden="true">
-            @for (lane of lanes; track lane) {
-                <lol-lane-icon class="lane-icon--lg" [code]="lane" />
-            }
-        </div>
-        <div class="lol-hub__copy">
-            <p class="lol-hub__kicker">League of Legends</p>
-            <h1 i18n="@@lol.home.title">Summoner's hub</h1>
-            <p i18n="@@lol.home.hub">Pick your lanes, show your ranks and find a team.</p>
-            @if (membership.needsSheet()) {
-                <lol-create-sheet-wall variant="inline" [message]="wallHomeMessage" />
-            } @else if (membership.hasSheet()) {
-                <a nbButton status="primary" routerLink="sheet" i18n="@@lol.home.mySheet">My profile</a>
-            }
-        </div>
-    </header>
+<section class="lol-hub gc-enter">
+    @if (membership.needsSheet()) {
+        <lol-create-sheet-wall variant="inline" [message]="wallHomeMessage" />
+    }
+
+    <lol-lfg-chat />
+
+    <div class="lol-hub__grid" [attr.aria-busy]="feedLoading() ? 'true' : null">
+        <nb-card class="lol-hub__rail">
+            <nb-card-header i18n="@@lol.home.players">Latest players</nb-card-header>
+            <nb-card-body>
+                @if (feedLoading()) {
+                    <div class="lol-hub__row-skeletons" aria-hidden="true">
+                        @for (row of rowPlaceholders; track row) {
+                            <div class="lol-hub__row-skeleton">
+                                <gc-skeleton width="2.25rem" height="2.25rem" radius="0.3rem" />
+                                <gc-skeleton-text [lines]="2" lineHeight="1.1rem" />
+                            </div>
+                        }
+                    </div>
+                } @else if (store.feed.value(); as feed) {
+                    <lol-home-latest-players [players]="feed.latestPlayers" />
+                }
+            </nb-card-body>
+        </nb-card>
+    </div>
 </section>
 
 <gc-decision-prompt
