@@ -26,7 +26,7 @@ import {
 import { http, HttpResponse } from "msw";
 import { environment } from "../environments/environment";
 import { mockPlayerPictures, mockPlayerStreams, mockPlayerVideos } from "./data/media";
-import { CreateLfgMessageRequestDto, SearchLfgRequestDto } from "@features/lfg/dto/lfg-message.dto";
+import { CreateLfgMessageRequestDto } from "@features/lfg/dto/lfg-message.dto";
 import { mockHomeFeed, mockLfgMessages } from "./data/home-feed";
 import { pickRosterChampions } from "@features/players/models/player.model";
 import { mockPlayerOptions } from "./data/options";
@@ -72,13 +72,6 @@ function laneCodeForId(idLane: number | null | undefined): string | null {
         return null;
     }
     return mockPlayerOptions.lanes.find((lane) => lane.id === idLane)?.code ?? null;
-}
-
-function regionCodeForId(idRegion: number | null | undefined): string | null {
-    if (idRegion == null) {
-        return null;
-    }
-    return mockPlayerOptions.regions.find((region) => region.id === idRegion)?.code ?? null;
 }
 
 function rosterChampions(laneCode: string | null | undefined) {
@@ -576,30 +569,6 @@ export const handlers = [
         return HttpResponse.json(filterLfgByKind(body.kind));
     }),
     http.post(`${lfgAdsUrl}/actions/ListBefore`, () => HttpResponse.json([])),
-    http.post(`${lfgAdsUrl}/actions/Search`, async ({ request }) => {
-        const body = ((await request.json()) as SearchLfgRequestDto) ?? {};
-        const kind = body.kind?.trim().toLowerCase() || "player";
-        const query = (body.query ?? "").trim().toLowerCase();
-        const regionCode = regionCodeForId(body.idRegion);
-        const laneCode = laneCodeForId(body.idLane);
-        const items = lfgMessages.filter((ad) => {
-            if (ad.kind !== kind) {
-                return false;
-            }
-            if (query && !ad.body.toLowerCase().includes(query)) {
-                return false;
-            }
-            if (regionCode && ad.regionCode !== regionCode) {
-                return false;
-            }
-            if (laneCode && ad.laneCode !== laneCode) {
-                return false;
-            }
-            return true;
-        });
-        const take = body.take && body.take > 0 ? body.take : 20;
-        return HttpResponse.json({ items: items.slice(0, take), hasMore: items.length > take });
-    }),
     http.post(`${lfgAdsUrl}/actions/Create`, async ({ request }) => {
         const body = (await request.json()) as CreateLfgMessageRequestDto;
         const team =

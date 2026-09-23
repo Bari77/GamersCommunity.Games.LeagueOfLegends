@@ -97,8 +97,3 @@ export class PostableTeam {
         return `${this.entitled}#${this.discriminator}`;
     }
 }
-
-export interface LfgAdPage {
-    items: LfgMessage[];
-    hasMore: boolean;
-}

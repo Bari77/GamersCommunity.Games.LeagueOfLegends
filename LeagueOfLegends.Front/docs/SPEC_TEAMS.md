@@ -1,6 +1,6 @@
 # Spec — Teams
 
-Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lane, enforcement du mute. Les events in-game restent dans spec Events.
+Gouvernance d’équipe MOBA, mur modéré par le staff, LFG live sur l’accueil, enforcement du mute. Les events in-game restent dans spec Events.
 
 ## Décisions verrouillées
 
@@ -25,7 +25,7 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 - **Mute** : RPC synchrone vers `platform_queue` (`Users.Sanctions`), cache mémoire court. Sanctions jamais répliquées en base jeu.
 - **Client RPC** : à partager (package commun) — cette spec est le deuxième consommateur.
 - **Widgets team** : `Team.LayoutJson` + target workspace `team`.
-- **LFG** : kinds `player` / `team`. Filtres `region` / `lane`.
+- **LFG** : kinds `player` / `team`. Flux live sur l’accueil (pas de page board dédiée).
 
 ## C1 — Gouvernance de team
 
@@ -43,11 +43,12 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 - [x] `GamePosts.ListTeamWall` / `Create` / `ListPending` / `Moderate` / `Delete`
 - [x] Front : mur + file de modération pour le staff
 
-## C3 — Board LFG
+## C3 — LFG sur l’accueil
 
-- [x] `LfgAds.Search` : `kind` / région / lane
-- [x] Page `/league-of-legends/lfg`
+- [x] `LfgAds.ListRecent` / `ListBefore` / `Create` + SignalR live
+- [x] Chats player / team sur `/league-of-legends` (accueil)
 - [x] Annonce team → fiche team ; annonce joueur → fiche joueur
+- [x] Pas de page board `/lfg` ni entrée nav dédiée
 
 ## C4 — Enforcement du mute
 

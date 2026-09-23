@@ -24,21 +24,6 @@ export interface ListLfgBeforeRequestDto {
     take?: number;
 }
 
-export interface SearchLfgRequestDto {
-    kind?: string;
-    query?: string;
-    idRegion?: number;
-    idLane?: number;
-    beforeCreationDate?: string;
-    beforePublicId?: string;
-    take?: number;
-}
-
-export interface LfgAdPageDto {
-    items: LfgMessageDto[];
-    hasMore: boolean;
-}
-
 export interface CreateLfgMessageRequestDto {
     body: string;
     teamPublicId?: string;

@@ -2,12 +2,10 @@ import { Injectable } from "@angular/core";
 import {
     CreateLfgMessageRequestDto,
     ListLfgBeforeRequestDto,
-    LfgAdPageDto,
     LfgMessageDto,
     PostableTeamDto,
-    SearchLfgRequestDto,
 } from "@features/lfg/dto/lfg-message.dto";
-import { LfgAdPage, LfgKind, LfgMessage, PostableTeam } from "@features/lfg/models/lfg-message.model";
+import { LfgKind, LfgMessage, PostableTeam } from "@features/lfg/models/lfg-message.model";
 import { BaseService } from "@shared/services/base.service";
 import { map, Observable } from "rxjs";
 
@@ -35,15 +33,6 @@ export class LfgChatService extends BaseService {
         return this.http
             .post<LfgMessageDto[]>(this.getURL("actions/ListBefore"), payload)
             .pipe(map((dtos) => dtos.map((dto) => LfgMessage.fromDto(dto))));
-    }
-
-    public search(request: SearchLfgRequestDto): Observable<LfgAdPage> {
-        return this.http.post<LfgAdPageDto>(this.getURL("actions/Search"), request).pipe(
-            map((dto) => ({
-                items: (dto.items ?? []).map((item) => LfgMessage.fromDto(item)),
-                hasMore: dto.hasMore ?? false,
-            })),
-        );
     }
 
     public send(data: CreateLfgMessageRequestDto): Observable<LfgMessage> {

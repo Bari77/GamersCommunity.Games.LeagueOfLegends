@@ -12,22 +12,7 @@ lol-create-sheet-wall {
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
-    margin-bottom: 0.65rem;
-}
-
-.lol-hub__board-link {
-    margin: 0 0 1rem;
-    font-size: 0.88rem;
-}
-
-.lol-hub__board-link a {
-    color: var(--gc-accent, var(--game-accent, #c8aa6e));
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.lol-hub__board-link a:hover {
-    text-decoration: underline;
+    margin-bottom: 1rem;
 }
 
 .lol-hub__grid {

@@ -63,12 +63,6 @@ export const leagueOfLegendsRoutes: Routes = [
           ),
       },
       {
-        path: "lfg",
-        data: { breadcrumb: $localize`:@@lol.breadcrumb.lfg:LFG` },
-        loadComponent: () =>
-          import("./features/lfg/pages/lfg-board/lfg-board.component").then((m) => m.LfgBoardComponent),
-      },
-      {
         path: "search",
         data: { breadcrumb: $localize`:@@lol.breadcrumb.search:Search` },
         loadComponent: () =>
