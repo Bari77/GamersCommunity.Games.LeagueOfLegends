@@ -4,9 +4,14 @@
   "routePrefix": "/league-of-legends",
   "remoteEntryDev": "http://localhost:4202/remoteEntry.json",
   "resources": [
-    { "type": "DATA", "name": "Players", "actions": ["Get", "Resolve", "Options", "Load", "Update"] },
+    { "type": "INFRA", "name": "Health", "actions": ["Check"] },
+    { "type": "DATA", "name": "Players", "actions": ["Get", "Resolve", "Options", "Search", "Load", "Update"] },
     { "type": "DATA", "name": "HomeFeed", "actions": ["Get"] },
-    { "type": "DATA", "name": "LfgAds", "actions": ["ListRecent", "ListBefore", "Create"] },
+    { "type": "DATA", "name": "LfgAds", "actions": ["ListRecent", "ListBefore", "Search", "Create"] },
+    { "type": "DATA", "name": "Teams", "actions": ["Get", "Search", "ListByPlayer", "ListPostable", "Create", "Update", "SetRank", "SetRoster", "Kick", "Leave", "TransferCaptaincy", "Disband"] },
+    { "type": "DATA", "name": "TeamApplications", "actions": ["Create", "ListMine", "Withdraw", "List", "Review"] },
+    { "type": "DATA", "name": "GamePosts", "actions": ["ListTeamWall", "Create", "ListPending", "Update", "Moderate", "Delete"] },
+    { "type": "DATA", "name": "TeamLinks", "actions": ["List", "Create", "Update", "Reorder", "Delete"] },
     { "type": "DATA", "name": "PlayerPictures", "actions": ["List", "Create", "Update", "Delete"] },
     { "type": "DATA", "name": "PlayerVideos", "actions": ["List", "Create", "Update", "Delete"] },
     { "type": "DATA", "name": "PlayerStreams", "actions": ["List", "Create", "Update", "Delete"] }
