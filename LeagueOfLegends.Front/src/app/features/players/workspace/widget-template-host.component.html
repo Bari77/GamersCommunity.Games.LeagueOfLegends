@@ -50,6 +50,7 @@
 <ng-template gcWidget="champions" gcWidgetEditable let-editingData="editingData">
     <lol-champion-board
         [champions]="view().champions"
+        [lanePriority]="lanePriority()"
         [options]="catalog()"
         [editable]="canEditFields() && !!editingData"
         [saving]="savingField()"

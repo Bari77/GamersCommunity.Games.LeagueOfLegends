@@ -40,6 +40,19 @@ export class LolWidgetTemplateHostComponent {
     );
     protected readonly catalog = computed(() => this.options() ?? WORKSPACE_PREVIEW_OPTIONS);
     protected readonly canEditFields = computed(() => this.isOwner() && !this.editing() && !this.preview());
+    protected readonly lanePriority = computed(() => {
+        const player = this.view();
+        const codes: string[] = [];
+        if (player.primaryLane) {
+            codes.push(player.primaryLane.code);
+        }
+        for (const lane of player.secondaryLanes) {
+            if (!codes.includes(lane.code)) {
+                codes.push(lane.code);
+            }
+        }
+        return codes;
+    });
 
     protected saveChampions(champions: PlayerChampionUpdateDto[]): void {
         this.saveField.emit({ champions });

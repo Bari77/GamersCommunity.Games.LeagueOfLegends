@@ -1,16 +1,37 @@
 @if (editable()) {
     <div class="champion-board__add">
-        <nb-select
-            fullWidth
-            placeholder="Champion"
-            [ngModel]="draftChampionId()"
-            (ngModelChange)="draftChampionId.set($event)"
-            [ngModelOptions]="{ standalone: true }"
-        >
-            @for (champion of available(); track champion.id) {
-                <nb-option [value]="champion.id">{{ champion.code | gameTerm }}</nb-option>
+        <div class="champion-board__search">
+            <input
+                nbInput
+                fullWidth
+                type="text"
+                autocomplete="off"
+                [placeholder]="championPlaceholder"
+                [attr.aria-label]="championPlaceholder"
+                [ngModel]="championQuery()"
+                (ngModelChange)="onChampionQuery($event)"
+                [ngModelOptions]="{ standalone: true }"
+                (focus)="openSearch()"
+            />
+            @if (searchOpen()) {
+                <ul class="champion-board__results" role="listbox">
+                    @for (champion of filteredChampions(); track champion.id) {
+                        <li>
+                            <button
+                                type="button"
+                                role="option"
+                                [class.is-selected]="draftChampionId() === champion.id"
+                                (mousedown)="selectChampion(champion.id)"
+                            >
+                                {{ champion.code | gameTerm }}
+                            </button>
+                        </li>
+                    } @empty {
+                        <li class="champion-board__no-match" i18n="@@lol.player.champions.noMatch">No champion matches.</li>
+                    }
+                </ul>
             }
-        </nb-select>
+        </div>
         <nb-select
             fullWidth
             [ngModel]="draftKind()"
@@ -42,9 +63,9 @@
     </div>
 }
 
-@if (champions().length) {
+@if (sortedChampions().length) {
     <div class="champion-board__grid">
-        @for (champion of champions(); track champion.id) {
+        @for (champion of sortedChampions(); track champion.id) {
             <lol-champion-card
                 [champion]="champion"
                 [editable]="editable()"

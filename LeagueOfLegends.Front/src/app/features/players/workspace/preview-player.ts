@@ -47,8 +47,8 @@ export const WORKSPACE_PREVIEW_PLAYER = new PlayerSheet(
     new PlayerRank("challenger", null, 1247),
     new PlayerRank("diamond", "1", 42),
     [
-        new PlayerChampion(2, "ahri", "main", "mid"),
-        new PlayerChampion(85, "zed", "pool", "mid"),
         new PlayerChampion(36, "kaisa", "learning", "bottom"),
+        new PlayerChampion(85, "zed", "pool", "mid"),
+        new PlayerChampion(2, "ahri", "main", "mid"),
     ],
 );

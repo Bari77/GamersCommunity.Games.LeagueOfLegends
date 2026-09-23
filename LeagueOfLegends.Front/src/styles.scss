@@ -3,6 +3,29 @@
     --game-accent: #c8aa6e;
 }
 
+/* Cosmic paints Open Sans on nb-layout; gc-workspace-editor does not use that wrapper. */
+.nb-theme-cosmic nb-layout-column,
+nb-layout-column,
+.player-sheet {
+    font-family: var(--gc-font-body);
+}
+
+.nb-theme-cosmic nb-layout-column h1,
+.nb-theme-cosmic nb-layout-column h2,
+.nb-theme-cosmic nb-layout-column h3,
+.nb-theme-cosmic nb-layout-column .gc-display,
+nb-layout-column h1,
+nb-layout-column h2,
+nb-layout-column h3,
+nb-layout-column .gc-display,
+.player-sheet h1,
+.player-sheet h2,
+.player-sheet h3,
+.player-sheet .gc-display {
+    font-family: var(--gc-font-display);
+    letter-spacing: 0.04em;
+}
+
 /* gridster paints its own item background, which would sit on top of the widget chrome. */
 gc-widget-grid gridster-item {
     background: transparent;

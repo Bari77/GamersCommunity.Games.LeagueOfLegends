@@ -89,6 +89,9 @@ export class PlayerSheet {
     }
 
     public static fromDto(dto: PlayerSheetDto): PlayerSheet {
+        const primaryLane = dto.primaryLane ? PlayerLane.fromDto(dto.primaryLane) : null;
+        const secondaryLanes = (dto.secondaryLanes ?? []).map((lane) => PlayerLane.fromDto(lane));
+
         return new PlayerSheet(
             dto.publicId,
             dto.platformUserPublicId,
@@ -102,13 +105,58 @@ export class PlayerSheet {
             dto.gameName ?? null,
             dto.tagLine ?? null,
             dto.region ? CatalogItem.fromDto(dto.region) : null,
-            dto.primaryLane ? PlayerLane.fromDto(dto.primaryLane) : null,
-            (dto.secondaryLanes ?? []).map((lane) => PlayerLane.fromDto(lane)),
+            primaryLane,
+            secondaryLanes,
             PlayerRank.fromDto(dto.solo),
             PlayerRank.fromDto(dto.flex),
-            (dto.champions ?? []).map((champion) => PlayerChampion.fromDto(champion)),
+            sortChampionsByLanePriority(
+                (dto.champions ?? []).map((champion) => PlayerChampion.fromDto(champion)),
+                primaryLane?.code,
+                secondaryLanes.map((lane) => lane.code),
+            ),
         );
     }
+}
+
+const CHAMPION_KIND_RANK: Record<string, number> = {
+    main: 0,
+    pool: 1,
+    learning: 2,
+    training: 2,
+};
+
+export function sortChampionsByLanePriority(
+    champions: PlayerChampion[],
+    primaryLane: string | null | undefined,
+    secondaryLanes: readonly string[],
+): PlayerChampion[] {
+    const rank = new Map<string, number>();
+    let next = 0;
+    if (primaryLane) {
+        rank.set(primaryLane, next++);
+    }
+    for (const code of secondaryLanes) {
+        if (code && !rank.has(code)) {
+            rank.set(code, next++);
+        }
+    }
+
+    const laneRank = (lane: string | null): number =>
+        lane != null && rank.has(lane) ? rank.get(lane)! : Number.MAX_SAFE_INTEGER;
+
+    return [...champions].sort((left, right) => {
+        const lanes = laneRank(left.lane) - laneRank(right.lane);
+        if (lanes !== 0) {
+            return lanes;
+        }
+
+        const kinds = (CHAMPION_KIND_RANK[left.kind] ?? 3) - (CHAMPION_KIND_RANK[right.kind] ?? 3);
+        if (kinds !== 0) {
+            return kinds;
+        }
+
+        return left.code.localeCompare(right.code);
+    });
 }
 
 export class PlayerResolveResult {

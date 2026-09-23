@@ -502,7 +502,7 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
                         Code = p.IdPrimaryLaneNavigation.Code,
                     },
                 SecondaryLanes = p.PlayerLanes
-                    .OrderBy(l => l.IdLaneNavigation.SortOrder)
+                    .OrderBy(l => l.Id)
                     .Select(l => new PlayerLaneDto
                     {
                         Id = l.IdLaneNavigation.Id,
@@ -510,8 +510,6 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
                     })
                     .ToList(),
                 Champions = p.PlayerChampions
-                    .OrderBy(c => c.IdKindNavigation.SortOrder)
-                    .ThenBy(c => c.IdChampionNavigation.Code)
                     .Select(c => new PlayerChampionDto
                     {
                         Id = c.IdChampionNavigation.Id,
@@ -545,8 +543,37 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
             SecondaryLanes = player.SecondaryLanes,
             Solo = ToRank(player.SoloTier, player.SoloDivision, player.SoloLp),
             Flex = ToRank(player.FlexTier, player.FlexDivision, player.FlexLp),
-            Champions = player.Champions,
+            Champions = SortChampionsByLanePriority(player.Champions, player.PrimaryLane?.Code, player.SecondaryLanes),
         };
+    }
+
+    private static List<PlayerChampionDto> SortChampionsByLanePriority(
+        IReadOnlyList<PlayerChampionDto> champions,
+        string? primaryLane,
+        IReadOnlyList<PlayerLaneDto> secondaryLanes)
+    {
+        var rank = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var next = 0;
+        if (!string.IsNullOrEmpty(primaryLane))
+            rank[primaryLane] = next++;
+        foreach (var lane in secondaryLanes)
+        {
+            if (!string.IsNullOrEmpty(lane.Code) && rank.TryAdd(lane.Code, next))
+                next++;
+        }
+
+        return champions
+            .OrderBy(champion =>
+                champion.Lane is { } lane && rank.TryGetValue(lane, out var index) ? index : int.MaxValue)
+            .ThenBy(champion => champion.Kind?.ToLowerInvariant() switch
+            {
+                "main" => 0,
+                "pool" => 1,
+                "learning" or "training" => 2,
+                _ => 3,
+            })
+            .ThenBy(champion => champion.Code, StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 
     private static PlayerRankDto? ToRank(string? tier, string? division, int? lp)
