@@ -49,6 +49,99 @@ namespace LeagueOfLegends.Database.Migrations
                     b.ToTable("Champions", (string)null);
                 });
 
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.GamePost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int?>("IdModerator")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPlayer")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdTeam")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModeratedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("ModerationReason")
+                        .HasMaxLength(280)
+                        .HasColumnType("nvarchar(280)");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<Guid>("PublicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdModerator");
+
+                    b.HasIndex("IdPlayer");
+
+                    b.HasIndex("IdStatus");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique();
+
+                    b.HasIndex("IdTeam", "IdStatus", "CreationDate");
+
+                    b.ToTable("GamePosts", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.GamePostStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("GamePostStatuses", (string)null);
+                });
+
             modelBuilder.Entity("LeagueOfLegends.Database.Models.Lane", b =>
                 {
                     b.Property<int>("Id")
@@ -109,6 +202,9 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Property<int?>("IdRegion")
                         .HasColumnType("int");
 
+                    b.Property<int?>("IdTeam")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -139,6 +235,8 @@ namespace LeagueOfLegends.Database.Migrations
                     b.HasIndex("IdPlayer");
 
                     b.HasIndex("IdRegion");
+
+                    b.HasIndex("IdTeam");
 
                     b.HasIndex("PublicId")
                         .IsUnique();
@@ -561,6 +659,343 @@ namespace LeagueOfLegends.Database.Migrations
                     b.ToTable("Regions", (string)null);
                 });
 
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("Entitled")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("IdCaptain")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdRegion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LayoutJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<Guid>("PublicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.Property<string>("Sentence")
+                        .HasMaxLength(280)
+                        .HasColumnType("nvarchar(280)");
+
+                    b.Property<string>("Tag")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCaptain");
+
+                    b.HasIndex("IdRegion");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique();
+
+                    b.HasIndex("Entitled", "Discriminator")
+                        .IsUnique();
+
+                    b.ToTable("Teams", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int?>("IdLane")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPlayer")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdReviewer")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdSoughtRank")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdTeam")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<Guid>("PublicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdLane");
+
+                    b.HasIndex("IdPlayer");
+
+                    b.HasIndex("IdReviewer");
+
+                    b.HasIndex("IdSoughtRank");
+
+                    b.HasIndex("IdStatus");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique();
+
+                    b.HasIndex("IdTeam", "IdPlayer", "IdStatus");
+
+                    b.ToTable("TeamApplications", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamApplicationStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("TeamApplicationStatuses", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<int>("IdTeam")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PublicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdTeam");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique();
+
+                    b.ToTable("TeamLinks", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int?>("IdLane")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPlayer")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdTeam")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdTeamRank")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<Guid>("PublicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.Property<string>("RosterKind")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdLane");
+
+                    b.HasIndex("IdPlayer");
+
+                    b.HasIndex("IdTeamRank");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique();
+
+                    b.HasIndex("IdTeam", "IdPlayer")
+                        .IsUnique();
+
+                    b.ToTable("TeamMembers", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamRank", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("TeamRanks", (string)null);
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.GamePost", b =>
+                {
+                    b.HasOne("LeagueOfLegends.Database.Models.Player", "IdModeratorNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdModerator")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("LeagueOfLegends.Database.Models.Player", "IdPlayerNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdPlayer")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LeagueOfLegends.Database.Models.GamePostStatus", "IdStatusNavigation")
+                        .WithMany("GamePosts")
+                        .HasForeignKey("IdStatus")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LeagueOfLegends.Database.Models.Team", "IdTeamNavigation")
+                        .WithMany("GamePosts")
+                        .HasForeignKey("IdTeam")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IdModeratorNavigation");
+
+                    b.Navigation("IdPlayerNavigation");
+
+                    b.Navigation("IdStatusNavigation");
+
+                    b.Navigation("IdTeamNavigation");
+                });
+
             modelBuilder.Entity("LeagueOfLegends.Database.Models.LfgAd", b =>
                 {
                     b.HasOne("LeagueOfLegends.Database.Models.Lane", "IdLaneNavigation")
@@ -579,11 +1014,18 @@ namespace LeagueOfLegends.Database.Migrations
                         .HasForeignKey("IdRegion")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("LeagueOfLegends.Database.Models.Team", "IdTeamNavigation")
+                        .WithMany("LfgAds")
+                        .HasForeignKey("IdTeam")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.Navigation("IdLaneNavigation");
 
                     b.Navigation("IdPlayerNavigation");
 
                     b.Navigation("IdRegionNavigation");
+
+                    b.Navigation("IdTeamNavigation");
                 });
 
             modelBuilder.Entity("LeagueOfLegends.Database.Models.Player", b =>
@@ -689,9 +1131,126 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Navigation("IdPlayerNavigation");
                 });
 
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.Team", b =>
+                {
+                    b.HasOne("LeagueOfLegends.Database.Models.Player", "IdCaptainNavigation")
+                        .WithMany("CaptainedTeams")
+                        .HasForeignKey("IdCaptain")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LeagueOfLegends.Database.Models.Region", "IdRegionNavigation")
+                        .WithMany("Teams")
+                        .HasForeignKey("IdRegion")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("IdCaptainNavigation");
+
+                    b.Navigation("IdRegionNavigation");
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamApplication", b =>
+                {
+                    b.HasOne("LeagueOfLegends.Database.Models.Lane", "IdLaneNavigation")
+                        .WithMany("TeamApplications")
+                        .HasForeignKey("IdLane")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("LeagueOfLegends.Database.Models.Player", "IdPlayerNavigation")
+                        .WithMany("TeamApplications")
+                        .HasForeignKey("IdPlayer")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LeagueOfLegends.Database.Models.Player", "IdReviewerNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdReviewer")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("LeagueOfLegends.Database.Models.TeamRank", "IdSoughtRankNavigation")
+                        .WithMany("TeamApplications")
+                        .HasForeignKey("IdSoughtRank")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LeagueOfLegends.Database.Models.TeamApplicationStatus", "IdStatusNavigation")
+                        .WithMany("TeamApplications")
+                        .HasForeignKey("IdStatus")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LeagueOfLegends.Database.Models.Team", "IdTeamNavigation")
+                        .WithMany("TeamApplications")
+                        .HasForeignKey("IdTeam")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IdLaneNavigation");
+
+                    b.Navigation("IdPlayerNavigation");
+
+                    b.Navigation("IdReviewerNavigation");
+
+                    b.Navigation("IdSoughtRankNavigation");
+
+                    b.Navigation("IdStatusNavigation");
+
+                    b.Navigation("IdTeamNavigation");
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamLink", b =>
+                {
+                    b.HasOne("LeagueOfLegends.Database.Models.Team", "IdTeamNavigation")
+                        .WithMany("TeamLinks")
+                        .HasForeignKey("IdTeam")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IdTeamNavigation");
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamMember", b =>
+                {
+                    b.HasOne("LeagueOfLegends.Database.Models.Lane", "IdLaneNavigation")
+                        .WithMany("TeamMembers")
+                        .HasForeignKey("IdLane")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("LeagueOfLegends.Database.Models.Player", "IdPlayerNavigation")
+                        .WithMany("TeamMembers")
+                        .HasForeignKey("IdPlayer")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LeagueOfLegends.Database.Models.Team", "IdTeamNavigation")
+                        .WithMany("TeamMembers")
+                        .HasForeignKey("IdTeam")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LeagueOfLegends.Database.Models.TeamRank", "IdTeamRankNavigation")
+                        .WithMany("TeamMembers")
+                        .HasForeignKey("IdTeamRank")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("IdLaneNavigation");
+
+                    b.Navigation("IdPlayerNavigation");
+
+                    b.Navigation("IdTeamNavigation");
+
+                    b.Navigation("IdTeamRankNavigation");
+                });
+
             modelBuilder.Entity("LeagueOfLegends.Database.Models.Champion", b =>
                 {
                     b.Navigation("PlayerChampions");
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.GamePostStatus", b =>
+                {
+                    b.Navigation("GamePosts");
                 });
 
             modelBuilder.Entity("LeagueOfLegends.Database.Models.Lane", b =>
@@ -703,10 +1262,16 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Navigation("PlayerLanes");
 
                     b.Navigation("PrimaryPlayers");
+
+                    b.Navigation("TeamApplications");
+
+                    b.Navigation("TeamMembers");
                 });
 
             modelBuilder.Entity("LeagueOfLegends.Database.Models.Player", b =>
                 {
+                    b.Navigation("CaptainedTeams");
+
                     b.Navigation("LfgAds");
 
                     b.Navigation("PlayerChampions");
@@ -718,6 +1283,10 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Navigation("PlayerStreams");
 
                     b.Navigation("PlayerVideos");
+
+                    b.Navigation("TeamApplications");
+
+                    b.Navigation("TeamMembers");
                 });
 
             modelBuilder.Entity("LeagueOfLegends.Database.Models.PlayerChampionKind", b =>
@@ -730,6 +1299,33 @@ namespace LeagueOfLegends.Database.Migrations
                     b.Navigation("LfgAds");
 
                     b.Navigation("Players");
+
+                    b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.Team", b =>
+                {
+                    b.Navigation("GamePosts");
+
+                    b.Navigation("LfgAds");
+
+                    b.Navigation("TeamApplications");
+
+                    b.Navigation("TeamLinks");
+
+                    b.Navigation("TeamMembers");
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamApplicationStatus", b =>
+                {
+                    b.Navigation("TeamApplications");
+                });
+
+            modelBuilder.Entity("LeagueOfLegends.Database.Models.TeamRank", b =>
+                {
+                    b.Navigation("TeamApplications");
+
+                    b.Navigation("TeamMembers");
                 });
 #pragma warning restore 612, 618
         }

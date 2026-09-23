@@ -1,0 +1,148 @@
+<ng-template
+    gcWidget="team-presentation"
+    gcWidgetEditable
+    let-editingData="editingData"
+    let-stopDataEdit="stopDataEdit"
+>
+    <lol-player-presentation
+        [text]="view().sentence"
+        [editing]="canEditFields() && !!editingData"
+        [saving]="savingField()"
+        [emptyLabel]="noSentenceLabel"
+        (save)="saveField.emit({ sentence: $event })"
+        (cancel)="stopDataEdit?.()"
+    />
+</ng-template>
+
+<ng-template gcWidget="team-stats">
+    <lol-team-stats [sheet]="view()" />
+</ng-template>
+
+<ng-template gcWidget="team-roster">
+    @if (preview()) {
+        <lol-team-roster [members]="previewMembers" [viewerRank]="previewViewerRank" [lanes]="lanes()" />
+    } @else {
+        <lol-team-roster
+            [members]="view().members"
+            [viewerRank]="view().viewerRank"
+            [viewerPlayerPublicId]="playerPublicId()"
+            [lanes]="lanes()"
+            [busy]="busy()"
+            (setRank)="setRank.emit($event)"
+            (setRoster)="setRoster.emit($event)"
+            (kick)="kick.emit($event)"
+            (transfer)="transfer.emit($event)"
+            (leave)="leave.emit($event)"
+        />
+    }
+</ng-template>
+
+<ng-template gcWidget="team-wall">
+    @if (preview()) {
+        <p class="widget-host__empty" i18n="@@lol.team.widget.wall.preview">
+            Approved posts land here. Staff review player messages first.
+        </p>
+    } @else {
+        <lol-team-wall
+            [teamPublicId]="view().publicId"
+            [canPublish]="view().isMember()"
+            [canModerate]="view().canModerate()"
+            [playerPublicId]="playerPublicId()"
+            (moderated)="rosterChanged.emit()"
+        />
+    }
+</ng-template>
+
+<ng-template gcWidget="team-applications">
+    @if (preview()) {
+        <p class="widget-host__empty" i18n="@@lol.team.widget.applications.preview">
+            Pending applications appear here for the staff.
+        </p>
+    } @else if (view().canModerate()) {
+        <lol-team-applications [teamPublicId]="view().publicId" (reviewed)="rosterChanged.emit()" />
+    } @else {
+        <p class="widget-host__empty" i18n="@@lol.team.widget.applications.hidden">
+            Only the staff see the applications.
+        </p>
+    }
+</ng-template>
+
+<ng-template gcWidget="team-recruitment">
+    @if (preview()) {
+        <p class="widget-host__empty" i18n="@@lol.team.widget.recruitment.preview">
+            Visitors apply here as a player, a coach or a manager.
+        </p>
+    } @else if (needsSheet()) {
+        <lol-create-sheet-wall [message]="sheetWallMessage" />
+    } @else if (view().isMember()) {
+        <p class="widget-host__empty" i18n="@@lol.team.widget.recruitment.member">
+            You already belong to this team.
+        </p>
+    } @else {
+        <lol-team-apply-form
+            [lanes]="lanes()"
+            [loading]="applyLoading()"
+            [saving]="applySaving()"
+            [errorCode]="applyErrorCode()"
+            [pendingStatus]="view().viewerApplicationStatus"
+            (apply)="apply.emit($event)"
+            (withdraw)="withdraw.emit()"
+        />
+    }
+</ng-template>
+
+<ng-template
+    gcWidget="team-photos"
+    gcWidgetEditable
+    let-settings
+    let-editingData="editingData"
+    let-stopDataEdit="stopDataEdit"
+    let-updateSettings="updateSettings"
+>
+    <gc-media-gallery
+        kind="photo"
+        [items]="galleryItems(settings)"
+        [emptyLabel]="emptyGalleryLabel"
+        [addLabel]="mediaAddLabel"
+        [saveLabel]="mediaSaveLabel"
+        [cancelLabel]="mediaCancelLabel"
+        [titlePlaceholder]="mediaTitleLabel"
+        [urlPlaceholder]="mediaUrlPlaceholder"
+        [editing]="canEditFields() && !!editingData"
+        (itemsChange)="saveGallery(settings, updateSettings, stopDataEdit, $event)"
+        (cancel)="stopDataEdit?.()"
+    />
+</ng-template>
+
+<ng-template
+    gcWidget="team-videos"
+    gcWidgetEditable
+    let-settings
+    let-editingData="editingData"
+    let-stopDataEdit="stopDataEdit"
+    let-updateSettings="updateSettings"
+>
+    <gc-media-gallery
+        kind="video"
+        [items]="videoItems(settings)"
+        [emptyLabel]="emptyGalleryLabel"
+        [addLabel]="mediaAddLabel"
+        [saveLabel]="mediaSaveLabel"
+        [cancelLabel]="mediaCancelLabel"
+        [titlePlaceholder]="mediaTitleLabel"
+        [urlPlaceholder]="mediaUrlPlaceholder"
+        [editing]="canEditFields() && !!editingData"
+        (itemsChange)="saveGallery(settings, updateSettings, stopDataEdit, $event)"
+        (cancel)="stopDataEdit?.()"
+    />
+</ng-template>
+
+<ng-template gcWidget="gc-links" gcWidgetEditable let-editingData="editingData">
+    @if (preview()) {
+        <gc-link-list [links]="previewLinks" [emptyLabel]="previewLinksEmpty" />
+    } @else if (canEditFields() && editingData) {
+        <lol-team-link-admin [teamPublicId]="view().publicId" />
+    } @else {
+        <lol-team-link-board [teamPublicId]="view().publicId" />
+    }
+</ng-template>

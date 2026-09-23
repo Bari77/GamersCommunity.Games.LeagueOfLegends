@@ -27,4 +27,18 @@ public static class CallerAuth
 
         return idKeycloak;
     }
+
+    public static async Task<int?> FindPlayerIdAsync(
+        LeagueOfLegendsDbContext context,
+        BusMessage message,
+        CancellationToken ct)
+    {
+        if (message.Caller?.Subject is not { } subject || !Guid.TryParse(subject, out var idKeycloak))
+            return null;
+
+        return await context.Players.AsNoTracking()
+            .Where(p => p.IdKeycloak == idKeycloak)
+            .Select(p => (int?)p.Id)
+            .FirstOrDefaultAsync(ct);
+    }
 }

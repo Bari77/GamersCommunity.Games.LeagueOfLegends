@@ -1,0 +1,25 @@
+:host ::ng-deep nb-card {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+:host ::ng-deep nb-card + nb-card {
+    margin-top: 1.25rem;
+}
+
+:host ::ng-deep nb-card-header {
+    padding: 0 0 0.6rem;
+}
+
+:host ::ng-deep nb-card-body {
+    padding: 0.75rem 0 0;
+    overflow: visible;
+}
+
+.widget-host__empty {
+    margin: 0;
+    opacity: 0.65;
+}

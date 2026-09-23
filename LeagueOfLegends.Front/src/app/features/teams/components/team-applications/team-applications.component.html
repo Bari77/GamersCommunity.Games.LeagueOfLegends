@@ -1,0 +1,116 @@
+<nb-card>
+    <nb-card-header class="team-applications__header">
+        <span i18n="@@lol.team.applications.title">Applications</span>
+        @if (store.loading()) {
+            <gc-skeleton width="1.5rem" height="0.8rem" />
+        } @else {
+            <span class="team-applications__badge">{{ store.applications().length }}</span>
+        }
+    </nb-card-header>
+
+    <nb-card-body>
+        <ul class="team-applications">
+            @if (store.loading()) {
+                @for (placeholder of applicationPlaceholders; track placeholder) {
+                    <li class="team-application team-application--skeleton" aria-busy="true">
+                        <gc-skeleton width="2.5rem" height="2.5rem" shape="circle" />
+                        <div class="team-application__main">
+                            <gc-skeleton width="9rem" height="0.95rem" />
+                            <gc-skeleton-text [lines]="2" />
+                        </div>
+                    </li>
+                }
+            } @else {
+                @for (application of store.applications(); track application.publicId) {
+                    <li class="team-application">
+                        <div class="team-application__avatar-wrap" aria-hidden="true">
+                            @if (application.avatarUrl) {
+                                <img class="team-application__avatar" [src]="application.avatarUrl" alt="" />
+                            } @else {
+                                <span class="team-application__avatar team-application__avatar--fallback">
+                                    {{ application.initials() }}
+                                </span>
+                            }
+                        </div>
+
+                        <div class="team-application__main">
+                            <div class="team-application__head">
+                                @if (application.hasPlayerSheet()) {
+                                    <a class="team-application__player" [routerLink]="playerLink(application.playerPublicId)">
+                                        {{ application.playerHandleLabel() }}
+                                    </a>
+                                } @else {
+                                    <strong>{{ application.playerHandleLabel() }}</strong>
+                                }
+                                <span class="team-application__spec">
+                                    {{ application.soughtRank | gameTerm }}
+                                    @if (application.laneCode) {
+                                        · {{ application.laneCode | gameTerm }}
+                                    }
+                                </span>
+                            </div>
+
+                            @if (application.message) {
+                                <gc-rich-content class="team-application__message" [html]="application.message" />
+                            }
+
+                            <time class="team-application__date">{{ application.creationDate | date: "short" }}</time>
+                        </div>
+
+                        <div class="team-application__actions">
+                            <button
+                                nbButton
+                                ghost
+                                size="small"
+                                status="success"
+                                [disabled]="store.reviewing() !== null"
+                                (click)="review(application.publicId, true)"
+                            >
+                                <span i18n="@@lol.team.applications.accept">Accept</span>
+                            </button>
+                            <button
+                                nbButton
+                                ghost
+                                size="small"
+                                status="danger"
+                                [disabled]="store.reviewing() !== null"
+                                (click)="review(application.publicId, false)"
+                            >
+                                <span i18n="@@lol.team.applications.reject">Reject</span>
+                            </button>
+                        </div>
+                    </li>
+                } @empty {
+                    <li class="team-applications__empty" i18n="@@lol.team.applications.empty">
+                        No pending application.
+                    </li>
+                }
+            }
+        </ul>
+
+        @if (store.errorCode(); as code) {
+            <p class="team-applications__error" role="alert">
+                @switch (code) {
+                    @case ("APPLICATION_CLOSED") {
+                        <span i18n="@@lol.team.applications.error.closed">
+                            This application has already been handled.
+                        </span>
+                    }
+                    @case ("STAFF_SLOT_TAKEN") {
+                        <span i18n="@@lol.team.applications.error.staffTaken">
+                            That staff seat is already taken.
+                        </span>
+                    }
+                    @case ("ALREADY_MEMBER") {
+                        <span i18n="@@lol.team.applications.error.alreadyMember">
+                            This player joined the team in the meantime.
+                        </span>
+                    }
+                    @default {
+                        <span i18n="@@lol.team.applications.error.unknown">The decision could not be saved.</span>
+                    }
+                }
+            </p>
+        }
+    </nb-card-body>
+</nb-card>

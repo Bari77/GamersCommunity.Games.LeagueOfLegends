@@ -7,14 +7,15 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 - **Clé publique team** : `Team.PublicId` (GUID). Handle = `Entitled#Discriminator`. Tag court optionnel (2–5 chars).
 - **Rangs** : `TeamMember.IdTeamRank` est la seule source de vérité.
 
-  | Code | Rôle | Slot roster |
-  |------|------|-------------|
-  | `captain` | Leader (un des 5 joueurs) | joueur (compte dans les 5) |
-  | `player` | Starter | joueur (compte dans les 5) |
-  | `coach` | Staff sportif | staff (hors 5) |
-  | `manager` | Staff orga | staff (hors 5) |
+  | Code | Rôle | Roster |
+  |------|------|--------|
+  | `captain` | Leader, aussi un joueur | joueur (lane + main/sub) |
+  | `player` | Joueur | joueur (lane + main/sub) |
+  | `coach` | Staff sportif | hors roster joueur |
+  | `manager` | Staff orga | hors roster joueur |
 
-- **Plafonds** : au plus 1 captain, 1 coach, 1 manager, et 5 membres en slot joueur. Pas de remplaçants dans cette spec.
+- **Plafonds** : au plus 1 captain, 1 coach, 1 manager. Pas de plafond sur le nombre de joueurs.
+- **Siège joueur** : `TeamMember.IdLane` + `RosterKind` `main` / `sub`. Un seul `main` par lane (en nommer un autre main fait passer le précédent en sub). Les remplaçants sont des `player` `sub`, pas un rang.
 - **Appartenance** : `TeamMember` rattaché au `Player`. Un joueur peut être dans plusieurs teams. Un seul `TeamMember` par couple (`Team`, `Player`).
 - **Captain** : `Team.IdCaptain` + `TeamMember` `captain` écrits dans la même transaction. Région de la team = région du joueur fondateur.
 - **Candidatures** : `TeamApplication` (`pending` / `accepted` / `rejected` / `withdrawn`). Joueur : lane visée. Staff : rang `coach` ou `manager`. Une seule `pending` par couple (team, player).
@@ -27,18 +28,18 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 
 ## C1 — Gouvernance de team
 
-- [ ] Migration `TeamGovernance` : `Team`, `TeamRank`, `TeamMember`, `TeamApplication`, `TeamLink`, `LayoutJson`, colonnes de modération sur `GamePost`
-- [ ] Seed `TeamRank` + `TeamApplicationStatus`
-- [ ] `Teams.Search` / `Create` / `Update` / `SetRank` / `Kick` / `Leave` / `TransferCaptaincy` / `Disband` / `Get`
-- [ ] `TeamApplications` : Create / ListMine / Withdraw / List / Review
-- [ ] Acceptation joueur refusée si le slot 5 est plein
-- [ ] Acceptation staff refusée si le poste est pris
-- [ ] Front : annuaire `/league-of-legends/teams`, fiche
+- [x] Migration `TeamGovernance` : `Team`, `TeamRank`, `TeamMember`, `TeamApplication`, `TeamLink`, `LayoutJson`, colonnes de modération sur `GamePost`
+- [x] Seed `TeamRank` + `TeamApplicationStatus`
+- [x] `Teams.Search` / `ListByPlayer` / `Create` / `Update` / `SetRank` / `Kick` / `Leave` / `TransferCaptaincy` / `Disband` / `Get`
+- [x] `TeamApplications` : Create / ListMine / Withdraw / List / Review
+- [x] Acceptation joueur sans plafond de roster
+- [x] Acceptation staff refusée si le poste est pris
+- [x] Front : annuaire `/league-of-legends/teams`, fiche
 
 ## C2 — Mur d’équipe modéré
 
-- [ ] `GamePosts.ListTeamWall` / `Create` / `ListPending` / `Moderate` / `Delete`
-- [ ] Front : mur + file de modération pour le staff
+- [x] `GamePosts.ListTeamWall` / `Create` / `ListPending` / `Moderate` / `Delete`
+- [x] Front : mur + file de modération pour le staff
 
 ## C3 — Board LFG
 
@@ -57,9 +58,10 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 
 | Resource | Public | Private (auth) |
 |----------|--------|----------------|
-| Teams | Get, Search | ListPostable, Create, Update, SetRank, Kick, Leave, TransferCaptaincy, Disband |
+| Teams | Get, Search, ListByPlayer | ListPostable, Create, Update, SetRank, SetRoster, Kick, Leave, TransferCaptaincy, Disband |
 | TeamApplications | — | Create, ListMine, Withdraw, List, Review |
-| GamePosts | ListTeamWall | Create, ListPending, Moderate, Delete |
+| GamePosts | ListTeamWall | Create, ListPending, Update, Moderate, Delete |
+| TeamLinks | List | Create, Update, Reorder, Delete |
 | LfgAds | ListRecent, ListBefore, Search | Create |
 
 `Users.Sanctions` reste hors table de routage.
@@ -75,13 +77,12 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 | Traiter les candidatures | non | non | oui | oui | oui |
 | Exclure un membre | non | non | oui (player) | oui (player) | oui |
 | Éditer la fiche | non | non | non | oui | oui |
-| Changer les rangs | non | non | non | non | oui |
+| Changer les rangs / main-sub | non | non | non | non | oui |
 | Transférer / dissoudre | non | non | non | non | oui |
 
 ## Hors scope
 
 - Events in-game — spec Events
 - Notifications, partage / SEO — spec Events
-- Remplaçants (`substitute`) — spec Events
 - Badges team côté shell — spec Events
 - API Riot — jamais au lancement

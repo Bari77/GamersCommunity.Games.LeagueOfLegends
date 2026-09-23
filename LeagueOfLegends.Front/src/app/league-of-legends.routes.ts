@@ -18,4 +18,20 @@ export const leagueOfLegendsRoutes: Routes = [
         (m) => m.PlayerSheetComponent,
       ),
   },
+  {
+    path: "teams",
+    data: { breadcrumb: $localize`:@@lol.breadcrumb.teams:Teams` },
+    loadComponent: () =>
+      import("./features/teams/pages/team-directory/team-directory.component").then(
+        (m) => m.TeamDirectoryComponent,
+      ),
+  },
+  {
+    path: "teams/:publicId",
+    data: { breadcrumb: $localize`:@@lol.breadcrumb.team:Team` },
+    loadComponent: () =>
+      import("./features/teams/pages/team-sheet/team-sheet.component").then(
+        (m) => m.TeamSheetComponent,
+      ),
+  },
 ];

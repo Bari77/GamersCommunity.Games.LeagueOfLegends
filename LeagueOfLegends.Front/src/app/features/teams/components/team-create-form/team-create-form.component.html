@@ -1,0 +1,77 @@
+<form class="team-create" (ngSubmit)="submit()">
+    <div class="team-create__grid">
+        <div class="team-create__field">
+            <label for="team-entitled" i18n="@@lol.team.form.name">Team name</label>
+            <input
+                id="team-entitled"
+                nbInput
+                fullWidth
+                type="text"
+                maxlength="50"
+                [ngModel]="entitled()"
+                (ngModelChange)="entitled.set($event)"
+                [ngModelOptions]="{ standalone: true }"
+            />
+            <small class="team-create__hint" i18n="@@lol.team.form.nameHint">
+                A number is appended to the name to keep the handle unique, like T1#1274.
+            </small>
+        </div>
+
+        <div class="team-create__field">
+            <label for="team-tag" i18n="@@lol.team.form.tag">Short tag</label>
+            <input
+                id="team-tag"
+                nbInput
+                fullWidth
+                type="text"
+                maxlength="5"
+                [ngModel]="tag()"
+                (ngModelChange)="tag.set($event)"
+                [ngModelOptions]="{ standalone: true }"
+            />
+            <small class="team-create__hint" i18n="@@lol.team.form.tagHint">
+                Optional, 2 to 5 letters or digits. The team region is taken from your profile.
+            </small>
+        </div>
+    </div>
+
+    <div class="team-create__field">
+        <label for="team-sentence" i18n="@@lol.team.form.sentence">Catchphrase</label>
+        <gc-rich-editor
+            id="team-sentence"
+            [maxLength]="255"
+            [placeholder]="sentencePlaceholder"
+            [value]="sentence()"
+            (valueChange)="sentence.set($event)"
+        />
+    </div>
+
+    @if (errorCode(); as code) {
+        <p class="team-create__error" role="alert">
+            @switch (code) {
+                @case ("VALIDATION") {
+                    <span i18n="@@lol.team.error.invalidName">
+                        The team name must be between 3 and 50 characters. The tag uses 2 to 5 letters or digits.
+                    </span>
+                }
+                @case ("TEAM_NAME_EXHAUSTED") {
+                    <span i18n="@@lol.team.error.nameExhausted">
+                        Too many teams share this name. Please pick another one.
+                    </span>
+                }
+                @default {
+                    <span i18n="@@lol.team.error.createFailed">The team could not be created.</span>
+                }
+            }
+        </p>
+    }
+
+    <footer class="team-create__actions">
+        <button nbButton ghost status="basic" type="button" (click)="cancel.emit()">
+            <span i18n="@@lol.team.form.cancel">Cancel</span>
+        </button>
+        <button nbButton status="primary" type="submit" [disabled]="!canSave()">
+            <span i18n="@@lol.team.form.submit">Found the team</span>
+        </button>
+    </footer>
+</form>

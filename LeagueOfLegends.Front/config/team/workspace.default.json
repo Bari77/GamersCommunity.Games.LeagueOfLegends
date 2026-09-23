@@ -1,0 +1,135 @@
+{
+  "version": 2,
+  "pages": [
+    {
+      "id": "home",
+      "title": "Home",
+      "locked": true,
+      "widgets": [
+        {
+          "id": "w-stats",
+          "type": "team-stats",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 3,
+          "settings": {}
+        },
+        {
+          "id": "w-presentation",
+          "type": "team-presentation",
+          "x": 0,
+          "y": 3,
+          "cols": 12,
+          "rows": 6,
+          "settings": {
+            "title": "Presentation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "roster",
+      "title": "Roster",
+      "widgets": [
+        {
+          "id": "w-roster",
+          "type": "team-roster",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
+      ]
+    },
+    {
+      "id": "wall",
+      "title": "Wall",
+      "widgets": [
+        {
+          "id": "w-wall",
+          "type": "team-wall",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "videos",
+      "title": "Videos",
+      "widgets": [
+        {
+          "id": "w-videos",
+          "type": "team-videos",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
+      ],
+      "visibility": "player"
+    },
+    {
+      "id": "photos",
+      "title": "Photos",
+      "widgets": [
+        {
+          "id": "w-photos",
+          "type": "team-photos",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
+      ],
+      "visibility": "player"
+    },
+    {
+      "id": "links",
+      "title": "Links",
+      "widgets": [
+        {
+          "id": "w-links",
+          "type": "gc-links",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
+      ],
+      "visibility": "player"
+    },
+    {
+      "id": "recruitment",
+      "title": "Recruitment",
+      "widgets": [
+        {
+          "id": "w-applications",
+          "type": "team-applications",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 5,
+          "settings": {}
+        },
+        {
+          "id": "w-recruitment",
+          "type": "team-recruitment",
+          "x": 0,
+          "y": 5,
+          "cols": 12,
+          "rows": 4,
+          "settings": {}
+        }
+      ]
+    }
+  ]
+}

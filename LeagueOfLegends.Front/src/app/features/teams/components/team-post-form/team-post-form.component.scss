@@ -1,0 +1,16 @@
+.team-post-form {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.team-post-form__error {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-danger-default, #ff3d71);
+}
+
+.team-post-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.35rem;
+}

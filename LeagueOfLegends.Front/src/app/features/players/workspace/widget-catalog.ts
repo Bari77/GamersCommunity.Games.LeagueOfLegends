@@ -21,6 +21,7 @@ export const PLAYER_WIDGETS = {
     streams: "streams",
     twitch: "gc-twitch",
     links: "gc-links",
+    teams: "teams",
 } as const;
 
 export const gameWorkspaceRegistry = {
@@ -51,6 +52,14 @@ export const gameWorkspaceRegistry = {
             description: $localize`:@@lol.player.widget.stats.desc:Riot ID, region, lanes and ranks.`,
             cols: 12,
             rows: 6,
+            unique: true,
+        },
+        {
+            type: PLAYER_WIDGETS.teams,
+            label: $localize`:@@lol.player.widget.teams:Teams`,
+            description: $localize`:@@lol.player.widget.teams.desc:LoL teams this player belongs to.`,
+            cols: 12,
+            rows: 5,
             unique: true,
         },
         {

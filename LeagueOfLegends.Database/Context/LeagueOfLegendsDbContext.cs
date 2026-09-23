@@ -33,6 +33,22 @@ public partial class LeagueOfLegendsDbContext : DbContext
 
     public virtual DbSet<LfgAd> LfgAds { get; set; } = null!;
 
+    public virtual DbSet<TeamRank> TeamRanks { get; set; } = null!;
+
+    public virtual DbSet<TeamApplicationStatus> TeamApplicationStatuses { get; set; } = null!;
+
+    public virtual DbSet<GamePostStatus> GamePostStatuses { get; set; } = null!;
+
+    public virtual DbSet<Team> Teams { get; set; } = null!;
+
+    public virtual DbSet<TeamMember> TeamMembers { get; set; } = null!;
+
+    public virtual DbSet<TeamApplication> TeamApplications { get; set; } = null!;
+
+    public virtual DbSet<TeamLink> TeamLinks { get; set; } = null!;
+
+    public virtual DbSet<GamePost> GamePosts { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PlatformUserSnapshot>(entity =>
@@ -50,6 +66,9 @@ public partial class LeagueOfLegendsDbContext : DbContext
         ConfigureCatalog(modelBuilder.Entity<Region>(), "Regions");
         ConfigureCatalog(modelBuilder.Entity<Champion>(), "Champions", hasSortOrder: false);
         ConfigureCatalog(modelBuilder.Entity<PlayerChampionKind>(), "PlayerChampionKinds");
+        ConfigureCatalog(modelBuilder.Entity<TeamRank>(), "TeamRanks");
+        ConfigureCatalog(modelBuilder.Entity<TeamApplicationStatus>(), "TeamApplicationStatuses");
+        ConfigureCatalog(modelBuilder.Entity<GamePostStatus>(), "GamePostStatuses");
 
         modelBuilder.Entity<Player>(entity =>
         {
@@ -143,6 +162,7 @@ public partial class LeagueOfLegendsDbContext : DbContext
 
         ConfigurePlayerMedia(modelBuilder);
         ConfigureLfgAds(modelBuilder);
+        ConfigureTeams(modelBuilder);
     }
 
     private static void ConfigurePlayerMedia(ModelBuilder modelBuilder)
@@ -241,6 +261,169 @@ public partial class LeagueOfLegendsDbContext : DbContext
             entity.HasOne(e => e.IdLaneNavigation)
                 .WithMany(l => l.LfgAds)
                 .HasForeignKey(e => e.IdLane)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdTeamNavigation)
+                .WithMany(t => t.LfgAds)
+                .HasForeignKey(e => e.IdTeam)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureTeams(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Team>(entity =>
+        {
+            entity.ToTable("Teams");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Entitled).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Discriminator).HasMaxLength(4).IsRequired();
+            entity.Property(e => e.Tag).HasMaxLength(5);
+            entity.Property(e => e.Sentence).HasMaxLength(280);
+            entity.Property(e => e.LayoutJson).HasColumnType("nvarchar(max)");
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasIndex(e => new { e.Entitled, e.Discriminator }).IsUnique();
+            entity.HasOne(e => e.IdCaptainNavigation)
+                .WithMany(p => p.CaptainedTeams)
+                .HasForeignKey(e => e.IdCaptain)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdRegionNavigation)
+                .WithMany(r => r.Teams)
+                .HasForeignKey(e => e.IdRegion)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<TeamMember>(entity =>
+        {
+            entity.ToTable("TeamMembers");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasIndex(e => new { e.IdTeam, e.IdPlayer }).IsUnique();
+            entity.HasOne(e => e.IdTeamNavigation)
+                .WithMany(t => t.TeamMembers)
+                .HasForeignKey(e => e.IdTeam)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.IdPlayerNavigation)
+                .WithMany(p => p.TeamMembers)
+                .HasForeignKey(e => e.IdPlayer)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdTeamRankNavigation)
+                .WithMany(r => r.TeamMembers)
+                .HasForeignKey(e => e.IdTeamRank)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.Property(e => e.RosterKind).HasMaxLength(10);
+            entity.HasOne(e => e.IdLaneNavigation)
+                .WithMany(l => l.TeamMembers)
+                .HasForeignKey(e => e.IdLane)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<TeamApplication>(entity =>
+        {
+            entity.ToTable("TeamApplications");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Message).HasMaxLength(1000).IsRequired();
+            entity.Property(e => e.ReviewedAt).HasColumnType("datetime");
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasIndex(e => new { e.IdTeam, e.IdPlayer, e.IdStatus });
+            entity.HasOne(e => e.IdTeamNavigation)
+                .WithMany(t => t.TeamApplications)
+                .HasForeignKey(e => e.IdTeam)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.IdPlayerNavigation)
+                .WithMany(p => p.TeamApplications)
+                .HasForeignKey(e => e.IdPlayer)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdStatusNavigation)
+                .WithMany(s => s.TeamApplications)
+                .HasForeignKey(e => e.IdStatus)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdSoughtRankNavigation)
+                .WithMany(r => r.TeamApplications)
+                .HasForeignKey(e => e.IdSoughtRank)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdLaneNavigation)
+                .WithMany(l => l.TeamApplications)
+                .HasForeignKey(e => e.IdLane)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdReviewerNavigation)
+                .WithMany()
+                .HasForeignKey(e => e.IdReviewer)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<TeamLink>(entity =>
+        {
+            entity.ToTable("TeamLinks");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Url).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.Label).HasMaxLength(80).IsRequired();
+            entity.Property(e => e.Icon).HasMaxLength(32);
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasOne(e => e.IdTeamNavigation)
+                .WithMany(t => t.TeamLinks)
+                .HasForeignKey(e => e.IdTeam)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<GamePost>(entity =>
+        {
+            entity.ToTable("GamePosts");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PublicId).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Body).HasMaxLength(4000).IsRequired();
+            entity.Property(e => e.ModerationReason).HasMaxLength(280);
+            entity.Property(e => e.ModeratedAt).HasColumnType("datetime");
+            entity.HasIndex(e => e.PublicId).IsUnique();
+            entity.HasIndex(e => new { e.IdTeam, e.IdStatus, e.CreationDate });
+            entity.HasOne(e => e.IdTeamNavigation)
+                .WithMany(t => t.GamePosts)
+                .HasForeignKey(e => e.IdTeam)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.IdPlayerNavigation)
+                .WithMany()
+                .HasForeignKey(e => e.IdPlayer)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdStatusNavigation)
+                .WithMany(s => s.GamePosts)
+                .HasForeignKey(e => e.IdStatus)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdModeratorNavigation)
+                .WithMany()
+                .HasForeignKey(e => e.IdModerator)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

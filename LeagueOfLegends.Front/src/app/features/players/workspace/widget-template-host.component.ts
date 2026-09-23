@@ -7,11 +7,13 @@ import { MediaManagerComponent } from "@features/media/components/media-manager/
 import { ChampionBoardComponent } from "@features/players/components/champion-board/champion-board.component";
 import { PlayerPresentationComponent } from "@features/players/components/player-presentation/player-presentation.component";
 import { PlayerStatsComponent } from "@features/players/components/player-stats/player-stats.component";
+import { PlayerTeamsComponent } from "@features/players/components/player-teams/player-teams.component";
 import { PlayerChampionUpdateDto, PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
 import { PlayerOptions, PlayerSheet } from "@features/players/models/player.model";
 import { WORKSPACE_PREVIEW_OPTIONS, WORKSPACE_PREVIEW_PLAYER } from "@features/players/workspace/preview-player";
 import {
     WORKSPACE_PREVIEW_PHOTOS,
+    WORKSPACE_PREVIEW_PLAYER_TEAMS,
     WORKSPACE_PREVIEW_STREAMS,
     WORKSPACE_PREVIEW_VIDEOS,
 } from "@features/players/workspace/preview-player-data";
@@ -29,6 +31,7 @@ import { NbButtonModule } from "@nebular/theme";
         NbButtonModule,
         PlayerPresentationComponent,
         PlayerStatsComponent,
+        PlayerTeamsComponent,
         RouterLink,
         TwitchEmbedComponent,
         WidgetDefDirective,
@@ -53,6 +56,7 @@ export class LolWidgetTemplateHostComponent {
     protected readonly previewPhotos = WORKSPACE_PREVIEW_PHOTOS;
     protected readonly previewVideos = WORKSPACE_PREVIEW_VIDEOS;
     protected readonly previewStreams = WORKSPACE_PREVIEW_STREAMS;
+    protected readonly previewTeams = WORKSPACE_PREVIEW_PLAYER_TEAMS;
     protected readonly previewPhotosEmpty = $localize`:@@lol.media.emptyPhoto:No picture shared yet.`;
     protected readonly previewVideosEmpty = $localize`:@@lol.media.emptyVideo:No video shared yet.`;
 

@@ -55,6 +55,21 @@
       ]
     },
     {
+      "id": "teams",
+      "title": "Teams",
+      "widgets": [
+        {
+          "id": "w-teams",
+          "type": "teams",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 6,
+          "settings": {}
+        }
+      ]
+    },
+    {
       "id": "videos",
       "title": "Videos",
       "widgets": [

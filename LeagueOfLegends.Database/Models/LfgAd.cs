@@ -24,6 +24,8 @@ public class LfgAd : IKeyTable
 
     public int? IdLane { get; set; }
 
+    public int? IdTeam { get; set; }
+
     public DateTime ExpiresAt { get; set; }
 
     public bool IsActive { get; set; }
@@ -33,4 +35,6 @@ public class LfgAd : IKeyTable
     public virtual Region? IdRegionNavigation { get; set; }
 
     public virtual Lane? IdLaneNavigation { get; set; }
+
+    public virtual Team? IdTeamNavigation { get; set; }
 }

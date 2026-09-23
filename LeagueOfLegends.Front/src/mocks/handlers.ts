@@ -5,6 +5,24 @@ import {
     PlayerMediaListRequestDto,
 } from "@features/media/dto/player-media.dto";
 import { PlayerLoadRequestDto, PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
+import {
+    TeamApplicationCreateRequestDto,
+    TeamApplicationListRequestDto,
+    TeamApplicationReviewRequestDto,
+    TeamApplicationTargetRequestDto,
+} from "@features/teams/dto/team-application.dto";
+import {
+    PlayerTeamDto,
+    TeamCreateRequestDto,
+    TeamDisbandRequestDto,
+    TeamListByPlayerRequestDto,
+    TeamMemberTargetRequestDto,
+    TeamSearchRequestDto,
+    TeamSetRankRequestDto,
+    TeamSetRosterRequestDto,
+    TeamSheetDto,
+    TeamUpdateRequestDto,
+} from "@features/teams/dto/team.dto";
 import { http, HttpResponse } from "msw";
 import { environment } from "../environments/environment";
 import { mockPlayerPictures, mockPlayerStreams, mockPlayerVideos } from "./data/media";
@@ -12,12 +30,65 @@ import { CreateLfgMessageRequestDto } from "@features/lfg/dto/lfg-message.dto";
 import { mockHomeFeed, mockLfgMessages } from "./data/home-feed";
 import { mockPlayerOptions } from "./data/options";
 import { mockPlayerSheet, PLAYER_PUBLIC_ID, PLATFORM_USER_PUBLIC_ID } from "./data/players";
+import { mockTeamApplications, mockTeamSheet, mockTeamSummaries } from "./data/teams";
+import { mockTeamLinks, mockTeamPosts } from "./data/team-wall";
+import {
+    GamePostCreateRequestDto,
+    GamePostModerateRequestDto,
+    GamePostTargetRequestDto,
+    GamePostUpdateRequestDto,
+    TeamWallRequestDto,
+} from "@features/teams/dto/game-post.dto";
+import {
+    TeamLinkCreateRequestDto,
+    TeamLinkListRequestDto,
+    TeamLinkReorderRequestDto,
+    TeamLinkUpdateRequestDto,
+} from "@features/teams/dto/team-link.dto";
 
 const playersUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "Players");
+const teamsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "Teams");
+const teamApplicationsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "TeamApplications");
+const gamePostsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "GamePosts");
+const teamLinksUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "TeamLinks");
 
 let player = { ...mockPlayerSheet };
 let hasPlayerSheet = !new URLSearchParams(location.search).has("noSheet");
 let lfgMessages = [...mockLfgMessages];
+let teams: TeamSheetDto[] = [{ ...mockTeamSheet, members: [...(mockTeamSheet.members ?? [])] }];
+let teamApplications = [...mockTeamApplications];
+let teamPosts = [...mockTeamPosts];
+let teamLinks = [...mockTeamLinks];
+
+function teamSummary(team: TeamSheetDto) {
+    return {
+        publicId: team.publicId,
+        entitled: team.entitled,
+        discriminator: team.discriminator,
+        tag: team.tag,
+        sentence: team.sentence,
+        regionCode: team.regionCode,
+        creationDate: team.creationDate,
+        memberCount: team.memberCount,
+        playerSlotCount: team.playerSlotCount,
+    };
+}
+
+function withViewer(team: TeamSheetDto): TeamSheetDto {
+    const member = team.members?.find((item) => item.playerPublicId === PLAYER_PUBLIC_ID);
+    const application = teamApplications.find(
+        (item) => item.teamPublicId === team.publicId && item.playerPublicId === PLAYER_PUBLIC_ID,
+    );
+    return {
+        ...team,
+        viewerRank: member?.rank ?? null,
+        viewerApplicationStatus: application?.status ?? null,
+        viewerApplicationPublicId: application?.publicId ?? null,
+        pendingApplicationCount: teamApplications.filter(
+            (item) => item.teamPublicId === team.publicId && item.status === "pending",
+        ).length,
+    };
+}
 
 const mediaStore: Record<string, PlayerMediaDto[]> = {
     PlayerPictures: [...mockPlayerPictures],
@@ -69,6 +140,381 @@ function catalogItem(items: { id: number; code: string }[], id: number | null | 
 
 export const handlers = [
     ...mediaHandlers,
+    http.post(`${teamsUrl}/actions/Search`, async ({ request }) => {
+        const body = ((await request.json()) as TeamSearchRequestDto) ?? {};
+        const query = (body.query ?? "").trim().toLowerCase();
+        const region = body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
+        const items = [
+            ...teams.map(teamSummary),
+            ...mockTeamSummaries.filter((item) => !teams.some((team) => team.publicId === item.publicId)),
+        ].filter((team) => {
+            const matchesQuery =
+                !query ||
+                team.entitled.toLowerCase().includes(query) ||
+                (team.tag ?? "").toLowerCase().includes(query);
+            const matchesRegion = !region || team.regionCode === region.code;
+            return matchesQuery && matchesRegion;
+        });
+        return HttpResponse.json({ items, hasMore: false });
+    }),
+    http.post(`${teamsUrl}/actions/ListByPlayer`, async ({ request }) => {
+        const body = ((await request.json()) as TeamListByPlayerRequestDto) ?? { playerPublicId: "" };
+        const playerSlots = new Set(["captain", "player"]);
+        const items: PlayerTeamDto[] = teams.flatMap((team) => {
+            const member = (team.members ?? []).find((item) => item.playerPublicId === body.playerPublicId);
+            if (!member) {
+                return [];
+            }
+            return [
+                {
+                    publicId: team.publicId,
+                    entitled: team.entitled,
+                    discriminator: team.discriminator,
+                    tag: team.tag,
+                    regionCode: team.regionCode,
+                    rank: member.rank,
+                    laneCode: member.laneCode,
+                    rosterKind: member.rosterKind,
+                    memberCount: team.memberCount,
+                    playerSlotCount: (team.members ?? []).filter((item) => playerSlots.has(item.rank)).length,
+                },
+            ];
+        });
+        return HttpResponse.json(items);
+    }),
+    http.get(`${teamsUrl}/:publicId`, ({ params }) => {
+        const team = teams.find((item) => item.publicId === params["publicId"]);
+        if (!team) {
+            const summary = mockTeamSummaries.find((item) => item.publicId === params["publicId"]);
+            if (!summary) {
+                return HttpResponse.json({ message: "NOT_FOUND" }, { status: 404 });
+            }
+            return HttpResponse.json(
+                withViewer({
+                    ...summary,
+                    layoutJson: null,
+                    members: [],
+                    viewerRank: null,
+                    viewerApplicationStatus: null,
+                    viewerApplicationPublicId: null,
+                    pendingApplicationCount: 0,
+                }),
+            );
+        }
+        return HttpResponse.json(withViewer(team));
+    }),
+    http.post(teamsUrl, async ({ request }) => {
+        const body = (await request.json()) as TeamCreateRequestDto;
+        const created: TeamSheetDto = {
+            publicId: crypto.randomUUID(),
+            entitled: body.entitled,
+            discriminator: String(Math.floor(1000 + Math.random() * 9000)),
+            tag: body.tag ?? null,
+            sentence: body.sentence ?? null,
+            layoutJson: null,
+            regionCode: player.region?.code ?? null,
+            creationDate: new Date().toISOString(),
+            memberCount: 1,
+            playerSlotCount: 1,
+            members: [
+                {
+                    playerPublicId: PLAYER_PUBLIC_ID,
+                    platformUserPublicId: PLATFORM_USER_PUBLIC_ID,
+                    nickname: player.nickname,
+                    discriminator: player.discriminator,
+                    avatarUrl: player.avatarUrl,
+                    rank: "captain",
+                    gameName: player.gameName,
+                    tagLine: player.tagLine,
+                    idLane: player.primaryLane?.id ?? null,
+                    laneCode: player.primaryLane?.code ?? null,
+                    rosterKind: "main",
+                    joinedAt: new Date().toISOString(),
+                },
+            ],
+            viewerRank: "captain",
+            viewerApplicationStatus: null,
+            viewerApplicationPublicId: null,
+            pendingApplicationCount: 0,
+        };
+        teams = [created, ...teams];
+        return HttpResponse.json(created);
+    }),
+    http.put(`${teamsUrl}/:publicId`, async ({ params, request }) => {
+        const publicId = params["publicId"] as string;
+        const body = (await request.json()) as TeamUpdateRequestDto;
+        teams = teams.map((team) =>
+            team.publicId === publicId
+                ? {
+                      ...team,
+                      entitled: body.entitled !== undefined ? body.entitled : team.entitled,
+                      tag: body.tag !== undefined ? body.tag : team.tag,
+                      sentence: body.sentence !== undefined ? body.sentence : team.sentence,
+                      layoutJson: body.layoutJson !== undefined ? body.layoutJson : team.layoutJson,
+                  }
+                : team,
+        );
+        const team = teams.find((item) => item.publicId === publicId);
+        return team
+            ? HttpResponse.json(withViewer(team))
+            : HttpResponse.json({ message: "NOT_FOUND" }, { status: 404 });
+    }),
+    http.post(`${teamsUrl}/actions/SetRoster`, async ({ request }) => {
+        const body = (await request.json()) as TeamSetRosterRequestDto;
+        const lane = mockPlayerOptions.lanes.find((item) => item.id === body.idLane);
+        teams = teams.map((team) =>
+            team.publicId === body.teamPublicId
+                ? {
+                      ...team,
+                      members: (team.members ?? []).map((member) => {
+                          if (member.playerPublicId === body.playerPublicId) {
+                              return {
+                                  ...member,
+                                  idLane: body.idLane,
+                                  laneCode: lane?.code ?? member.laneCode,
+                                  rosterKind: body.rosterKind,
+                              };
+                          }
+                          if (
+                              body.rosterKind === "main" &&
+                              member.idLane === body.idLane &&
+                              member.rosterKind === "main"
+                          ) {
+                              return { ...member, rosterKind: "sub" };
+                          }
+                          return member;
+                      }),
+                  }
+                : team,
+        );
+        return HttpResponse.json(withViewer(teams.find((team) => team.publicId === body.teamPublicId)!));
+    }),
+    http.post(`${teamsUrl}/actions/SetRank`, async ({ request }) => {
+        const body = (await request.json()) as TeamSetRankRequestDto;
+        teams = teams.map((team) =>
+            team.publicId === body.teamPublicId
+                ? {
+                      ...team,
+                      members: (team.members ?? []).map((member) =>
+                          member.playerPublicId === body.playerPublicId ? { ...member, rank: body.rank } : member,
+                      ),
+                  }
+                : team,
+        );
+        return HttpResponse.json(withViewer(teams.find((team) => team.publicId === body.teamPublicId)!));
+    }),
+    http.post(`${teamsUrl}/actions/Kick`, async ({ request }) => {
+        const body = (await request.json()) as TeamMemberTargetRequestDto;
+        teams = teams.map((team) =>
+            team.publicId === body.teamPublicId
+                ? {
+                      ...team,
+                      members: (team.members ?? []).filter((member) => member.playerPublicId !== body.playerPublicId),
+                      memberCount: Math.max(0, team.memberCount - 1),
+                  }
+                : team,
+        );
+        return HttpResponse.json(withViewer(teams.find((team) => team.publicId === body.teamPublicId)!));
+    }),
+    http.post(`${teamsUrl}/actions/Leave`, async ({ request }) => {
+        const body = (await request.json()) as TeamMemberTargetRequestDto;
+        teams = teams.map((team) =>
+            team.publicId === body.teamPublicId
+                ? {
+                      ...team,
+                      members: (team.members ?? []).filter((member) => member.playerPublicId !== body.playerPublicId),
+                      memberCount: Math.max(0, team.memberCount - 1),
+                  }
+                : team,
+        );
+        return HttpResponse.json({ teamPublicId: body.teamPublicId });
+    }),
+    http.post(`${teamsUrl}/actions/TransferCaptaincy`, async ({ request }) => {
+        const body = (await request.json()) as TeamMemberTargetRequestDto;
+        teams = teams.map((team) =>
+            team.publicId === body.teamPublicId
+                ? {
+                      ...team,
+                      members: (team.members ?? []).map((member) => {
+                          if (member.playerPublicId === body.playerPublicId) {
+                              return { ...member, rank: "captain" };
+                          }
+                          return member.rank === "captain" ? { ...member, rank: "player" } : member;
+                      }),
+                  }
+                : team,
+        );
+        return HttpResponse.json(withViewer(teams.find((team) => team.publicId === body.teamPublicId)!));
+    }),
+    http.post(`${teamsUrl}/actions/Disband`, async ({ request }) => {
+        const body = (await request.json()) as TeamDisbandRequestDto;
+        const team = teams.find((item) => item.publicId === body.teamPublicId);
+        teams = teams.filter((item) => item.publicId !== body.teamPublicId);
+        return HttpResponse.json({
+            publicId: body.teamPublicId,
+            handle: team ? `${team.entitled}#${team.discriminator}` : body.confirmation,
+        });
+    }),
+    http.post(`${teamApplicationsUrl}/actions/Create`, async ({ request }) => {
+        const body = (await request.json()) as TeamApplicationCreateRequestDto;
+        const team = teams.find((item) => item.publicId === body.teamPublicId) ?? mockTeamSheet;
+        const created = {
+            publicId: crypto.randomUUID(),
+            message: body.message,
+            status: "pending",
+            soughtRank: body.soughtRank,
+            laneCode: mockPlayerOptions.lanes.find((lane) => lane.id === body.idLane)?.code ?? null,
+            creationDate: new Date().toISOString(),
+            reviewedAt: null,
+            teamPublicId: body.teamPublicId,
+            teamName: team.entitled,
+            teamDiscriminator: team.discriminator,
+            playerPublicId: PLAYER_PUBLIC_ID,
+            platformUserPublicId: PLATFORM_USER_PUBLIC_ID,
+            nickname: player.nickname,
+            discriminator: player.discriminator,
+            avatarUrl: player.avatarUrl,
+        };
+        teamApplications = [created, ...teamApplications];
+        return HttpResponse.json(created);
+    }),
+    http.post(`${teamApplicationsUrl}/actions/ListMine`, () => HttpResponse.json(teamApplications)),
+    http.post(`${teamApplicationsUrl}/actions/List`, async ({ request }) => {
+        const body = (await request.json()) as TeamApplicationListRequestDto;
+        return HttpResponse.json(
+            teamApplications.filter(
+                (item) => item.teamPublicId === body.teamPublicId && item.status === (body.status ?? "pending"),
+            ),
+        );
+    }),
+    http.post(`${teamApplicationsUrl}/actions/Review`, async ({ request }) => {
+        const body = (await request.json()) as TeamApplicationReviewRequestDto;
+        teamApplications = teamApplications.map((item) =>
+            item.publicId === body.publicId
+                ? { ...item, status: body.accept ? "accepted" : "rejected", reviewedAt: new Date().toISOString() }
+                : item,
+        );
+        return HttpResponse.json(teamApplications.find((item) => item.publicId === body.publicId));
+    }),
+    http.post(`${teamApplicationsUrl}/actions/Withdraw`, async ({ request }) => {
+        const body = (await request.json()) as TeamApplicationTargetRequestDto;
+        teamApplications = teamApplications.map((item) =>
+            item.publicId === body.publicId ? { ...item, status: "withdrawn" } : item,
+        );
+        return HttpResponse.json(teamApplications.find((item) => item.publicId === body.publicId));
+    }),
+    http.post(`${gamePostsUrl}/actions/ListTeamWall`, async ({ request }) => {
+        const body = ((await request.json()) as TeamWallRequestDto) ?? { teamPublicId: "" };
+        const items = teamPosts.filter(
+            (item) => item.teamPublicId === body.teamPublicId && item.status === "approved",
+        );
+        return HttpResponse.json({ items, hasMore: false });
+    }),
+    http.post(`${gamePostsUrl}/actions/ListPending`, async ({ request }) => {
+        const body = ((await request.json()) as TeamWallRequestDto) ?? { teamPublicId: "" };
+        const items = teamPosts.filter(
+            (item) => item.teamPublicId === body.teamPublicId && item.status === "pending",
+        );
+        return HttpResponse.json({ items, hasMore: false });
+    }),
+    http.post(`${gamePostsUrl}/actions/Create`, async ({ request }) => {
+        const body = (await request.json()) as GamePostCreateRequestDto;
+        const created = {
+            publicId: crypto.randomUUID(),
+            teamPublicId: body.teamPublicId,
+            body: body.body,
+            status: "approved",
+            creationDate: new Date().toISOString(),
+            authorPlayerPublicId: PLAYER_PUBLIC_ID,
+            authorPlatformUserPublicId: PLATFORM_USER_PUBLIC_ID,
+            authorNickname: player.nickname,
+            authorDiscriminator: player.discriminator,
+            authorAvatarUrl: player.avatarUrl,
+            moderationReason: null,
+            moderatedAt: new Date().toISOString(),
+        };
+        teamPosts = [created, ...teamPosts];
+        return HttpResponse.json(created);
+    }),
+    http.post(`${gamePostsUrl}/actions/Update`, async ({ request }) => {
+        const body = (await request.json()) as GamePostUpdateRequestDto;
+        teamPosts = teamPosts.map((item) =>
+            item.publicId === body.publicId ? { ...item, body: body.body } : item,
+        );
+        return HttpResponse.json(teamPosts.find((item) => item.publicId === body.publicId));
+    }),
+    http.post(`${gamePostsUrl}/actions/Moderate`, async ({ request }) => {
+        const body = (await request.json()) as GamePostModerateRequestDto;
+        teamPosts = teamPosts.map((item) =>
+            item.publicId === body.publicId
+                ? {
+                      ...item,
+                      status: body.approve ? "approved" : "rejected",
+                      moderatedAt: new Date().toISOString(),
+                      moderationReason: body.reason ?? null,
+                  }
+                : item,
+        );
+        return HttpResponse.json(teamPosts.find((item) => item.publicId === body.publicId));
+    }),
+    http.post(`${gamePostsUrl}/actions/Delete`, async ({ request }) => {
+        const body = (await request.json()) as GamePostTargetRequestDto;
+        teamPosts = teamPosts.filter((item) => item.publicId !== body.publicId);
+        return HttpResponse.json({ publicId: body.publicId });
+    }),
+    http.post(`${teamLinksUrl}/actions/List`, async ({ request }) => {
+        const body = (await request.json()) as TeamLinkListRequestDto;
+        return HttpResponse.json(
+            teamLinks
+                .filter((item) => item.teamPublicId === body.teamPublicId)
+                .sort((left, right) => left.position - right.position),
+        );
+    }),
+    http.post(`${teamLinksUrl}/actions/Create`, async ({ request }) => {
+        const body = (await request.json()) as TeamLinkCreateRequestDto;
+        const created = {
+            publicId: crypto.randomUUID(),
+            teamPublicId: body.teamPublicId,
+            url: body.url,
+            label: body.label,
+            icon: body.icon,
+            position: teamLinks.filter((item) => item.teamPublicId === body.teamPublicId).length,
+        };
+        teamLinks = [...teamLinks, created];
+        return HttpResponse.json(created);
+    }),
+    http.put(`${teamLinksUrl}/:publicId`, async ({ params, request }) => {
+        const publicId = params["publicId"] as string;
+        const body = (await request.json()) as TeamLinkUpdateRequestDto;
+        teamLinks = teamLinks.map((item) =>
+            item.publicId === publicId
+                ? {
+                      ...item,
+                      url: body.url !== undefined ? body.url : item.url,
+                      label: body.label !== undefined ? body.label : item.label,
+                      icon: body.icon !== undefined ? body.icon : item.icon,
+                  }
+                : item,
+        );
+        return HttpResponse.json(teamLinks.find((item) => item.publicId === publicId));
+    }),
+    http.delete(`${teamLinksUrl}/:publicId`, ({ params }) => {
+        const publicId = params["publicId"] as string;
+        teamLinks = teamLinks.filter((item) => item.publicId !== publicId);
+        return new HttpResponse(null, { status: 204 });
+    }),
+    http.post(`${teamLinksUrl}/actions/Reorder`, async ({ request }) => {
+        const body = (await request.json()) as TeamLinkReorderRequestDto;
+        teamLinks = teamLinks.map((item) => {
+            const rank = body.publicIds.indexOf(item.publicId);
+            return item.teamPublicId === body.teamPublicId && rank >= 0 ? { ...item, position: rank } : item;
+        });
+        return HttpResponse.json(
+            teamLinks
+                .filter((item) => item.teamPublicId === body.teamPublicId)
+                .sort((left, right) => left.position - right.position),
+        );
+    }),
     http.post(gatewayUrl(environment.apiUrl, "leagueoflegends", "HomeFeed", "actions", "Get"), () =>
         HttpResponse.json({
             ...mockHomeFeed,

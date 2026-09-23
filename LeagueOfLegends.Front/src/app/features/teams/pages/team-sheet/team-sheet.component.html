@@ -1,0 +1,121 @@
+<section class="team-sheet gc-enter">
+    @if (store.notFound()) {
+        <nb-card>
+            <nb-card-body>
+                <p i18n="@@lol.team.notFound">Team not found.</p>
+            </nb-card-body>
+        </nb-card>
+    } @else if (store.sheet(); as team) {
+        <lol-team-hero [team]="team" [canEdit]="store.canEditSheet()" [(settingsOpen)]="settingsOpen" />
+
+        @if (store.canEditSheet() && settingsOpen()) {
+            <lol-team-admin
+                id="team-settings"
+                [sheet]="team"
+                [saving]="store.saving()"
+                [errorCode]="store.errorCode()"
+                (save)="onSave($event)"
+                (disband)="onDisband($event)"
+            />
+        }
+
+        @if (saveFailed()) {
+            <p class="team-sheet__error" role="alert" i18n="@@lol.team.layout.saveFailed">
+                Your layout could not be saved. Please try again.
+            </p>
+        }
+
+        <gc-widget-workspace
+            [workspace]="workspace()"
+            [catalog]="catalog"
+            [canEdit]="canEditLayout()"
+            [canConfigure]="store.canEditSheet()"
+            [saving]="store.saving()"
+            [columns]="columns"
+            [rowHeight]="rowHeight"
+            [(editing)]="editing"
+            [pageVisibilityOptions]="pageVisibilityOptions"
+            pageVisibilityLabel="Who can see this page"
+            i18n-pageVisibilityLabel="@@lol.team.page.visibility"
+            navLabel="Team pages"
+            i18n-navLabel="@@lol.team.nav"
+            addPageLabel="New page"
+            i18n-addPageLabel="@@lol.team.page.add"
+            removePageLabel="Delete page"
+            i18n-removePageLabel="@@lol.team.page.remove"
+            moveUpLabel="Move up"
+            i18n-moveUpLabel="@@lol.team.page.moveUp"
+            moveDownLabel="Move down"
+            i18n-moveDownLabel="@@lol.team.page.moveDown"
+            addWidgetLabel="Add a widget"
+            i18n-addWidgetLabel="@@lol.team.widget.add"
+            editLabel="Edit"
+            i18n-editLabel="@@lol.team.layout.edit"
+            cancelLabel="Cancel"
+            i18n-cancelLabel="@@lol.team.layout.cancel"
+            saveLabel="Save"
+            i18n-saveLabel="@@lol.team.layout.save"
+            emptyPageLabel="This page has no widget yet."
+            i18n-emptyPageLabel="@@lol.team.page.empty"
+            hintLabel="Drag a widget by its header to move it, or grab its bottom-right corner to resize it."
+            i18n-hintLabel="@@lol.team.layout.hint"
+            newPageTitle="New page"
+            i18n-newPageTitle="@@lol.team.page.add"
+            settingsLabel="Configure this widget"
+            i18n-settingsLabel="@@lol.team.widget.settings"
+            editDataLabel="Edit data"
+            i18n-editDataLabel="@@lol.team.widget.editData"
+            removeWidgetLabel="Remove widget"
+            i18n-removeWidgetLabel="@@lol.team.widget.remove"
+            widgetTitleLabel="Widget title"
+            i18n-widgetTitleLabel="@@lol.team.widget.title"
+            widgetTitleHint="Leave empty to drop the header."
+            i18n-widgetTitleHint="@@lol.team.widget.title.hint"
+            doneLabel="Done"
+            i18n-doneLabel="@@lol.team.widget.done"
+            (save)="onSaveLayout($event)"
+        >
+            <lol-team-widget-template-host
+                [team]="team"
+                [editing]="editing()"
+                [savingField]="store.saving()"
+                [errorCode]="store.errorCode()"
+                [playerPublicId]="membership.playerPublicId()"
+                [busy]="store.saving()"
+                [lanes]="options.value().lanes"
+                [applyLoading]="applyLoading()"
+                [applySaving]="store.saving()"
+                [applyErrorCode]="store.errorCode()"
+                [needsSheet]="membership.needsSheet()"
+                (setRank)="onSetRank($event)"
+                (setRoster)="onSetRoster($event)"
+                (kick)="onKick($event)"
+                (transfer)="onTransfer($event)"
+                (leave)="onLeave($event)"
+                (apply)="onApply($event)"
+                (withdraw)="onWithdraw()"
+                (rosterChanged)="onRosterChanged()"
+                (saveField)="onSave($event)"
+            />
+        </gc-widget-workspace>
+    } @else {
+        <header class="team-hero team-hero--skeleton" aria-busy="true">
+            <div class="team-hero__game-text">
+                <gc-skeleton width="5rem" height="0.65rem" />
+                <gc-skeleton width="9rem" height="1rem" />
+            </div>
+            <div class="team-hero__identity">
+                <gc-skeleton width="3.5rem" height="1.6rem" radius="0.4rem" />
+                <div>
+                    <gc-skeleton width="14rem" height="1.6rem" />
+                    <gc-skeleton width="20rem" height="0.8rem" />
+                </div>
+            </div>
+        </header>
+
+        <div class="team-sheet__workspace-skeleton" aria-busy="true">
+            <gc-skeleton width="12rem" height="2rem" radius="0.25rem" />
+            <gc-skeleton width="100%" height="18rem" radius="0.75rem" />
+        </div>
+    }
+</section>

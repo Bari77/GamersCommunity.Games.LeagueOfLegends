@@ -59,4 +59,10 @@ public class Player : IKeyTable
     public virtual ICollection<PlayerStream> PlayerStreams { get; set; } = [];
 
     public virtual ICollection<LfgAd> LfgAds { get; set; } = [];
+
+    public virtual ICollection<TeamMember> TeamMembers { get; set; } = [];
+
+    public virtual ICollection<TeamApplication> TeamApplications { get; set; } = [];
+
+    public virtual ICollection<Team> CaptainedTeams { get; set; } = [];
 }

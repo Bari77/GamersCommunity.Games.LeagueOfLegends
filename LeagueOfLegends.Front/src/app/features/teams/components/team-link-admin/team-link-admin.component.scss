@@ -1,0 +1,78 @@
+.link-admin {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.link-admin__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.link-admin__field {
+    display: flex;
+    flex: 1 1 8rem;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    font-size: 0.78rem;
+    opacity: 0.85;
+}
+
+.link-admin__field--wide {
+    flex: 2 1 14rem;
+}
+
+.link-admin__glyph {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.35rem;
+    vertical-align: -0.15rem;
+}
+
+.link-admin__error {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #ff8fa8;
+}
+
+.link-admin__empty {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.55;
+}
+
+.link-admin__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.link-admin__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+}
+
+.link-admin__row input {
+    flex: 1 1 8rem;
+    min-width: 0;
+}
+
+.link-admin__url {
+    flex: 2 1 12rem;
+}
+
+.link-admin__tools {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    margin-left: auto;
+}

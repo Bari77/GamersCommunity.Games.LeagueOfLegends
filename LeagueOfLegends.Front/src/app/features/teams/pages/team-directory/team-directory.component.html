@@ -1,0 +1,147 @@
+<section class="team-directory gc-enter">
+    <nb-card>
+        <nb-card-header class="team-directory__header">
+            <div>
+                <h1 class="team-directory__title gc-display" i18n="@@lol.team.directory.title">Teams</h1>
+                <p class="team-directory__subtitle" i18n="@@lol.team.directory.subtitle">
+                    Browse teams, then apply as a player or as staff.
+                </p>
+            </div>
+
+            @if (membership.loading()) {
+                <gc-skeleton width="9rem" height="2.5rem" radius="0.25rem" />
+            } @else if (!membership.isAuthenticated()) {
+                <a href="/users/login" nbButton status="primary">
+                    <span i18n="@@lol.team.directory.loginToFound">Log in to found a team</span>
+                </a>
+            } @else if (membership.needsSheet()) {
+                <lol-create-sheet-wall variant="inline" [message]="sheetWallMessage" />
+            } @else if (!formOpen()) {
+                <button nbButton status="primary" (click)="formOpen.set(true)">
+                    <span i18n="@@lol.team.directory.found">Found a team</span>
+                </button>
+            }
+        </nb-card-header>
+
+        <nb-card-body>
+            <form class="team-directory__filters" (ngSubmit)="onSearchSubmit()">
+                <input
+                    class="team-directory__search"
+                    nbInput
+                    fullWidth
+                    type="search"
+                    [placeholder]="searchPlaceholder"
+                    [ngModel]="store.query()"
+                    (ngModelChange)="store.query.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                />
+
+                <nb-select
+                    class="team-directory__filter"
+                    placeholder="—"
+                    [disabled]="loadingOptions()"
+                    [ngModel]="store.idRegion()"
+                    (ngModelChange)="store.idRegion.set($event); onFilterChange()"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    <nb-option [value]="null" i18n="@@lol.team.directory.allRegions">All regions</nb-option>
+                    @for (region of options.value().regions; track region.id) {
+                        <nb-option [value]="region.id">{{ region.code | gameTerm }}</nb-option>
+                    }
+                </nb-select>
+
+                <button nbButton status="basic" type="submit">
+                    <span i18n="@@lol.team.directory.search">Search</span>
+                </button>
+
+                @if (store.isFiltered()) {
+                    <button nbButton ghost status="basic" type="button" (click)="store.resetFilters()">
+                        <span i18n="@@lol.team.directory.reset">Clear</span>
+                    </button>
+                }
+            </form>
+
+            @if (formOpen()) {
+                <div class="team-directory__create">
+                    <lol-team-create-form
+                        [saving]="creating()"
+                        [errorCode]="createErrorCode()"
+                        (create)="onCreate($event)"
+                        (cancel)="closeForm()"
+                    />
+                </div>
+            }
+
+            @if (pendingApplications().length > 0) {
+                <aside class="team-directory__applications">
+                    <h2 class="team-directory__applicationsTitle" i18n="@@lol.team.directory.pendingTitle">
+                        Applications awaiting an answer
+                    </h2>
+                    <ul>
+                        @for (application of pendingApplications(); track application.publicId) {
+                            <li>
+                                <a [routerLink]="applicationLink(application)">{{ application.teamHandleLabel() }}</a>
+                                <span class="team-directory__applicationsWith">
+                                    {{ application.soughtRank | gameTerm }}
+                                    @if (application.laneCode) {
+                                        · {{ application.laneCode | gameTerm }}
+                                    }
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                </aside>
+            }
+        </nb-card-body>
+    </nb-card>
+
+    <ul class="team-cards">
+        @if (store.loading()) {
+            @for (placeholder of teamPlaceholders; track placeholder) {
+                <li class="team-card team-card--skeleton" aria-busy="true">
+                    <gc-skeleton width="3.5rem" height="1.6rem" radius="0.35rem" />
+                    <div class="team-card__body">
+                        <gc-skeleton width="60%" height="1.15rem" />
+                        <gc-skeleton width="40%" height="0.8rem" />
+                        <gc-skeleton-text [lines]="2" />
+                    </div>
+                </li>
+            }
+        } @else {
+            @for (team of store.teams(); track team.publicId) {
+                <li class="team-card">
+                    @if (team.tag) {
+                        <span class="team-card__tag">{{ team.tag }}</span>
+                    }
+                    <div class="team-card__body">
+                        <a class="team-card__handle" [routerLink]="teamLink(team.publicId)">
+                            {{ team.handleLabel() }}
+                        </a>
+                        <p class="team-card__meta">
+                            @if (team.regionCode) {
+                                {{ team.regionCode | gameTerm }} ·
+                            }
+                            {{ team.playerSlotCount }}
+                            <span i18n="@@lol.team.directory.playerSlots">players</span>
+                            · {{ team.memberCount }}
+                            <span i18n="@@lol.team.directory.memberCount">members</span>
+                        </p>
+                        @if (team.sentence) {
+                            <gc-rich-content class="team-card__sentence" [html]="team.sentence" />
+                        }
+                    </div>
+                </li>
+            } @empty {
+                <li class="team-cards__empty" i18n="@@lol.team.directory.empty">No team matches these filters.</li>
+            }
+        }
+    </ul>
+
+    @if (store.hasMore() && !store.loading()) {
+        <div class="team-directory__more">
+            <button nbButton ghost status="basic" [disabled]="store.loadingMore()" (click)="store.loadMore()">
+                <span i18n="@@lol.team.directory.loadMore">Load more</span>
+            </button>
+        </div>
+    }
+</section>

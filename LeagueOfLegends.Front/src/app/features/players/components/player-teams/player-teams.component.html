@@ -1,0 +1,45 @@
+@if (loading()) {
+    <ul class="player-teams" aria-busy="true">
+        @for (placeholder of placeholders; track placeholder) {
+            <li class="player-teams__card player-teams__card--skeleton">
+                <gc-skeleton width="2.5rem" height="1.4rem" radius="0.35rem" />
+                <div>
+                    <gc-skeleton width="8rem" height="1rem" />
+                    <gc-skeleton width="10rem" height="0.75rem" />
+                </div>
+            </li>
+        }
+    </ul>
+} @else {
+    <ul class="player-teams">
+        @for (team of items(); track team.publicId) {
+            <li class="player-teams__card">
+                @if (team.tag) {
+                    <span class="player-teams__tag">{{ team.tag }}</span>
+                }
+                <div class="player-teams__body">
+                    <a class="player-teams__handle" [routerLink]="teamLink(team.publicId)">
+                        {{ team.handleLabel() }}
+                    </a>
+                    <p class="player-teams__meta">
+                        <span class="player-teams__rank">{{ team.rank | gameTerm }}</span>
+                        @if (team.rosterKind) {
+                            <span>{{ team.rosterKind | gameTerm }}</span>
+                        }
+                        @if (team.laneCode; as lane) {
+                            <span class="player-teams__lane">
+                                <lol-lane-icon [code]="lane" [alt]="lane | gameTerm" />
+                                {{ lane | gameTerm }}
+                            </span>
+                        }
+                        @if (team.regionCode) {
+                            <span>{{ team.regionCode | gameTerm }}</span>
+                        }
+                    </p>
+                </div>
+            </li>
+        } @empty {
+            <li class="player-teams__empty" i18n="@@lol.player.teams.empty">This player is not on a team yet.</li>
+        }
+    </ul>
+}

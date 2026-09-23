@@ -1,0 +1,42 @@
+<form class="team-post-form" (ngSubmit)="submit()">
+    <gc-rich-editor
+        [compact]="true"
+        [maxLength]="4000"
+        [placeholder]="bodyPlaceholder"
+        [value]="body()"
+        (valueChange)="body.set($event)"
+    />
+
+    @if (errorCode(); as code) {
+        <p class="team-post-form__error" role="alert">
+            @switch (code) {
+                @case ("VALIDATION") {
+                    <span i18n="@@lol.team.wall.error.body">A post needs a message.</span>
+                }
+                @case ("TEAM_MEMBER_REQUIRED") {
+                    <span i18n="@@lol.team.wall.error.member">Only members can post on this wall.</span>
+                }
+                @default {
+                    <span i18n="@@lol.team.wall.error.unknown">The post could not be saved.</span>
+                }
+            }
+        </p>
+    }
+
+    <footer class="team-post-form__actions">
+        @if (post()) {
+            <button nbButton ghost size="small" status="basic" type="button" (click)="cancel.emit()">
+                <span i18n="@@lol.team.form.cancel">Cancel</span>
+            </button>
+        }
+        <button nbButton size="small" status="primary" type="submit" [disabled]="saving()">
+            @if (post()) {
+                <span i18n="@@lol.team.wall.save">Save</span>
+            } @else if (moderated()) {
+                <span i18n="@@lol.team.wall.publish">Publish</span>
+            } @else {
+                <span i18n="@@lol.team.wall.send">Send for review</span>
+            }
+        </button>
+    </footer>
+</form>

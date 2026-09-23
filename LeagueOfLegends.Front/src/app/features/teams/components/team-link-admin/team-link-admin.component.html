@@ -1,0 +1,175 @@
+<section class="link-admin">
+    <form class="link-admin__form" (ngSubmit)="add()">
+        <label class="link-admin__field">
+            <span i18n="@@lol.links.field.label">Label</span>
+            <input
+                nbInput
+                fieldSize="small"
+                type="text"
+                maxlength="50"
+                placeholder="Our Discord"
+                i18n-placeholder="@@lol.team.links.field.label.hint"
+                [ngModel]="label()"
+                (ngModelChange)="label.set($event)"
+                [ngModelOptions]="{ standalone: true }"
+            />
+        </label>
+
+        <label class="link-admin__field link-admin__field--wide">
+            <span>URL</span>
+            <input
+                nbInput
+                fieldSize="small"
+                type="url"
+                placeholder="https://…"
+                [ngModel]="url()"
+                (ngModelChange)="url.set($event)"
+                [ngModelOptions]="{ standalone: true }"
+            />
+        </label>
+
+        <label class="link-admin__field">
+            <span i18n="@@lol.links.field.icon">Icon</span>
+            <nb-select
+                size="small"
+                [ngModel]="icon()"
+                (ngModelChange)="icon.set($event)"
+                [ngModelOptions]="{ standalone: true }"
+            >
+                <nb-option [value]="null" i18n="@@lol.links.icon.auto">Automatic</nb-option>
+                @for (network of networks; track network.key) {
+                    <nb-option [value]="network.key">
+                        <svg
+                            class="link-admin__glyph"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            [style.color]="network.color"
+                            aria-hidden="true"
+                        >
+                            <path [attr.d]="network.path" />
+                        </svg>
+                        {{ network.label }}
+                    </nb-option>
+                }
+            </nb-select>
+        </label>
+
+        <button nbButton size="small" status="primary" type="submit" [disabled]="!canAdd()">
+            <span i18n="@@lol.links.add">Add</span>
+        </button>
+    </form>
+
+    @if (store.errorCode(); as code) {
+        <p class="link-admin__error" role="alert">
+            @switch (code) {
+                @case ("URL_INVALID") {
+                    <span i18n="@@lol.links.error.url">Enter a full http(s) address.</span>
+                }
+                @case ("LABEL_MANDATORY") {
+                    <span i18n="@@lol.links.error.label">A label is required.</span>
+                }
+                @case ("TOO_MANY_ITEMS") {
+                    <span i18n="@@lol.team.links.error.tooMany">This team reached the maximum number of links.</span>
+                }
+                @case ("TEAM_RANK_REQUIRED") {
+                    <span i18n="@@lol.team.links.error.rank">Only managers can change the team links.</span>
+                }
+                @default {
+                    <span i18n="@@lol.links.error.unknown">This link could not be saved.</span>
+                }
+            }
+        </p>
+    }
+
+    @if (items().length === 0) {
+        <p class="link-admin__empty" i18n="@@lol.team.links.admin.empty">No link yet. Add your first one above.</p>
+    } @else {
+        <ul class="link-admin__list">
+            @for (item of items(); track item.publicId; let first = $first, last = $last) {
+                <li class="link-admin__row">
+                    <input
+                        nbInput
+                        fieldSize="small"
+                        type="text"
+                        maxlength="50"
+                        [value]="item.label"
+                        [attr.aria-label]="labelFieldName"
+                        [disabled]="store.saving()"
+                        (change)="editLabel(item, $event)"
+                    />
+                    <input
+                        nbInput
+                        fieldSize="small"
+                        type="url"
+                        class="link-admin__url"
+                        [value]="item.url"
+                        aria-label="URL"
+                        [disabled]="store.saving()"
+                        (change)="editUrl(item, $event)"
+                    />
+                    <nb-select
+                        size="small"
+                        [attr.aria-label]="iconFieldName"
+                        [ngModel]="item.icon"
+                        [disabled]="store.saving()"
+                        (ngModelChange)="editIcon(item, $event)"
+                        [ngModelOptions]="{ standalone: true }"
+                    >
+                        <nb-option [value]="null" i18n="@@lol.links.icon.auto">Automatic</nb-option>
+                        @for (network of networks; track network.key) {
+                            <nb-option [value]="network.key">
+                                <svg
+                                    class="link-admin__glyph"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    [style.color]="network.color"
+                                    aria-hidden="true"
+                                >
+                                    <path [attr.d]="network.path" />
+                                </svg>
+                                {{ network.label }}
+                            </nb-option>
+                        }
+                    </nb-select>
+                    <span class="link-admin__tools">
+                        <button
+                            nbButton
+                            ghost
+                            size="tiny"
+                            type="button"
+                            title="Move up"
+                            i18n-title="@@lol.links.moveUp"
+                            [disabled]="first || store.saving()"
+                            (click)="store.move(item.publicId, -1)"
+                        >
+                            &#8593;
+                        </button>
+                        <button
+                            nbButton
+                            ghost
+                            size="tiny"
+                            type="button"
+                            title="Move down"
+                            i18n-title="@@lol.links.moveDown"
+                            [disabled]="last || store.saving()"
+                            (click)="store.move(item.publicId, 1)"
+                        >
+                            &#8595;
+                        </button>
+                        <button
+                            nbButton
+                            ghost
+                            size="tiny"
+                            status="danger"
+                            type="button"
+                            [disabled]="store.saving()"
+                            (click)="store.remove(item.publicId)"
+                        >
+                            <span i18n="@@lol.links.remove">Delete</span>
+                        </button>
+                    </span>
+                </li>
+            }
+        </ul>
+    }
+</section>

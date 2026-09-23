@@ -47,6 +47,14 @@
     />
 </ng-template>
 
+<ng-template gcWidget="teams">
+    @if (preview()) {
+        <lol-player-teams [playerPublicId]="view().publicId" [previewTeams]="previewTeams" />
+    } @else {
+        <lol-player-teams [playerPublicId]="view().publicId" />
+    }
+</ng-template>
+
 <ng-template gcWidget="champions" gcWidgetEditable let-editingData="editingData">
     <lol-champion-board
         [champions]="view().champions"

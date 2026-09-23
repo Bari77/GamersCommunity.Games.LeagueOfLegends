@@ -1,0 +1,71 @@
+:host {
+    display: block;
+}
+
+.team-admin {
+    display: grid;
+    gap: 1rem;
+}
+
+.team-admin__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1rem;
+}
+
+.team-admin__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.team-admin__field label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.team-admin__hint {
+    margin: 0;
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.team-admin__error {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-danger-default, #ff3d71);
+}
+
+.team-admin__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.team-admin__danger {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+}
+
+.team-admin__danger-title {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.team-admin__danger-text {
+    margin: 0;
+    font-size: 0.82rem;
+    opacity: 0.7;
+}
+
+.team-admin__danger .team-admin__field {
+    width: 100%;
+}
+
+.team-admin__danger .team-admin__actions {
+    width: 100%;
+}

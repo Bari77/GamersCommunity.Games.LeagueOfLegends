@@ -1,4 +1,5 @@
 import type { GcGalleryItem, GcLink } from "@bari77/gc-widgets";
+import { PlayerTeam } from "@features/teams/models/team.model";
 
 export const WORKSPACE_PREVIEW_LINKS: GcLink[] = [
     { url: "https://www.youtube.com/@gamerscommunity", label: "YouTube channel" },
@@ -20,6 +21,21 @@ export const WORKSPACE_PREVIEW_VIDEOS: GcGalleryItem[] = [
     { url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", title: "Outplay compilation" },
     { url: "https://www.youtube.com/watch?v=aqz-KE-bpKQ", title: "Mid lane guide" },
     { url: "https://www.youtube.com/watch?v=jNQXAC9IVRw", title: "Clash highlights" },
+];
+
+export const WORKSPACE_PREVIEW_PLAYER_TEAMS: PlayerTeam[] = [
+    new PlayerTeam(
+        "44444444-4444-4444-4444-444444444444",
+        "T1",
+        "0001",
+        "T1",
+        "kr",
+        "captain",
+        "mid",
+        "main",
+        5,
+        5,
+    ),
 ];
 
 export const WORKSPACE_PREVIEW_STREAMS: GcGalleryItem[] = [

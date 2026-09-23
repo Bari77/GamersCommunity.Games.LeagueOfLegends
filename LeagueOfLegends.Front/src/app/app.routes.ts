@@ -13,6 +13,10 @@ export const routes: Routes = [
                     path: `${LOL_GAME_URL}/sheet`,
                     label: $localize`:@@lol.playground.nav.sheet:My profile`,
                 },
+                {
+                    path: `${LOL_GAME_URL}/teams`,
+                    label: $localize`:@@lol.playground.nav.teams:Teams`,
+                },
             ],
         },
         children: leagueOfLegendsRoutes,

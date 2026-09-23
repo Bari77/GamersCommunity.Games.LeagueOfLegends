@@ -1,0 +1,62 @@
+@let sheet = team();
+
+<header class="team-hero">
+    <div class="team-hero__game">
+        <div class="team-hero__game-text">
+            <p class="team-hero__kicker" i18n="@@lol.team.hero.kicker">Team sheet</p>
+            <p class="team-hero__game-name">League of Legends</p>
+        </div>
+    </div>
+
+    <div class="team-hero__identity">
+        @if (sheet.tag) {
+            <span class="team-hero__tag">{{ sheet.tag }}</span>
+        }
+        <div class="team-hero__who">
+            <h1 class="team-hero__handle gc-display">{{ sheet.handleLabel() }}</h1>
+            <p class="team-hero__meta">
+                @if (sheet.regionCode) {
+                    <span>{{ sheet.regionCode | gameTerm }}</span>
+                    ·
+                }
+                {{ sheet.playerSlotCount }}
+                <span i18n="@@lol.team.hero.players">players</span>
+                ·
+                {{ sheet.memberCount }}
+                <span i18n="@@lol.team.hero.members">members</span>
+                ·
+                <span i18n="@@lol.team.since">Created</span>
+                {{ sheet.creationDate | date: "mediumDate" }}
+            </p>
+        </div>
+    </div>
+
+    @if (sheet.viewerRank || canEdit()) {
+        <div class="team-hero__aside">
+            @if (sheet.viewerRank) {
+                <p class="team-hero__badge">{{ sheet.viewerRank | gameTerm }}</p>
+            }
+
+            @if (canEdit()) {
+                <button
+                    class="team-hero__edit"
+                    nbButton
+                    ghost
+                    size="small"
+                    status="basic"
+                    type="button"
+                    [attr.aria-expanded]="settingsOpen()"
+                    aria-controls="team-settings"
+                    (click)="settingsOpen.set(!settingsOpen())"
+                >
+                    <nb-icon [icon]="settingsOpen() ? 'close-outline' : 'edit-2-outline'"></nb-icon>
+                    @if (settingsOpen()) {
+                        <span i18n="@@lol.team.hero.close">Close</span>
+                    } @else {
+                        <span i18n="@@lol.team.hero.edit">Edit</span>
+                    }
+                </button>
+            }
+        </div>
+    }
+</header>

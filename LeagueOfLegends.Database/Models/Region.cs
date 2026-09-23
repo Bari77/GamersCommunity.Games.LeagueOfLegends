@@ -17,4 +17,6 @@ public class Region : IKeyTable
     public virtual ICollection<Player> Players { get; set; } = null!;
 
     public virtual ICollection<LfgAd> LfgAds { get; set; } = [];
+
+    public virtual ICollection<Team> Teams { get; set; } = [];
 }

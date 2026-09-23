@@ -1,0 +1,171 @@
+.team-directory {
+    display: grid;
+    gap: 1rem;
+}
+
+.team-directory__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.team-directory__title {
+    margin: 0;
+}
+
+.team-directory__subtitle {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.team-directory__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.team-directory__search {
+    flex: 1 1 14rem;
+    min-width: 12rem;
+}
+
+.team-directory__filter {
+    flex: 0 0 auto;
+    min-width: 10rem;
+}
+
+.team-directory__create {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.team-directory__applications {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, currentColor 5%, transparent);
+    border-left: 3px solid var(--gc-accent, var(--game-accent, #c8aa6e));
+}
+
+.team-directory__applicationsTitle {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.team-directory__applications ul {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0.4rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+}
+
+.team-directory__applications a {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.team-directory__applications a:hover {
+    text-decoration: underline;
+}
+
+.team-directory__applicationsWith {
+    margin-left: 0.4rem;
+    opacity: 0.7;
+}
+
+.team-cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 0.75rem;
+}
+
+.team-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, currentColor 4%, transparent);
+}
+
+.team-card__tag {
+    flex: none;
+    align-self: flex-start;
+    min-width: 3.2rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--game-accent, #c8aa6e) 40%, transparent);
+    color: var(--game-accent, #c8aa6e);
+    font-family: var(--gc-font-display, inherit);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.team-card__body {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+    min-width: 0;
+}
+
+.team-card--skeleton {
+    pointer-events: none;
+    cursor: default;
+}
+
+.team-card__handle {
+    font-weight: 600;
+    text-decoration: none;
+    color: inherit;
+}
+
+.team-card__handle:hover {
+    text-decoration: underline;
+}
+
+.team-card__meta {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
+
+.team-card__sentence {
+    margin: 0;
+    min-width: 0;
+    font-size: 0.85rem;
+}
+
+:host ::ng-deep .team-card__sentence .gc-rich-content {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+:host ::ng-deep .team-card__sentence .gc-rich-content > * {
+    display: contents;
+}
+
+.team-cards__empty {
+    grid-column: 1 / -1;
+    font-size: 0.9rem;
+    opacity: 0.75;
+}
+
+.team-directory__more {
+    display: flex;
+    justify-content: center;
+}

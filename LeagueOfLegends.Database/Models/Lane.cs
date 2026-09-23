@@ -21,4 +21,8 @@ public class Lane : IKeyTable
     public virtual ICollection<PlayerChampion> PlayerChampions { get; set; } = null!;
 
     public virtual ICollection<LfgAd> LfgAds { get; set; } = [];
+
+    public virtual ICollection<TeamApplication> TeamApplications { get; set; } = [];
+
+    public virtual ICollection<TeamMember> TeamMembers { get; set; } = [];
 }

@@ -1,0 +1,95 @@
+<nb-card>
+    <nb-card-header i18n="@@lol.team.apply.title">Apply to this team</nb-card-header>
+    <nb-card-body>
+        @if (pendingStatus() === statusPending) {
+            <div class="team-apply__sent">
+                <p class="team-apply__sent-text" i18n="@@lol.team.apply.sent">
+                    Your application is waiting for a staff decision.
+                </p>
+                <button nbButton ghost status="basic" [disabled]="saving()" (click)="withdraw.emit()">
+                    <span i18n="@@lol.team.apply.withdraw">Withdraw</span>
+                </button>
+            </div>
+        } @else if (loading()) {
+            <p class="team-apply__hint">…</p>
+        } @else {
+            <form class="team-apply" (ngSubmit)="submit()">
+                <div class="team-apply__grid">
+                    <div class="team-apply__field">
+                        <span i18n="@@lol.team.apply.rank">Applying as</span>
+                        <nb-select
+                            fullWidth
+                            [ngModel]="soughtRank()"
+                            (ngModelChange)="soughtRank.set($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                        >
+                            @for (rank of ranks; track rank) {
+                                <nb-option [value]="rank">{{ rank | gameTerm }}</nb-option>
+                            }
+                        </nb-select>
+                    </div>
+
+                    @if (soughtRank() === rankPlayer) {
+                        <div class="team-apply__field">
+                            <span i18n="@@lol.team.apply.lane">Target lane</span>
+                            <nb-select
+                                fullWidth
+                                placeholder="—"
+                                [ngModel]="idLane()"
+                                (ngModelChange)="idLane.set($event)"
+                                [ngModelOptions]="{ standalone: true }"
+                            >
+                                @for (lane of lanes(); track lane.id) {
+                                    <nb-option [value]="lane.id">{{ lane.code | gameTerm }}</nb-option>
+                                }
+                            </nb-select>
+                        </div>
+                    }
+                </div>
+
+                <div class="team-apply__field">
+                    <label for="team-apply-message" i18n="@@lol.team.apply.message">Message</label>
+                    <gc-rich-editor
+                        id="team-apply-message"
+                        [compact]="true"
+                        [maxLength]="1000"
+                        [placeholder]="messagePlaceholder"
+                        [value]="message()"
+                        (valueChange)="message.set($event)"
+                    />
+                </div>
+
+                @if (errorCode(); as code) {
+                    <p class="team-apply__error" role="alert">
+                        @switch (code) {
+                            @case ("ALREADY_MEMBER") {
+                                <span i18n="@@lol.team.apply.error.alreadyMember">
+                                    You already belong to this team.
+                                </span>
+                            }
+                            @case ("APPLICATION_PENDING") {
+                                <span i18n="@@lol.team.apply.error.alreadyPending">
+                                    You already have a pending application to this team.
+                                </span>
+                            }
+                            @case ("VALIDATION") {
+                                <span i18n="@@lol.team.apply.error.validation">
+                                    A player application needs a lane, and the message cannot be empty.
+                                </span>
+                            }
+                            @default {
+                                <span i18n="@@lol.team.apply.error.unknown">The application could not be sent.</span>
+                            }
+                        }
+                    </p>
+                }
+
+                <footer class="team-apply__actions">
+                    <button nbButton status="primary" type="submit" [disabled]="!canApply()">
+                        <span i18n="@@lol.team.apply.submit">Send application</span>
+                    </button>
+                </footer>
+            </form>
+        }
+    </nb-card-body>
+</nb-card>

@@ -1,0 +1,131 @@
+<nb-card id="team-settings">
+    <nb-card-header i18n="@@lol.team.admin.title">Team settings</nb-card-header>
+    <nb-card-body>
+        <form class="team-admin" (ngSubmit)="submit()">
+            <div class="team-admin__grid">
+                <div class="team-admin__field">
+                    <label for="team-admin-entitled" i18n="@@lol.team.form.name">Team name</label>
+                    <input
+                        id="team-admin-entitled"
+                        nbInput
+                        fullWidth
+                        type="text"
+                        maxlength="50"
+                        [ngModel]="entitled()"
+                        (ngModelChange)="entitled.set($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                    />
+                    <p class="team-admin__hint" i18n="@@lol.team.form.nameHint">
+                        A number is appended to the name to keep the handle unique, like T1#1274.
+                    </p>
+                </div>
+
+                <div class="team-admin__field">
+                    <label for="team-admin-tag" i18n="@@lol.team.form.tag">Short tag</label>
+                    <input
+                        id="team-admin-tag"
+                        nbInput
+                        fullWidth
+                        type="text"
+                        maxlength="5"
+                        [ngModel]="tag()"
+                        (ngModelChange)="tag.set($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                    />
+                </div>
+            </div>
+
+            <div class="team-admin__field">
+                <label for="team-admin-sentence" i18n="@@lol.team.form.sentence">Catchphrase</label>
+                <gc-rich-editor
+                    id="team-admin-sentence"
+                    [maxLength]="255"
+                    [placeholder]="sentencePlaceholder"
+                    [value]="sentence()"
+                    (valueChange)="sentence.set($event)"
+                />
+            </div>
+
+            @if (errorCode(); as code) {
+                <p class="team-admin__error" role="alert">
+                    @switch (code) {
+                        @case ("VALIDATION") {
+                            <span i18n="@@lol.team.error.invalidName">
+                                The team name must be between 3 and 50 characters. The tag uses 2 to 5 letters or digits.
+                            </span>
+                        }
+                        @case ("TEAM_RANK_REQUIRED") {
+                            <span i18n="@@lol.team.error.rankRequired">
+                                Your rank does not allow this action anymore.
+                            </span>
+                        }
+                        @case ("CONFIRMATION_MISMATCH") {
+                            <span i18n="@@lol.team.error.confirmation">
+                                The typed handle does not match the team.
+                            </span>
+                        }
+                        @case ("CAPTAIN_CANNOT_LEAVE") {
+                            <span i18n="@@lol.team.error.captainCannotLeave">
+                                Transfer the captaincy before leaving the team.
+                            </span>
+                        }
+                        @default {
+                            <span i18n="@@lol.team.error.saveFailed">The change could not be saved.</span>
+                        }
+                    }
+                </p>
+            }
+
+            <footer class="team-admin__actions">
+                <button nbButton status="primary" type="submit" [disabled]="saving()">
+                    <span i18n="@@lol.team.admin.save">Save</span>
+                </button>
+            </footer>
+        </form>
+
+        @if (sheet().isCaptain()) {
+            <section class="team-admin__danger">
+                <h3 class="team-admin__danger-title" i18n="@@lol.team.admin.disbandTitle">Disband the team</h3>
+                <p class="team-admin__danger-text" i18n="@@lol.team.admin.disbandText">
+                    Applications, ads and the roster are deleted for good.
+                </p>
+
+                @if (disbandOpen()) {
+                    <div class="team-admin__field">
+                        <label for="team-admin-confirm" i18n="@@lol.team.admin.disbandConfirm">
+                            Type the team handle to confirm
+                        </label>
+                        <input
+                            id="team-admin-confirm"
+                            nbInput
+                            fullWidth
+                            type="text"
+                            [placeholder]="disbandPlaceholder()"
+                            [ngModel]="confirmation()"
+                            (ngModelChange)="confirmation.set($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                        />
+                    </div>
+
+                    <div class="team-admin__actions">
+                        <button nbButton ghost status="basic" (click)="disbandOpen.set(false)">
+                            <span i18n="@@lol.team.form.cancel">Cancel</span>
+                        </button>
+                        <button
+                            nbButton
+                            status="danger"
+                            [disabled]="!canDisband()"
+                            (click)="disband.emit(confirmation().trim())"
+                        >
+                            <span i18n="@@lol.team.admin.disbandAction">Disband</span>
+                        </button>
+                    </div>
+                } @else {
+                    <button nbButton ghost status="danger" (click)="disbandOpen.set(true)">
+                        <span i18n="@@lol.team.admin.disbandAction">Disband</span>
+                    </button>
+                }
+            </section>
+        }
+    </nb-card-body>
+</nb-card>

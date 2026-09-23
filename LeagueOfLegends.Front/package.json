@@ -14,7 +14,8 @@
   "gcWorkspace": {
     "defaultTarget": "player",
     "targets": {
-      "player": {}
+      "player": {},
+      "team": {}
     }
   },
   "private": true,

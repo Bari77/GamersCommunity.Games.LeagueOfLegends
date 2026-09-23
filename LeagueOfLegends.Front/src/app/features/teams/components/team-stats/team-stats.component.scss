@@ -1,0 +1,17 @@
+:host {
+    display: block;
+}
+
+.stats__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.35rem 0;
+        border-bottom: 1px solid rgb(255 255 255 / 8%);
+    }
+}

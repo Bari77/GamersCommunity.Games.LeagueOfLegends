@@ -1,0 +1,24 @@
+@let team = sheet();
+
+<ul class="stats__list">
+    <li>
+        <span i18n="@@lol.team.stats.region">Region</span>
+        <strong>{{ team.regionCode | gameTerm }}</strong>
+    </li>
+    <li>
+        <span i18n="@@lol.team.stats.players">Players</span>
+        <strong>{{ team.playerSlotCount }}</strong>
+    </li>
+    <li>
+        <span i18n="@@lol.team.stats.mains">Mains</span>
+        <strong>{{ team.mainCount() }}</strong>
+    </li>
+    <li>
+        <span i18n="@@lol.team.stats.members">Members</span>
+        <strong>{{ team.memberCount }}</strong>
+    </li>
+    <li>
+        <span i18n="@@lol.team.stats.founded">Founded</span>
+        <strong>{{ team.creationDate | date: "mediumDate" }}</strong>
+    </li>
+</ul>
