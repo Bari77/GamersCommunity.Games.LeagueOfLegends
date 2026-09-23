@@ -1,4 +1,4 @@
-import { PlayerMediaDto } from "@features/media/dto/player-media.dto";
+import { PlayerMediaDto } from "@bari77/gc-sdk";
 import { PLAYER_PUBLIC_ID } from "./players";
 
 export const mockPlayerPictures: PlayerMediaDto[] = [

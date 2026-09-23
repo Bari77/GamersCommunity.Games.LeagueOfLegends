@@ -18,7 +18,11 @@ export const appConfig: ApplicationConfig = {
         apiUrl: environment.apiUrl,
         assetsBaseUrl: environment.assetsBaseUrl,
       },
-      membership: { gameId: LOL_GAME_ID, gameUrl: LOL_GAME_URL },
+      membership: {
+        gameId: LOL_GAME_ID,
+        gameUrl: LOL_GAME_URL,
+        apiSegment: "leagueoflegends",
+      },
       playerSheetApi: PlayersService,
     }),
     providePlaygroundUi("cosmic"),

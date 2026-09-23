@@ -1,153 +1,38 @@
-@if (canModerate()) {
-    <nb-card class="team-wall__queue">
-        <nb-card-header class="team-wall__queue-header">
-            <span i18n="@@lol.team.wall.queue">Awaiting review</span>
-            @if (store.loadingPending()) {
-                <gc-skeleton width="1.5rem" height="0.8rem" />
-            } @else {
-                <span class="team-wall__badge">{{ store.pendingCount() }}</span>
-            }
-        </nb-card-header>
-        <nb-card-body>
-            @if (store.loadingPending()) {
-                <gc-skeleton-text [lines]="2" />
-            } @else {
-                <ul class="team-posts">
-                    @for (post of store.pending(); track post.publicId) {
-                        <li class="team-post team-post--pending">
-                            <header class="team-post__head">
-                                @if (post.isContactable()) {
-                                    <a class="team-post__author" [routerLink]="['/users', post.authorPlatformUserPublicId]">
-                                        {{ post.authorHandleLabel() }}
-                                    </a>
-                                } @else {
-                                    <span class="team-post__author">{{ post.authorHandleLabel() }}</span>
-                                }
-                                <time class="team-post__date">{{ post.creationDate | date: "short" }}</time>
-                            </header>
+<gc-entity-wall
+    [posts]="store.posts()"
+    [pending]="store.pending()"
+    [canPublish]="canPublish()"
+    [canModerate]="canModerate()"
+    [playerPublicId]="playerPublicId()"
+    [loading]="store.loading()"
+    [loadingPending]="store.loadingPending()"
+    [loadingMore]="store.loadingMore()"
+    [hasMore]="store.hasMore()"
+    [posting]="store.posting()"
+    [queuedNotice]="queuedNotice()"
+    [labels]="labels"
+    (loadMoreClick)="store.loadMore()"
+    (moderateClick)="moderate($event)"
+    (removeClick)="remove($event)"
+    (editStart)="onEditStart()"
+>
+    <lol-team-post-form
+        gcEntityWallComposer
+        #composer
+        [saving]="store.posting()"
+        [errorCode]="store.errorCode()"
+        [moderated]="canModerate()"
+        (save)="publish($event)"
+    />
 
-                            @if (editingId() === post.publicId) {
-                                <lol-team-post-form
-                                    [post]="post"
-                                    [saving]="store.posting()"
-                                    [errorCode]="store.errorCode()"
-                                    [moderated]="canModerate()"
-                                    (save)="saveEdit(post, $event)"
-                                    (cancel)="cancelEdit()"
-                                />
-                            } @else {
-                                <gc-rich-content class="team-post__body" [html]="post.body" />
-                                <footer class="team-post__actions">
-                                    @if (isAuthor(post)) {
-                                        <button nbButton ghost size="small" status="basic" (click)="startEdit(post)">
-                                            <span i18n="@@lol.team.wall.edit">Edit</span>
-                                        </button>
-                                    }
-                                    <button nbButton ghost size="small" status="success" (click)="moderate(post, true)">
-                                        <span i18n="@@lol.team.wall.approve">Approve</span>
-                                    </button>
-                                    <button nbButton ghost size="small" status="danger" (click)="moderate(post, false)">
-                                        <span i18n="@@lol.team.wall.reject">Reject</span>
-                                    </button>
-                                </footer>
-                            }
-                        </li>
-                    } @empty {
-                        <li class="team-posts__empty" i18n="@@lol.team.wall.queueEmpty">
-                            Nothing waiting for a decision.
-                        </li>
-                    }
-                </ul>
-            }
-        </nb-card-body>
-    </nb-card>
-}
-
-<nb-card>
-    <nb-card-header i18n="@@lol.team.wall.title">Team wall</nb-card-header>
-    <nb-card-body>
-        @if (canPublish()) {
-            <div class="team-wall__composer">
-                <lol-team-post-form
-                    #composer
-                    [saving]="store.posting()"
-                    [errorCode]="editingId() ? null : store.errorCode()"
-                    [moderated]="canModerate()"
-                    (save)="publish($event)"
-                />
-
-                @if (queuedNotice()) {
-                    <p class="team-wall__notice" role="status" i18n="@@lol.team.wall.queued">
-                        Sent. Staff will review it shortly.
-                    </p>
-                }
-            </div>
-        }
-
-        <ul class="team-posts">
-            @if (store.loading()) {
-                @for (placeholder of postPlaceholders; track placeholder) {
-                    <li class="team-post team-post--skeleton" aria-busy="true">
-                        <header class="team-post__head">
-                            <gc-skeleton width="9rem" height="0.9rem" />
-                            <gc-skeleton width="5rem" height="0.75rem" />
-                        </header>
-                        <gc-skeleton-text [lines]="2" />
-                    </li>
-                }
-            } @else {
-                @for (post of store.posts(); track post.publicId) {
-                    <li class="team-post">
-                        <header class="team-post__head">
-                            @if (post.isContactable()) {
-                                <a class="team-post__author" [routerLink]="['/users', post.authorPlatformUserPublicId]">
-                                    {{ post.authorHandleLabel() }}
-                                </a>
-                            } @else {
-                                <span class="team-post__author">{{ post.authorHandleLabel() }}</span>
-                            }
-                            <time class="team-post__date">{{ post.creationDate | date: "short" }}</time>
-                        </header>
-
-                        @if (editingId() === post.publicId) {
-                            <lol-team-post-form
-                                [post]="post"
-                                [saving]="store.posting()"
-                                [errorCode]="store.errorCode()"
-                                [moderated]="canModerate()"
-                                (save)="saveEdit(post, $event)"
-                                (cancel)="cancelEdit()"
-                            />
-                        } @else {
-                            <gc-rich-content class="team-post__body" [html]="post.body" />
-                            @if (isAuthor(post) || canDelete(post)) {
-                                <footer class="team-post__actions">
-                                    @if (isAuthor(post)) {
-                                        <button nbButton ghost size="small" status="basic" (click)="startEdit(post)">
-                                            <span i18n="@@lol.team.wall.edit">Edit</span>
-                                        </button>
-                                    }
-                                    @if (canDelete(post)) {
-                                        <button nbButton ghost size="small" status="danger" (click)="remove(post)">
-                                            <span i18n="@@lol.team.wall.delete">Delete</span>
-                                        </button>
-                                    }
-                                </footer>
-                            }
-                        }
-                    </li>
-                } @empty {
-                    <li class="team-posts__empty" i18n="@@lol.team.wall.empty">The wall is empty for now.</li>
-                }
-            }
-        </ul>
-
-        @if (store.hasMore() && !store.loading()) {
-            <div class="team-wall__more">
-                <button nbButton ghost status="basic" [disabled]="store.loadingMore()" (click)="store.loadMore()">
-                    <span i18n="@@lol.team.wall.loadMore">Load more</span>
-                </button>
-            </div>
-        }
-    </nb-card-body>
-</nb-card>
+    <ng-template gcEntityWallEdit let-post>
+        <lol-team-post-form
+            [post]="$any(post)"
+            [saving]="store.posting()"
+            [errorCode]="store.errorCode()"
+            [moderated]="canModerate()"
+            (save)="saveEdit($any(post), $event)"
+            (cancel)="cancelEdit()"
+        />
+    </ng-template>
+</gc-entity-wall>

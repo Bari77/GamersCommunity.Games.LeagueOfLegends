@@ -3,7 +3,7 @@ import {
     PlayerMediaCreateRequestDto,
     PlayerMediaDto,
     PlayerMediaListRequestDto,
-} from "@features/media/dto/player-media.dto";
+} from "@bari77/gc-sdk";
 import { PlayerLoadRequestDto, PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
 import {
     TeamApplicationCreateRequestDto,
