@@ -18,6 +18,7 @@ export class PlayerHeroComponent {
 
     protected readonly switchLabel = $localize`:@@lol.player.hero.switch:Switch to another game`;
     protected readonly unavailableLabel = $localize`:@@lol.player.hero.unavailable:Temporarily unavailable`;
+    protected readonly gameNameFallback = $localize`:@@lol.game.name:League of Legends`;
     protected readonly menuOpen = signal(false);
 
     public readonly handle = computed(

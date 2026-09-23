@@ -60,6 +60,9 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "localize": true,
+            "i18nMissingTranslation": "warning",
             "assets": [{ "glob": "**/*", "input": "public" }],
             "styles": [
               "node_modules/@nebular/theme/styles/prebuilt/cosmic.css",
@@ -81,6 +84,9 @@
                   "with": "src/environments/environment.api.ts"
                 }
               ]
+            },
+            "fr": {
+              "localize": ["fr"]
             }
           },
           "defaultConfiguration": "production"
@@ -96,6 +102,9 @@
             },
             "api": {
               "buildTarget": "leagueoflegends.front:esbuild:api"
+            },
+            "fr": {
+              "buildTarget": "leagueoflegends.front:esbuild:development,fr"
             }
           },
           "defaultConfiguration": "development",
@@ -109,6 +118,14 @@
                 "@bari77/gc-widgets"
               ]
             }
+          }
+        }
+      },
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "fr": {
+            "translation": "src/locale/source.fr.json"
           }
         }
       }

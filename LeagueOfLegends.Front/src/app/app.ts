@@ -11,7 +11,7 @@ import { environment } from "../environments/environment";
     <nb-layout>
       @if (showBanner) {
         <nb-layout-header fixed>
-          <span>League of Legends</span>
+          <span i18n="@@lol.playground.banner">League of Legends</span>
         </nb-layout-header>
       }
       <nb-layout-column>

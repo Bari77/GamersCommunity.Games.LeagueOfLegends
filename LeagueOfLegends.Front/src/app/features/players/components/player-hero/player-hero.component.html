@@ -15,7 +15,7 @@
                     [attr.aria-label]="switchLabel"
                     (click)="toggleMenu()"
                 >
-                    <span class="player-hero__game-name">{{ currentGame()?.title ?? "League of Legends" }}</span>
+                    <span class="player-hero__game-name">{{ currentGame()?.title ?? gameNameFallback }}</span>
                     <svg class="player-hero__chevron" viewBox="0 0 12 8" aria-hidden="true">
                         <path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
@@ -43,7 +43,7 @@
                     </ul>
                 }
             } @else {
-                <p class="player-hero__game-name">{{ currentGame()?.title ?? "League of Legends" }}</p>
+                <p class="player-hero__game-name">{{ currentGame()?.title ?? gameNameFallback }}</p>
             }
         </div>
     </div>

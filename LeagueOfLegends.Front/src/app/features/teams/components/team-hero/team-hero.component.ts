@@ -15,4 +15,6 @@ export class TeamHeroComponent {
     public readonly team = input.required<TeamSheet>();
     public readonly canEdit = input(false);
     public readonly settingsOpen = model(false);
+
+    protected readonly gameName = $localize`:@@lol.game.name:League of Legends`;
 }

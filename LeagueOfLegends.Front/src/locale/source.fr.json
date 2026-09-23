@@ -1,0 +1,12 @@
+{
+  "locale": "fr",
+  "translations": {
+    "lol.game.name": "League of Legends",
+    "lol.playground.banner": "League of Legends",
+    "lol.playground.breadcrumb.game": "League of Legends",
+    "lol.home.lfg": "Recherche de groupe",
+    "lol.home.recruit": "Recrutement d'équipe",
+    "lol.player.hero.kicker": "Fiche joueur",
+    "lol.team.hero.kicker": "Fiche équipe"
+  }
+}
