@@ -1,0 +1,146 @@
+:host {
+    display: block;
+}
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.stats__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.35rem 0;
+        border-bottom: 1px solid rgb(255 255 255 / 8%);
+    }
+
+    strong {
+        text-align: right;
+    }
+}
+
+.stats__value {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.3rem;
+}
+
+.stats__boards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.stats__board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.75rem 0.6rem 0.9rem;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 0.9rem;
+    background:
+        radial-gradient(80% 90% at 50% 15%, var(--rank-glow, rgb(200 170 110 / 16%)), transparent 62%),
+        rgb(0 0 0 / 22%);
+    text-align: center;
+
+    strong {
+        font-size: 0.95rem;
+        font-weight: 650;
+    }
+
+    &[data-tier="iron"] { --rank-glow: rgb(140 140 140 / 22%); }
+    &[data-tier="bronze"] { --rank-glow: rgb(176 138 90 / 28%); }
+    &[data-tier="silver"] { --rank-glow: rgb(176 192 204 / 26%); }
+    &[data-tier="gold"] { --rank-glow: rgb(212 175 55 / 30%); }
+    &[data-tier="platinum"] { --rank-glow: rgb(94 200 200 / 28%); }
+    &[data-tier="emerald"] { --rank-glow: rgb(61 191 122 / 28%); }
+    &[data-tier="diamond"] { --rank-glow: rgb(90 168 255 / 30%); }
+    &[data-tier="master"] { --rank-glow: rgb(155 89 208 / 30%); }
+    &[data-tier="grandmaster"] { --rank-glow: rgb(192 57 43 / 32%); }
+    &[data-tier="challenger"] { --rank-glow: rgb(241 196 15 / 34%); }
+}
+
+.stats__queue {
+    margin: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.55;
+}
+
+.stats__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.stats__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.stats__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    span {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    &--wide {
+        grid-column: 1 / -1;
+    }
+}
+
+.stats__ranks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.stats__rank {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+
+    p {
+        margin: 0;
+        font-size: 0.8rem;
+        opacity: 0.8;
+        align-self: flex-start;
+    }
+}
+
+.stats__option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.stats__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+@media (max-width: 40rem) {
+    .stats__grid,
+    .stats__ranks,
+    .stats__boards {
+        grid-template-columns: 1fr;
+    }
+}

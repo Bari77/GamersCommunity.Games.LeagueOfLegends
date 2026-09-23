@@ -1,0 +1,24 @@
+:host {
+    display: block;
+}
+
+.presentation__text {
+    margin: 0;
+}
+
+.presentation__empty {
+    margin: 0;
+    opacity: 0.65;
+}
+
+.presentation__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.presentation__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}

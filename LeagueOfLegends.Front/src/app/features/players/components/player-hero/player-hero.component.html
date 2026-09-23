@@ -6,7 +6,7 @@
             <img class="player-hero__game-icon" [src]="game.iconUrl" alt="" />
         }
         <div class="player-hero__game-text">
-            <p class="player-hero__kicker" i18n="@@lol.player.hero.kicker">Fiche joueur</p>
+            <p class="player-hero__kicker" i18n="@@lol.player.hero.kicker">Player sheet</p>
             @if (canSwitch()) {
                 <button
                     type="button"
@@ -56,24 +56,14 @@
             <a
                 class="player-hero__handle gc-display"
                 [routerLink]="['/users', sheet.platformUserPublicId]"
-                title="Ouvrir le profil communauté"
+                title="Open the community profile"
                 i18n-title="@@lol.player.hero.profileHint"
             >
                 {{ handle() }}
             </a>
             <p class="player-hero__meta">
-                @if (sheet.riotId) {
-                    <span class="player-hero__riot">{{ sheet.riotId }}</span>
-                    @if (sheet.region) {
-                        <span>{{ sheet.region.code.toUpperCase() }}</span>
-                    }
-                    @if (sheet.primaryLane) {
-                        <span>{{ sheet.primaryLane.code | gameTerm }}</span>
-                    }
-                } @else {
-                    <span i18n="@@lol.player.since">Membre depuis</span>
-                    {{ sheet.creationDate | date: "mediumDate" }}
-                }
+                <span i18n="@@lol.player.since">Member since</span>
+                {{ sheet.creationDate | date: "mediumDate" }}
             </p>
         </div>
     </div>

@@ -1,36 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Models;
 
-namespace LeagueOfLegends.Database.Seeds;
+namespace LeagueOfLegends.Database.Seed;
 
-public static class CatalogSeeds
+public sealed class ChampionsSeed : KeyTableSeed<LeagueOfLegendsDbContext, Champion>
 {
-    private static readonly DateTime SeededAt = new(2026, 9, 23, 0, 0, 0, DateTimeKind.Utc);
+    protected override string TableName => nameof(LeagueOfLegendsDbContext.Champions);
 
-    public static Lane[] Lanes { get; } =
-    [
-        Lane(1, "top", 1),
-        Lane(2, "jungle", 2),
-        Lane(3, "mid", 3),
-        Lane(4, "bottom", 4),
-        Lane(5, "support", 5),
-    ];
+    protected override DbSet<Champion> GetSet(LeagueOfLegendsDbContext db) => db.Champions;
 
-    public static Region[] Regions { get; } =
-    [
-        Region(1, "euw", 1),
-        Region(2, "eune", 2),
-        Region(3, "na", 3),
-        Region(4, "kr", 4),
-    ];
-
-    public static PlayerChampionKind[] ChampionKinds { get; } =
-    [
-        Kind(1, "main", 1),
-        Kind(2, "pool", 2),
-        Kind(3, "learning", 3),
-    ];
-
-    public static Champion[] Champions { get; } =
+    protected override IReadOnlyList<Champion> Rows { get; } =
     [
         Champion(1, "aatrox"),
         Champion(2, "ahri"),
@@ -122,38 +102,11 @@ public static class CatalogSeeds
         Champion(88, "zyra"),
     ];
 
-    private static Lane Lane(int id, string code, int order) => new()
-    {
-        Id = id,
-        Code = code,
-        SortOrder = order,
-        CreationDate = SeededAt,
-        ModificationDate = SeededAt,
-    };
-
-    private static Region Region(int id, string code, int order) => new()
-    {
-        Id = id,
-        Code = code,
-        SortOrder = order,
-        CreationDate = SeededAt,
-        ModificationDate = SeededAt,
-    };
-
-    private static PlayerChampionKind Kind(int id, string code, int order) => new()
-    {
-        Id = id,
-        Code = code,
-        SortOrder = order,
-        CreationDate = SeededAt,
-        ModificationDate = SeededAt,
-    };
-
     private static Champion Champion(int id, string code) => new()
     {
         Id = id,
         Code = code,
-        CreationDate = SeededAt,
-        ModificationDate = SeededAt,
+        CreationDate = SeedDates.Utc,
+        ModificationDate = SeedDates.Utc,
     };
 }

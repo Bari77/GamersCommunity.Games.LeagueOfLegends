@@ -1,0 +1,58 @@
+<ng-template gcWidget="identity">
+    <p class="widget-host__meta">
+        <span i18n="@@lol.player.since">Member since</span>
+        {{ view().creationDate | date: "mediumDate" }}
+    </p>
+    @if (!preview()) {
+        <a
+            [routerLink]="['/users', view().platformUserPublicId]"
+            nbButton
+            ghost
+            status="basic"
+            i18n="@@lol.player.platformProfile"
+        >
+            Platform profile
+        </a>
+    }
+</ng-template>
+
+<ng-template gcWidget="presentation-irl" gcWidgetEditable let-editingData="editingData" let-stopDataEdit="stopDataEdit">
+    <lol-player-presentation
+        [text]="view().presentationIrl"
+        [editing]="canEditFields() && !!editingData"
+        [saving]="savingField()"
+        (save)="saveField.emit({ presentationIrl: $event })"
+        (cancel)="stopDataEdit?.()"
+    />
+</ng-template>
+
+<ng-template gcWidget="presentation-ig" gcWidgetEditable let-editingData="editingData" let-stopDataEdit="stopDataEdit">
+    <lol-player-presentation
+        [text]="view().presentationIg"
+        [editing]="canEditFields() && !!editingData"
+        [saving]="savingField()"
+        (save)="saveField.emit({ presentationIg: $event })"
+        (cancel)="stopDataEdit?.()"
+    />
+</ng-template>
+
+<ng-template gcWidget="stats" gcWidgetEditable let-editingData="editingData" let-stopDataEdit="stopDataEdit">
+    <lol-player-stats
+        [sheet]="view()"
+        [options]="catalog()"
+        [editing]="canEditFields() && !!editingData"
+        [saving]="savingField()"
+        (save)="saveField.emit($event)"
+        (cancel)="stopDataEdit?.()"
+    />
+</ng-template>
+
+<ng-template gcWidget="champions" gcWidgetEditable let-editingData="editingData">
+    <lol-champion-board
+        [champions]="view().champions"
+        [options]="catalog()"
+        [editable]="canEditFields() && !!editingData"
+        [saving]="savingField()"
+        (save)="saveChampions($event)"
+    />
+</ng-template>

@@ -1,6 +1,6 @@
 using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Models;
-using LeagueOfLegends.Database.Seeds;
+using LeagueOfLegends.Database.Seed;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeagueOfLegends.Tests;
@@ -22,7 +22,7 @@ public static class FakeDataset
         if (context.Lanes.Any())
             return;
 
-        context.Lanes.AddRange(CatalogSeeds.Lanes.Select(lane => new Lane
+        context.Lanes.AddRange(new LanesSeed().CatalogRows.Select(lane => new Lane
         {
             Id = lane.Id,
             Code = lane.Code,
@@ -30,7 +30,7 @@ public static class FakeDataset
             CreationDate = lane.CreationDate,
             ModificationDate = lane.ModificationDate,
         }));
-        context.Regions.AddRange(CatalogSeeds.Regions.Select(region => new Region
+        context.Regions.AddRange(new RegionsSeed().CatalogRows.Select(region => new Region
         {
             Id = region.Id,
             Code = region.Code,
@@ -38,14 +38,14 @@ public static class FakeDataset
             CreationDate = region.CreationDate,
             ModificationDate = region.ModificationDate,
         }));
-        context.Champions.AddRange(CatalogSeeds.Champions.Select(champion => new Champion
+        context.Champions.AddRange(new ChampionsSeed().CatalogRows.Select(champion => new Champion
         {
             Id = champion.Id,
             Code = champion.Code,
             CreationDate = champion.CreationDate,
             ModificationDate = champion.ModificationDate,
         }));
-        context.PlayerChampionKinds.AddRange(CatalogSeeds.ChampionKinds.Select(kind => new PlayerChampionKind
+        context.PlayerChampionKinds.AddRange(new PlayerChampionKindsSeed().CatalogRows.Select(kind => new PlayerChampionKind
         {
             Id = kind.Id,
             Code = kind.Code,

@@ -314,6 +314,13 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
             .Select(c => c.Id)
             .ToListAsync(ct);
         var knownChampions = championIds.ToHashSet();
+        var laneIds = rows.Where(r => r.IdLane is not null).Select(r => r.IdLane!.Value).Distinct().ToList();
+        var knownLanes = laneIds.Count == 0
+            ? []
+            : await context.Lanes.AsNoTracking()
+                .Where(l => laneIds.Contains(l.Id))
+                .Select(l => l.Id)
+                .ToListAsync(ct);
 
         foreach (var row in rows)
         {
@@ -321,6 +328,8 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
                 throw new BadRequestException("UNKNOWN_CHAMPION", "Unknown champion");
             if (!kinds.ContainsKey(row.Kind ?? ""))
                 throw new BadRequestException("UNKNOWN_CHAMPION_KIND", "Unknown champion kind");
+            if (row.IdLane is int laneId && !knownLanes.Contains(laneId))
+                throw new BadRequestException("UNKNOWN_LANE", "Unknown champion lane");
         }
 
         context.PlayerChampions.RemoveRange(target.PlayerChampions);
@@ -331,6 +340,7 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
                 IdPlayer = target.Id,
                 IdChampion = row.IdChampion,
                 IdKind = kinds[row.Kind],
+                IdLane = row.IdLane,
                 CreationDate = DateTime.UtcNow,
                 ModificationDate = DateTime.UtcNow,
             });
@@ -507,6 +517,7 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
                         Id = c.IdChampionNavigation.Id,
                         Code = c.IdChampionNavigation.Code,
                         Kind = c.IdKindNavigation.Code,
+                        Lane = c.IdLaneNavigation == null ? null : c.IdLaneNavigation.Code,
                     })
                     .ToList(),
                 Snapshot = context.PlatformUserSnapshots

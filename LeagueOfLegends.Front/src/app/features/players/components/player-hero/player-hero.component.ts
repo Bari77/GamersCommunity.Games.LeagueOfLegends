@@ -4,21 +4,20 @@ import { RouterLink } from "@angular/router";
 import { LOL_GAME_URL } from "@core/constants/game.constants";
 import { PlatformGame, PlatformGamesService } from "@core/services/platform-games.service";
 import { PlayerSheet } from "@features/players/models/player.model";
-import { GameTermPipe } from "@shared/pipes/game-term.pipe";
 import { firstValueFrom } from "rxjs";
 
 @Component({
     standalone: true,
     selector: "lol-player-hero",
-    imports: [DatePipe, GameTermPipe, RouterLink],
+    imports: [DatePipe, RouterLink],
     templateUrl: "./player-hero.component.html",
     styleUrl: "./player-hero.component.scss",
 })
 export class PlayerHeroComponent {
     public readonly player = input.required<PlayerSheet>();
 
-    protected readonly switchLabel = $localize`:@@lol.player.hero.switch:Changer de jeu`;
-    protected readonly unavailableLabel = $localize`:@@lol.player.hero.unavailable:Temporairement indisponible`;
+    protected readonly switchLabel = $localize`:@@lol.player.hero.switch:Switch to another game`;
+    protected readonly unavailableLabel = $localize`:@@lol.player.hero.unavailable:Temporarily unavailable`;
     protected readonly menuOpen = signal(false);
 
     public readonly handle = computed(

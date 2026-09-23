@@ -23,6 +23,7 @@ public sealed record PlayerChampionDto
     public int Id { get; init; }
     public string Code { get; init; } = "";
     public string Kind { get; init; } = "";
+    public string? Lane { get; init; }
 }
 
 public sealed record PlayerRankDto
@@ -68,6 +69,7 @@ public sealed class PlayerChampionUpdateDto
 {
     public int IdChampion { get; init; }
     public string Kind { get; init; } = "";
+    public int? IdLane { get; init; }
 }
 
 public sealed class PlayerRankUpdateDto

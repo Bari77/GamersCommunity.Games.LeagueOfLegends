@@ -12,6 +12,7 @@ export interface PlayerChampionDto {
     id: number;
     code: string;
     kind: string;
+    lane?: string | null;
 }
 
 export interface PlayerRankDto {
@@ -53,6 +54,7 @@ export interface PlayerLoadRequestDto {
 export interface PlayerChampionUpdateDto {
     idChampion: number;
     kind: string;
+    idLane?: number | null;
 }
 
 export interface PlayerRankUpdateDto {

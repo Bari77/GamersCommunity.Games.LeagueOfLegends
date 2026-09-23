@@ -6,7 +6,52 @@
       "title": "Home",
       "locked": true,
       "widgets": [
-        { "id": "w-links", "type": "gc-links", "x": 0, "y": 0, "cols": 6, "rows": 3, "settings": {} }
+        {
+          "id": "w-stats",
+          "type": "stats",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 6,
+          "settings": {}
+        },
+        {
+          "id": "w-irl",
+          "type": "presentation-irl",
+          "x": 0,
+          "y": 6,
+          "cols": 6,
+          "rows": 6,
+          "settings": {
+            "title": "IRL presentation"
+          }
+        },
+        {
+          "id": "w-ig",
+          "type": "presentation-ig",
+          "x": 6,
+          "y": 6,
+          "cols": 6,
+          "rows": 6,
+          "settings": {
+            "title": "In-game presentation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "champions",
+      "title": "Champions",
+      "widgets": [
+        {
+          "id": "w-champions",
+          "type": "champions",
+          "x": 0,
+          "y": 0,
+          "cols": 12,
+          "rows": 9,
+          "settings": {}
+        }
       ]
     }
   ]

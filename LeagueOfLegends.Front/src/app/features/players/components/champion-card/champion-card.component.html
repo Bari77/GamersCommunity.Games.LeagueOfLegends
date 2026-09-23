@@ -1,0 +1,22 @@
+@let item = champion();
+
+<article class="champion-card" [class.champion-card--main]="item.kind === 'main'">
+    <img class="champion-card__splash" [src]="splash()" [alt]="item.code | gameTerm" />
+    <div class="champion-card__veil">
+        <h3 class="champion-card__name">{{ item.code | gameTerm }}</h3>
+        <p class="champion-card__tags">
+            <span class="champion-card__badge champion-card__badge--{{ item.kind }}">{{ item.kind | gameTerm }}</span>
+            @if (item.lane) {
+                <span class="champion-card__badge champion-card__badge--lane">
+                    <lol-lane-icon [code]="item.lane" [alt]="item.lane | gameTerm" />
+                    {{ item.lane | gameTerm }}
+                </span>
+            }
+        </p>
+    </div>
+    @if (editable()) {
+        <button class="champion-card__remove" type="button" (click)="remove.emit()" aria-label="Remove">
+            ×
+        </button>
+    }
+</article>

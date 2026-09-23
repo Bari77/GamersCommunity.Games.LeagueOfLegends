@@ -1,0 +1,22 @@
+@if (editing()) {
+    <div class="presentation__form">
+        <gc-rich-editor
+            [value]="draft()"
+            (valueChange)="draft.set($event)"
+            [maxLength]="4000"
+            [placeholder]="editorPlaceholder"
+        />
+        <div class="presentation__actions">
+            <button nbButton ghost size="small" status="basic" (click)="cancel.emit()">
+                <span i18n="@@lol.player.presentation.cancel">Cancel</span>
+            </button>
+            <button nbButton size="small" status="primary" [disabled]="saving()" (click)="submit()">
+                <span i18n="@@lol.player.presentation.save">Save</span>
+            </button>
+        </div>
+    </div>
+} @else if (text()) {
+    <gc-rich-content class="presentation__text" [html]="text() ?? ''" />
+} @else {
+    <p class="presentation__empty">{{ emptyLabel() }}</p>
+}

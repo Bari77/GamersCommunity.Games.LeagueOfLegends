@@ -3,12 +3,13 @@ import { RouterLink } from "@angular/router";
 import { DecisionPromptComponent } from "@bari77/gc-ui";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
 import { CreateSheetWallComponent } from "@shared/components/create-sheet-wall/create-sheet-wall.component";
-import { NbButtonModule, NbCardModule } from "@nebular/theme";
+import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
+import { NbButtonModule } from "@nebular/theme";
 
 @Component({
     selector: "lol-home-container",
     standalone: true,
-    imports: [NbCardModule, NbButtonModule, RouterLink, CreateSheetWallComponent, DecisionPromptComponent],
+    imports: [NbButtonModule, RouterLink, CreateSheetWallComponent, DecisionPromptComponent, LaneIconComponent],
     templateUrl: "./home-container.component.html",
     styleUrl: "./home-container.component.scss",
 })
@@ -17,13 +18,14 @@ export class HomeContainerComponent {
 
     public readonly promptOpen = computed(() => this.membership.shouldPromptSheetCreation() && !this.promptAnswered());
 
-    public readonly promptHeading = $localize`:@@lol.sheet.prompt.heading:Créer votre fiche joueur ?`;
-    public readonly promptMessage = $localize`:@@lol.sheet.prompt.message:Une fiche joueur vous permet d'enregistrer vos lanes, vos champions et de rejoindre une team. Sans fiche, vous pouvez tout de même parcourir le jeu librement.`;
-    public readonly promptCreateLabel = $localize`:@@lol.sheet.prompt.create:Créer ma fiche`;
-    public readonly promptBrowseLabel = $localize`:@@lol.sheet.prompt.browse:Continuer anonymement`;
-    public readonly promptOptOutLabel = $localize`:@@lol.sheet.prompt.optOut:Ne plus demander`;
-    public readonly promptBusyLabel = $localize`:@@lol.sheet.prompt.creating:Création…`;
-    public readonly wallHomeMessage = $localize`:@@lol.sheet.wall.homeMessage:Crée ta fiche joueur pour participer à la communauté.`;
+    public readonly promptHeading = $localize`:@@lol.sheet.prompt.heading:Create your player profile?`;
+    public readonly promptMessage = $localize`:@@lol.sheet.prompt.message:A player profile lets you register your lanes, your champions and join a team. Without one you can still browse the game freely.`;
+    public readonly promptCreateLabel = $localize`:@@lol.sheet.prompt.create:Create my profile`;
+    public readonly promptBrowseLabel = $localize`:@@lol.sheet.prompt.browse:Keep browsing anonymously`;
+    public readonly promptOptOutLabel = $localize`:@@lol.sheet.prompt.optOut:Don't ask again`;
+    public readonly promptBusyLabel = $localize`:@@lol.sheet.prompt.creating:Creating…`;
+    public readonly wallHomeMessage = $localize`:@@lol.sheet.wall.homeMessage:Create your player profile to take part in the game community.`;
+    public readonly lanes = ["top", "jungle", "mid", "bottom", "support"] as const;
 
     public readonly optOut = signal(false);
 

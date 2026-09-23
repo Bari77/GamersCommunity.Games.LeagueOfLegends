@@ -1,5 +1,4 @@
 using LeagueOfLegends.Database.Models;
-using LeagueOfLegends.Database.Seeds;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeagueOfLegends.Database.Context;
@@ -43,11 +42,6 @@ public partial class LeagueOfLegendsDbContext : DbContext
         ConfigureCatalog(modelBuilder.Entity<Region>(), "Regions");
         ConfigureCatalog(modelBuilder.Entity<Champion>(), "Champions", hasSortOrder: false);
         ConfigureCatalog(modelBuilder.Entity<PlayerChampionKind>(), "PlayerChampionKinds");
-
-        modelBuilder.Entity<Lane>().HasData(CatalogSeeds.Lanes);
-        modelBuilder.Entity<Region>().HasData(CatalogSeeds.Regions);
-        modelBuilder.Entity<Champion>().HasData(CatalogSeeds.Champions);
-        modelBuilder.Entity<PlayerChampionKind>().HasData(CatalogSeeds.ChampionKinds);
 
         modelBuilder.Entity<Player>(entity =>
         {
@@ -132,6 +126,10 @@ public partial class LeagueOfLegendsDbContext : DbContext
             entity.HasOne(e => e.IdKindNavigation)
                 .WithMany(k => k.PlayerChampions)
                 .HasForeignKey(e => e.IdKind)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.IdLaneNavigation)
+                .WithMany(l => l.PlayerChampions)
+                .HasForeignKey(e => e.IdLane)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

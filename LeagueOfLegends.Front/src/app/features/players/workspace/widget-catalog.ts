@@ -1,34 +1,72 @@
-import type { WidgetCatalog } from '@bari77/gc-widgets';
+import type { WidgetCatalog, WidgetPageVisibilityOption } from "@bari77/gc-widgets";
 
-export const LOL_WIDGETS = {
-    links: 'gc-links',
+export const PAGE_VISIBILITY_PUBLIC = "public";
+export const PAGE_VISIBILITY_FRIENDS = "friends";
+export const PAGE_VISIBILITY_PRIVATE = "private";
+
+export const PLAYER_PAGE_VISIBILITY_OPTIONS: WidgetPageVisibilityOption[] = [
+    { value: PAGE_VISIBILITY_PUBLIC, label: $localize`:@@lol.player.page.visibility.public:Everyone` },
+    { value: PAGE_VISIBILITY_FRIENDS, label: $localize`:@@lol.player.page.visibility.friends:My friends` },
+    { value: PAGE_VISIBILITY_PRIVATE, label: $localize`:@@lol.player.page.visibility.private:Only me` },
+];
+
+export const PLAYER_WIDGETS = {
+    identity: "identity",
+    presentationIrl: "presentation-irl",
+    presentationIg: "presentation-ig",
+    stats: "stats",
+    champions: "champions",
+    links: "gc-links",
 } as const;
 
-/** Plain catalog consumed by the player sheet, the CLI validator and the workspace editor. */
 export const gameWorkspaceRegistry = {
     catalog: [
         {
-            type: LOL_WIDGETS.links,
-            label: 'Links',
-            description: 'Drawn by gc-widgets itself, icons guessed from each address.',
+            type: PLAYER_WIDGETS.identity,
+            label: $localize`:@@lol.player.widget.identity:Identity`,
+            description: $localize`:@@lol.player.widget.identity.desc:Registration date and Platform profile link.`,
+            cols: 4,
+            rows: 3,
+            unique: true,
+        },
+        {
+            type: PLAYER_WIDGETS.presentationIrl,
+            label: $localize`:@@lol.player.presentationIrl:IRL presentation`,
+            cols: 8,
+            rows: 3,
+        },
+        {
+            type: PLAYER_WIDGETS.presentationIg,
+            label: $localize`:@@lol.player.presentationIg:In-game presentation`,
+            cols: 8,
+            rows: 3,
+        },
+        {
+            type: PLAYER_WIDGETS.stats,
+            label: $localize`:@@lol.player.widget.stats:Stats`,
+            description: $localize`:@@lol.player.widget.stats.desc:Riot ID, region, lanes and ranks.`,
+            cols: 12,
+            rows: 6,
+            unique: true,
+        },
+        {
+            type: PLAYER_WIDGETS.champions,
+            label: $localize`:@@lol.player.widget.champions:Champions`,
+            description: $localize`:@@lol.player.widget.champions.desc:Mains, pool and champions you are learning.`,
+            cols: 12,
+            rows: 7,
+            unique: true,
+        },
+        {
+            type: PLAYER_WIDGETS.links,
+            label: $localize`:@@lol.player.widget.links:Links`,
             cols: 6,
             rows: 3,
-            fields: [
-                {
-                    key: 'links',
-                    type: 'list',
-                    label: 'Links',
-                    addLabel: 'Add a link',
-                    itemFields: [
-                        { key: 'url', type: 'url', label: 'Address', placeholder: 'https://…' },
-                        { key: 'label', type: 'text', label: 'Label', hint: 'Falls back to the domain.' },
-                    ],
-                },
-            ],
         },
     ] satisfies WidgetCatalog,
     columns: 12,
     rowHeight: 90,
+    pageVisibilityOptions: PLAYER_PAGE_VISIBILITY_OPTIONS,
 };
 
 export const PLAYER_WIDGET_CATALOG = gameWorkspaceRegistry.catalog;

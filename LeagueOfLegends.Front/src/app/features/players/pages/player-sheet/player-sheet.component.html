@@ -2,21 +2,15 @@
     @if (sheet.value(); as player) {
         <lol-player-hero [player]="player" />
 
-        @if (options.value(); as catalog) {
-            <lol-player-identity
-                [player]="player"
-                [options]="catalog"
-                [editable]="isOwner()"
-                [saving]="identitySaving()"
-                [errorCode]="identityError()"
-                (save)="onIdentitySave($event, identity)"
-                #identity
-            />
-        }
-
         @if (saveFailed()) {
             <p class="player-sheet__error" role="alert" i18n="@@lol.player.layout.saveFailed">
-                La mise en page n’a pas pu être enregistrée. Réessaie.
+                Your layout could not be saved. Please try again.
+            </p>
+        }
+
+        @if (fieldSaveFailed()) {
+            <p class="player-sheet__error" role="alert" i18n="@@lol.player.field.saveFailed">
+                Your change could not be saved. Please try again.
             </p>
         }
 
@@ -28,28 +22,58 @@
             [columns]="columns"
             [rowHeight]="rowHeight"
             [(editing)]="editing"
-            navLabel="Pages du profil"
-            addPageLabel="Nouvelle page"
-            removePageLabel="Supprimer la page"
-            moveUpLabel="Monter"
-            moveDownLabel="Descendre"
-            addWidgetLabel="Ajouter un widget"
-            editLabel="Modifier"
-            cancelLabel="Annuler"
-            saveLabel="Enregistrer"
-            emptyPageLabel="Cette page n’a pas encore de widget."
-            hintLabel="Glisse un widget par son en-tête, ou son coin bas-droit pour le redimensionner."
-            newPageTitle="Nouvelle page"
-            settingsLabel="Configurer ce widget"
-            editDataLabel="Modifier les données"
-            removeWidgetLabel="Retirer le widget"
-            widgetTitleLabel="Titre du widget"
-            widgetTitleHint="Laisse vide pour masquer l’en-tête."
-            doneLabel="Terminé"
+            [pageVisibilityOptions]="pageVisibilityOptions"
+            pageVisibilityLabel="Who can see this page"
+            i18n-pageVisibilityLabel="@@lol.player.page.visibility"
+            navLabel="Profile pages"
+            i18n-navLabel="@@lol.player.nav"
+            addPageLabel="New page"
+            i18n-addPageLabel="@@lol.player.page.add"
+            removePageLabel="Delete page"
+            i18n-removePageLabel="@@lol.player.page.remove"
+            moveUpLabel="Move up"
+            i18n-moveUpLabel="@@lol.player.page.moveUp"
+            moveDownLabel="Move down"
+            i18n-moveDownLabel="@@lol.player.page.moveDown"
+            addWidgetLabel="Add a widget"
+            i18n-addWidgetLabel="@@lol.player.widget.add"
+            editLabel="Edit"
+            i18n-editLabel="@@lol.player.layout.edit"
+            cancelLabel="Cancel"
+            i18n-cancelLabel="@@lol.player.layout.cancel"
+            saveLabel="Save"
+            i18n-saveLabel="@@lol.player.layout.save"
+            emptyPageLabel="This page has no widget yet."
+            i18n-emptyPageLabel="@@lol.player.page.empty"
+            hintLabel="Drag a widget by its header to move it, or grab its bottom-right corner to resize it."
+            i18n-hintLabel="@@lol.player.layout.hint"
+            newPageTitle="New page"
+            i18n-newPageTitle="@@lol.player.page.add"
+            settingsLabel="Configure this widget"
+            i18n-settingsLabel="@@lol.player.widget.settings"
+            editDataLabel="Edit data"
+            i18n-editDataLabel="@@lol.player.widget.editData"
+            removeWidgetLabel="Remove widget"
+            i18n-removeWidgetLabel="@@lol.player.widget.remove"
+            widgetTitleLabel="Widget title"
+            i18n-widgetTitleLabel="@@lol.player.widget.title"
+            widgetTitleHint="Leave empty to drop the header."
+            i18n-widgetTitleHint="@@lol.player.widget.title.hint"
+            doneLabel="Done"
+            i18n-doneLabel="@@lol.player.widget.done"
             (save)="onSave($event)"
-        />
+        >
+            <lol-widget-template-host
+                [player]="player"
+                [options]="options.value() ?? null"
+                [isOwner]="isOwner()"
+                [editing]="editing()"
+                [savingField]="savingField()"
+                (saveField)="onSaveField($event)"
+            />
+        </gc-widget-workspace>
     } @else if (sheet.error()) {
-        <p i18n="@@lol.player.notFound">Fiche joueur LoL introuvable.</p>
+        <p i18n="@@lol.player.notFound">LoL player sheet not found.</p>
     } @else {
         <header class="player-hero player-hero--skeleton" aria-busy="true">
             <div class="player-hero__game">

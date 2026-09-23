@@ -9,22 +9,23 @@ import {
 import defaultLayout from "../../../../../../config/player/workspace.default.json";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
 import { PlayerHeroComponent } from "@features/players/components/player-hero/player-hero.component";
-import { PlayerIdentityComponent } from "@features/players/components/player-identity/player-identity.component";
 import { PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
 import { PlayerOptions, PlayerSheet } from "@features/players/models/player.model";
 import { PlayersService } from "@features/players/services/players.service";
 import {
+    PLAYER_PAGE_VISIBILITY_OPTIONS,
     PLAYER_WIDGET_CATALOG,
     PLAYER_WORKSPACE_COLUMNS,
     PLAYER_WORKSPACE_ROW_HEIGHT,
 } from "@features/players/workspace/widget-catalog";
+import { LolWidgetTemplateHostComponent } from "@features/players/workspace/widget-template-host.component";
 import { SkeletonComponent } from "@bari77/gc-ui";
 import { firstValueFrom } from "rxjs";
 
 @Component({
     standalone: true,
     selector: "lol-player-sheet",
-    imports: [SkeletonComponent, WidgetWorkspaceComponent, PlayerHeroComponent, PlayerIdentityComponent],
+    imports: [PlayerHeroComponent, SkeletonComponent, LolWidgetTemplateHostComponent, WidgetWorkspaceComponent],
     templateUrl: "./player-sheet.component.html",
     styleUrl: "./player-sheet.component.scss",
 })
@@ -34,6 +35,7 @@ export class PlayerSheetComponent {
     public readonly catalog = PLAYER_WIDGET_CATALOG;
     public readonly columns = PLAYER_WORKSPACE_COLUMNS;
     public readonly rowHeight = PLAYER_WORKSPACE_ROW_HEIGHT;
+    public readonly pageVisibilityOptions = PLAYER_PAGE_VISIBILITY_OPTIONS;
 
     public readonly sheetId = computed(
         () => this.publicId() || this.route.snapshot.paramMap.get("publicId") || "",
@@ -45,6 +47,11 @@ export class PlayerSheetComponent {
         defaultValue: undefined as PlayerSheet | undefined,
     });
 
+    public readonly options = resource({
+        loader: () => firstValueFrom(this.players.options()),
+        defaultValue: undefined as PlayerOptions | undefined,
+    });
+
     public readonly isOwner = computed(() => {
         const sheet = this.sheet.value();
         const session = this.membership.session();
@@ -54,13 +61,8 @@ export class PlayerSheetComponent {
     public readonly editing = signal(false);
     public readonly saving = signal(false);
     public readonly saveFailed = signal(false);
-    public readonly identitySaving = signal(false);
-    public readonly identityError = signal<string | null>(null);
-
-    public readonly options = resource({
-        loader: () => firstValueFrom(this.players.options()),
-        defaultValue: undefined as PlayerOptions | undefined,
-    });
+    public readonly savingField = signal(false);
+    public readonly fieldSaveFailed = signal(false);
 
     public readonly workspace = computed(
         () =>
@@ -91,23 +93,21 @@ export class PlayerSheetComponent {
         });
     }
 
-    public async onIdentitySave(data: PlayerUpdateRequestDto, identity: PlayerIdentityComponent): Promise<void> {
-        const current = this.sheet.value();
-        if (!current) {
+    public async onSaveField(patch: PlayerUpdateRequestDto): Promise<void> {
+        const sheet = this.sheet.value();
+        if (!sheet) {
             return;
         }
 
-        this.identitySaving.set(true);
-        this.identityError.set(null);
+        this.savingField.set(true);
+        this.fieldSaveFailed.set(false);
         try {
-            await firstValueFrom(this.players.update(current.publicId, data));
+            await firstValueFrom(this.players.update(sheet.publicId, patch));
             this.sheet.reload();
-            identity.editing.set(false);
-        } catch (error: unknown) {
-            const code = (error as { error?: { code?: string } })?.error?.code;
-            this.identityError.set(code ?? "SAVE_FAILED");
+        } catch {
+            this.fieldSaveFailed.set(true);
         } finally {
-            this.identitySaving.set(false);
+            this.savingField.set(false);
         }
     }
 

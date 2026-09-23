@@ -24,7 +24,7 @@ export const mockPlayerSheet: PlayerSheetDto = {
     solo: { tier: "challenger", division: null, lp: 1247 },
     flex: { tier: "diamond", division: "1", lp: 42 },
     champions: [
-        { id: 2, code: "ahri", kind: "main" },
-        { id: 85, code: "zed", kind: "pool" },
+        { id: 2, code: "ahri", kind: "main", lane: "mid" },
+        { id: 85, code: "zed", kind: "pool", lane: "mid" },
     ],
 };

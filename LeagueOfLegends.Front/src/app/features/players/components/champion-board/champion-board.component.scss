@@ -1,0 +1,28 @@
+:host {
+    display: block;
+}
+
+.champion-board__add {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr 0.8fr auto;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+    align-items: end;
+}
+
+.champion-board__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 0.85rem;
+}
+
+.champion-board__empty {
+    margin: 0;
+    opacity: 0.65;
+}
+
+@media (max-width: 48rem) {
+    .champion-board__add {
+        grid-template-columns: 1fr;
+    }
+}

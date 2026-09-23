@@ -12,6 +12,7 @@ using LeagueOfLegends.Consumer.Configuration;
 using LeagueOfLegends.Consumer.Integration;
 using LeagueOfLegends.Consumer.Services.Infra;
 using LeagueOfLegends.Database.Context;
+using LeagueOfLegends.Database.Seed;
 
 namespace LeagueOfLegends.Consumer;
 
@@ -54,7 +55,12 @@ public class Program
                 });
 
             var host = builder.Build();
-            await host.Services.ApplyMigrationsWithRetryAsync<LeagueOfLegendsDbContext>();
+            await host.Services.ApplyMigrationsWithRetryAsync<LeagueOfLegendsDbContext>(
+                afterMigrate: async (db, sp, _) =>
+                {
+                    var seedLogger = sp.GetRequiredService<ILoggerFactory>().CreateLogger("ReferenceDataSeed");
+                    await ReferenceDataSeed.EnsureAsync(db, seedLogger);
+                });
             var environment = host.Services.GetRequiredService<IHostEnvironment>();
             Log.Information("Started in {Environment} environment...", environment.EnvironmentName);
             await host.RunAsync();

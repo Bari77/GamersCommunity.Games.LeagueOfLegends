@@ -17,4 +17,6 @@ public class Lane : IKeyTable
     public virtual ICollection<Player> PrimaryPlayers { get; set; } = null!;
 
     public virtual ICollection<PlayerLane> PlayerLanes { get; set; } = null!;
+
+    public virtual ICollection<PlayerChampion> PlayerChampions { get; set; } = null!;
 }

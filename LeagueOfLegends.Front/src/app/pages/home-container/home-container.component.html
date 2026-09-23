@@ -1,14 +1,22 @@
-<nb-card class="lol-hub">
-    <nb-card-header>League of Legends</nb-card-header>
-    <nb-card-body>
-        <p>Hub MOBA — fiche joueur, teams et LFG arrivent avec les vagues B à D.</p>
-        @if (membership.needsSheet()) {
-            <lol-create-sheet-wall variant="inline" [message]="wallHomeMessage" />
-        } @else if (membership.hasSheet()) {
-            <a nbButton status="primary" routerLink="sheet">Ma fiche</a>
-        }
-    </nb-card-body>
-</nb-card>
+<section class="lol-hub">
+    <header class="lol-hub__banner">
+        <div class="lol-hub__lanes" aria-hidden="true">
+            @for (lane of lanes; track lane) {
+                <lol-lane-icon class="lane-icon--lg" [code]="lane" />
+            }
+        </div>
+        <div class="lol-hub__copy">
+            <p class="lol-hub__kicker">League of Legends</p>
+            <h1 i18n="@@lol.home.title">Summoner's hub</h1>
+            <p i18n="@@lol.home.hub">Pick your lanes, show your ranks and find a team.</p>
+            @if (membership.needsSheet()) {
+                <lol-create-sheet-wall variant="inline" [message]="wallHomeMessage" />
+            } @else if (membership.hasSheet()) {
+                <a nbButton status="primary" routerLink="sheet" i18n="@@lol.home.mySheet">My profile</a>
+            }
+        </div>
+    </header>
+</section>
 
 <gc-decision-prompt
     [open]="promptOpen()"

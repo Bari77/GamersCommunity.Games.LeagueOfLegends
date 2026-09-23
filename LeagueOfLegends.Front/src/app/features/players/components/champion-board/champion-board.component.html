@@ -1,0 +1,59 @@
+@if (editable()) {
+    <div class="champion-board__add">
+        <nb-select
+            fullWidth
+            placeholder="Champion"
+            [ngModel]="draftChampionId()"
+            (ngModelChange)="draftChampionId.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+        >
+            @for (champion of available(); track champion.id) {
+                <nb-option [value]="champion.id">{{ champion.code | gameTerm }}</nb-option>
+            }
+        </nb-select>
+        <nb-select
+            fullWidth
+            [ngModel]="draftKind()"
+            (ngModelChange)="draftKind.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+        >
+            @for (kind of options().championKinds; track kind.code) {
+                <nb-option [value]="kind.code">{{ kind.code | gameTerm }}</nb-option>
+            }
+        </nb-select>
+        <nb-select
+            fullWidth
+            placeholder="Lane"
+            [ngModel]="draftLaneId()"
+            (ngModelChange)="draftLaneId.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+        >
+            <nb-option [value]="null">—</nb-option>
+            @for (lane of options().lanes; track lane.id) {
+                <nb-option [value]="lane.id">
+                    <lol-lane-icon [code]="lane.code" />
+                    {{ lane.code | gameTerm }}
+                </nb-option>
+            }
+        </nb-select>
+        <button nbButton size="small" status="primary" type="button" [disabled]="draftChampionId() == null || saving()" (click)="add()">
+            <span i18n="@@lol.player.champions.add">Add</span>
+        </button>
+    </div>
+}
+
+@if (champions().length) {
+    <div class="champion-board__grid">
+        @for (champion of champions(); track champion.id) {
+            <lol-champion-card
+                [champion]="champion"
+                [editable]="editable()"
+                (remove)="remove(champion.id)"
+            />
+        }
+    </div>
+} @else {
+    <p class="champion-board__empty" i18n="@@lol.player.champions.empty">
+        No champion in the pool yet.
+    </p>
+}

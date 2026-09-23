@@ -89,7 +89,8 @@ export const handlers = [
                 body.champions !== undefined
                     ? body.champions.flatMap((row) => {
                           const champion = catalogItem(mockPlayerOptions.champions, row.idChampion);
-                          return champion ? [{ ...champion, kind: row.kind }] : [];
+                          const lane = mockPlayerOptions.lanes.find((item) => item.id === row.idLane);
+                          return champion ? [{ ...champion, kind: row.kind, lane: lane?.code ?? null }] : [];
                       })
                     : player.champions,
         };

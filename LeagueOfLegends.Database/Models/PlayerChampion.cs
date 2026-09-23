@@ -16,9 +16,13 @@ public class PlayerChampion : IKeyTable
 
     public int IdKind { get; set; }
 
+    public int? IdLane { get; set; }
+
     public virtual Player IdPlayerNavigation { get; set; } = null!;
 
     public virtual Champion IdChampionNavigation { get; set; } = null!;
 
     public virtual PlayerChampionKind IdKindNavigation { get; set; } = null!;
+
+    public virtual Lane? IdLaneNavigation { get; set; }
 }

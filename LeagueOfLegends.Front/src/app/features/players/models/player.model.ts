@@ -35,10 +35,11 @@ export class PlayerChampion {
         public id: number,
         public code: string,
         public kind: string,
+        public lane: string | null,
     ) {}
 
     public static fromDto(dto: PlayerChampionDto): PlayerChampion {
-        return new PlayerChampion(dto.id, dto.code, dto.kind);
+        return new PlayerChampion(dto.id, dto.code, dto.kind, dto.lane ?? null);
     }
 }
 

@@ -28,13 +28,13 @@ import { GameMembershipStore } from "@core/stores/game-membership.store";
 export class CreateSheetWallComponent {
     public readonly variant = input<"block" | "inline">("block");
 
-    public readonly heading = input("Pas encore de fiche");
+    public readonly heading = input($localize`:@@lol.sheet.wall.heading:No player profile yet`);
 
     public readonly message = input(
-        "Crée ta fiche joueur pour afficher tes lanes, tes champions et rejoindre une team.",
+        $localize`:@@lol.sheet.wall.message:Create your player profile to show your lanes, your champions and join a team.`,
     );
 
-    protected readonly actionLabel = "Créer ma fiche";
+    protected readonly actionLabel = $localize`:@@lol.sheet.wall.action:Create my profile`;
 
     protected readonly membership = inject(GameMembershipStore);
 

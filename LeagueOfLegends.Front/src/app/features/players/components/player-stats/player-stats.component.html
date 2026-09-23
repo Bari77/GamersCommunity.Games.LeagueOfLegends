@@ -1,0 +1,234 @@
+@let player = sheet();
+@let opts = options();
+
+@if (editing()) {
+    <form class="stats__form" (ngSubmit)="submit()">
+        <div class="stats__grid">
+            <label class="stats__field">
+                <span i18n="@@lol.player.stats.gameName">Riot ID</span>
+                <input
+                    nbInput
+                    fullWidth
+                    type="text"
+                    maxlength="16"
+                    [ngModel]="gameName()"
+                    (ngModelChange)="gameName.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                />
+            </label>
+            <label class="stats__field stats__field--tag">
+                <span i18n="@@lol.player.stats.tagLine">Tag</span>
+                <input
+                    nbInput
+                    fullWidth
+                    type="text"
+                    maxlength="5"
+                    [ngModel]="tagLine()"
+                    (ngModelChange)="tagLine.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                />
+            </label>
+            <label class="stats__field">
+                <span i18n="@@lol.player.stats.region">Region</span>
+                <nb-select
+                    fullWidth
+                    placeholder="—"
+                    [ngModel]="idRegion()"
+                    (ngModelChange)="idRegion.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    @for (region of opts.regions; track region.id) {
+                        <nb-option [value]="region.id">{{ region.code | gameTerm }}</nb-option>
+                    }
+                </nb-select>
+            </label>
+            <label class="stats__field">
+                <span i18n="@@lol.player.stats.primaryLane">Primary lane</span>
+                <nb-select
+                    fullWidth
+                    placeholder="—"
+                    [ngModel]="idPrimaryLane()"
+                    (ngModelChange)="onPrimaryLaneChange($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    @for (lane of opts.lanes; track lane.id) {
+                        <nb-option [value]="lane.id">
+                            <span class="stats__option">
+                                <lol-lane-icon [code]="lane.code" />
+                                {{ lane.code | gameTerm }}
+                            </span>
+                        </nb-option>
+                    }
+                </nb-select>
+            </label>
+            <label class="stats__field stats__field--wide">
+                <span i18n="@@lol.player.stats.secondaryLanes">Secondary lanes</span>
+                <nb-select
+                    fullWidth
+                    multiple
+                    placeholder="—"
+                    [ngModel]="secondaryLaneIds()"
+                    (ngModelChange)="secondaryLaneIds.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    @for (lane of secondaryChoices(); track lane.id) {
+                        <nb-option [value]="lane.id">
+                            <span class="stats__option">
+                                <lol-lane-icon [code]="lane.code" />
+                                {{ lane.code | gameTerm }}
+                            </span>
+                        </nb-option>
+                    }
+                </nb-select>
+            </label>
+        </div>
+
+        <div class="stats__ranks">
+            <div class="stats__rank">
+                <p i18n="@@lol.player.stats.solo">Solo/Duo</p>
+                <lol-rank-emblem [tier]="soloTier()" size="hero" [alt]="formatRankLabel(soloTier(), soloDivision())" />
+                <nb-select
+                    fullWidth
+                    placeholder="—"
+                    [ngModel]="soloTier()"
+                    (ngModelChange)="onSoloTierChange($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    <nb-option [value]="null">—</nb-option>
+                    @for (tier of opts.tiers; track tier.code) {
+                        <nb-option [value]="tier.code">
+                            <span class="stats__option">
+                                <lol-rank-emblem [tier]="tier.code" size="crest" />
+                                {{ tier.code | gameTerm }}
+                            </span>
+                        </nb-option>
+                    }
+                </nb-select>
+                @if (needsDivision(soloTier())) {
+                    <nb-select
+                        fullWidth
+                        [ngModel]="soloDivision()"
+                        (ngModelChange)="soloDivision.set($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                    >
+                        @for (division of opts.divisions; track division.code) {
+                            <nb-option [value]="division.code">{{ division.code | gameTerm }}</nb-option>
+                        }
+                    </nb-select>
+                }
+                <input
+                    nbInput
+                    fullWidth
+                    type="number"
+                    min="0"
+                    [placeholder]="'LP'"
+                    [ngModel]="soloLp()"
+                    (ngModelChange)="soloLp.set($event === '' ? null : +$event)"
+                    [ngModelOptions]="{ standalone: true }"
+                />
+            </div>
+            <div class="stats__rank">
+                <p i18n="@@lol.player.stats.flex">Flex</p>
+                <lol-rank-emblem [tier]="flexTier()" size="hero" [alt]="formatRankLabel(flexTier(), flexDivision())" />
+                <nb-select
+                    fullWidth
+                    placeholder="—"
+                    [ngModel]="flexTier()"
+                    (ngModelChange)="onFlexTierChange($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    <nb-option [value]="null">—</nb-option>
+                    @for (tier of opts.tiers; track tier.code) {
+                        <nb-option [value]="tier.code">
+                            <span class="stats__option">
+                                <lol-rank-emblem [tier]="tier.code" size="crest" />
+                                {{ tier.code | gameTerm }}
+                            </span>
+                        </nb-option>
+                    }
+                </nb-select>
+                @if (needsDivision(flexTier())) {
+                    <nb-select
+                        fullWidth
+                        [ngModel]="flexDivision()"
+                        (ngModelChange)="flexDivision.set($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                    >
+                        @for (division of opts.divisions; track division.code) {
+                            <nb-option [value]="division.code">{{ division.code | gameTerm }}</nb-option>
+                        }
+                    </nb-select>
+                }
+                <input
+                    nbInput
+                    fullWidth
+                    type="number"
+                    min="0"
+                    [placeholder]="'LP'"
+                    [ngModel]="flexLp()"
+                    (ngModelChange)="flexLp.set($event === '' ? null : +$event)"
+                    [ngModelOptions]="{ standalone: true }"
+                />
+            </div>
+        </div>
+
+        <div class="stats__actions">
+            <button nbButton ghost size="small" type="button" (click)="cancel.emit()">
+                <span i18n="@@lol.player.presentation.cancel">Cancel</span>
+            </button>
+            <button nbButton size="small" status="primary" type="submit" [disabled]="saving()">
+                <span i18n="@@lol.player.presentation.save">Save</span>
+            </button>
+        </div>
+    </form>
+} @else {
+    <div class="stats">
+        <ul class="stats__list">
+            <li>
+                <span i18n="@@lol.player.stats.riotId">Riot ID</span>
+                <strong>{{ player.riotId || "—" }}</strong>
+            </li>
+            <li>
+                <span i18n="@@lol.player.stats.region">Region</span>
+                <strong>{{ player.region?.code | gameTerm }}</strong>
+            </li>
+            <li>
+                <span i18n="@@lol.player.stats.primaryLane">Primary lane</span>
+                <strong class="stats__value">
+                    @if (player.primaryLane) {
+                        <lol-lane-icon [code]="player.primaryLane.code" [alt]="player.primaryLane.code | gameTerm" />
+                        {{ player.primaryLane.code | gameTerm }}
+                    } @else {
+                        —
+                    }
+                </strong>
+            </li>
+            <li>
+                <span i18n="@@lol.player.stats.secondaryLanes">Secondary lanes</span>
+                <strong class="stats__value">
+                    @if (player.secondaryLanes.length) {
+                        @for (lane of player.secondaryLanes; track lane.id; let last = $last) {
+                            <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                            {{ lane.code | gameTerm }}@if (!last) {<span>·</span>}
+                        }
+                    } @else {
+                        —
+                    }
+                </strong>
+            </li>
+        </ul>
+
+        <div class="stats__boards">
+            <article class="stats__board" [attr.data-tier]="player.solo?.tier || 'unranked'">
+                <p class="stats__queue" i18n="@@lol.player.stats.solo">Solo/Duo</p>
+                <lol-rank-emblem [tier]="player.solo?.tier" size="emblem" [alt]="formatRank(player.solo)" />
+                <strong>{{ formatRank(player.solo) || unrankedLabel }}</strong>
+            </article>
+            <article class="stats__board" [attr.data-tier]="player.flex?.tier || 'unranked'">
+                <p class="stats__queue" i18n="@@lol.player.stats.flex">Flex</p>
+                <lol-rank-emblem [tier]="player.flex?.tier" size="emblem" [alt]="formatRank(player.flex)" />
+                <strong>{{ formatRank(player.flex) || unrankedLabel }}</strong>
+            </article>
+        </div>
+    </div>
+}
