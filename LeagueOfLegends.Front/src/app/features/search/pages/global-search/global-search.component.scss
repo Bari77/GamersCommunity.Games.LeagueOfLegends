@@ -1,0 +1,115 @@
+.search__title {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.search__subtitle {
+    margin: 0.35rem 0 0;
+    color: var(--text-hint-color);
+    font-size: 0.85rem;
+}
+
+.search__form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.search__term {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.search__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.search__filter {
+    min-width: 11rem;
+}
+
+.search__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 1rem;
+}
+
+.search__group {
+    margin-top: 1.5rem;
+}
+
+.search__groupHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.search__groupTitle {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.search__results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--gc-card-grid-gap);
+    margin: 0.65rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.search-hit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.75rem 0.85rem;
+    background: var(--gc-surface-1);
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-left: 3px solid var(--gc-accent, var(--game-accent, #c8aa6e));
+    border-radius: 0.35rem;
+}
+
+.search-hit__name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-basic-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.search-hit__name:hover,
+.search-hit__name:focus-visible {
+    color: var(--gc-accent, var(--game-accent, #c8aa6e));
+}
+
+.search-hit__meta {
+    margin: 0;
+    color: var(--text-hint-color);
+    font-size: 0.8rem;
+}
+
+.search-hit__sentence {
+    margin: 0;
+    overflow: hidden;
+    font-size: 0.82rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.search__empty {
+    margin: 1.5rem 0 0;
+    color: var(--text-hint-color);
+}
+
+.search__more {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.25rem;
+}

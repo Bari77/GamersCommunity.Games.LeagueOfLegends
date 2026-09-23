@@ -1,3 +1,5 @@
+import { PlayerSummaryDto } from "@features/home/dto/home-feed.dto";
+
 export interface CatalogItemDto {
     id: number;
     code: string;
@@ -84,4 +86,17 @@ export interface PlayerOptionsDto {
     championKinds: CatalogItemDto[];
     tiers: CatalogItemDto[];
     divisions: CatalogItemDto[];
+}
+
+export interface PlayerSearchRequestDto {
+    query?: string;
+    idRegion?: number;
+    beforeCreationDate?: string;
+    beforePublicId?: string;
+    take?: number;
+}
+
+export interface PlayerSearchResultDto {
+    items: PlayerSummaryDto[];
+    hasMore: boolean;
 }

@@ -1,0 +1,173 @@
+<section class="search gc-enter">
+    <nb-card>
+        <nb-card-header>
+            <h1 class="search__title gc-display" i18n="@@lol.search.title">Search</h1>
+            <p class="search__subtitle" i18n="@@lol.search.subtitle">
+                Find a team or a player. Type a full handle such as Name#1234 to jump straight to it.
+            </p>
+        </nb-card-header>
+
+        <nb-card-body>
+            <form class="search__form" (ngSubmit)="submitTerm()">
+                <input
+                    class="search__term"
+                    nbInput
+                    fullWidth
+                    type="search"
+                    [placeholder]="searchPlaceholder"
+                    [ngModel]="term()"
+                    (ngModelChange)="term.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                />
+                <button nbButton status="primary" type="submit">
+                    <span i18n="@@lol.search.submit">Search</span>
+                </button>
+            </form>
+
+            <div class="search__filters">
+                <nb-select
+                    class="search__filter"
+                    placeholder="—"
+                    [disabled]="loadingOptions()"
+                    [ngModel]="store.criteria().idRegion"
+                    (ngModelChange)="setRegion($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    <nb-option [value]="null" i18n="@@lol.search.allRegions">All regions</nb-option>
+                    @for (region of options.value()?.regions ?? []; track region.id) {
+                        <nb-option [value]="region.id">{{ region.code | gameTerm }}</nb-option>
+                    }
+                </nb-select>
+            </div>
+
+            <nav class="search__tabs" [attr.aria-label]="tabsLabel">
+                <button
+                    nbButton
+                    size="small"
+                    [status]="scope() === 'all' ? 'primary' : 'basic'"
+                    [ghost]="scope() !== 'all'"
+                    (click)="setScope('all')"
+                >
+                    <span i18n="@@lol.search.tab.all">All</span>
+                </button>
+                <button
+                    nbButton
+                    size="small"
+                    [status]="scope() === 'teams' ? 'primary' : 'basic'"
+                    [ghost]="scope() !== 'teams'"
+                    (click)="setScope('teams')"
+                >
+                    <span i18n="@@lol.search.tab.teams">Teams</span>
+                </button>
+                <button
+                    nbButton
+                    size="small"
+                    [status]="scope() === 'players' ? 'primary' : 'basic'"
+                    [ghost]="scope() !== 'players'"
+                    (click)="setScope('players')"
+                >
+                    <span i18n="@@lol.search.tab.players">Players</span>
+                </button>
+            </nav>
+        </nb-card-body>
+    </nb-card>
+
+    @if (store.loading()) {
+        <ul class="search__results">
+            @for (placeholder of resultPlaceholders; track placeholder) {
+                <li class="search-hit search-hit--skeleton" aria-busy="true">
+                    <gc-skeleton width="55%" height="1.1rem" />
+                    <gc-skeleton-text [lines]="2" />
+                </li>
+            }
+        </ul>
+    } @else if (store.isEmpty()) {
+        <p class="search__empty" i18n="@@lol.search.empty">Nothing matches these criteria.</p>
+    } @else {
+        @if (showsTeams() && store.teams().length > 0) {
+            <section class="search__group">
+                <header class="search__groupHead">
+                    <h2 class="search__groupTitle gc-display" i18n="@@lol.search.group.teams">Teams</h2>
+                    @if (scope() === "all") {
+                        <button nbButton ghost size="small" status="basic" (click)="setScope('teams')">
+                            <span i18n="@@lol.search.seeAll">See all</span>
+                        </button>
+                    }
+                </header>
+
+                <ul class="search__results">
+                    @for (team of store.teams(); track team.publicId) {
+                        <li class="search-hit">
+                            <a class="search-hit__name" [routerLink]="teamLink(team.publicId)">
+                                {{ team.handleLabel() }}
+                            </a>
+                            <p class="search-hit__meta">
+                                @if (team.regionCode) {
+                                    {{ team.regionCode | gameTerm }} ·
+                                }
+                                {{ team.playerSlotCount }}
+                                <span i18n="@@lol.search.playerSlots">players</span>
+                                · {{ team.memberCount }}
+                                <span i18n="@@lol.search.memberCount">members</span>
+                            </p>
+                            @if (team.sentence) {
+                                <p class="search-hit__sentence">{{ plainText(team.sentence) }}</p>
+                            }
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+
+        @if (showsPlayers() && store.players().length > 0) {
+            <section class="search__group">
+                <header class="search__groupHead">
+                    <h2 class="search__groupTitle gc-display" i18n="@@lol.search.group.players">Players</h2>
+                    @if (scope() === "all") {
+                        <button nbButton ghost size="small" status="basic" (click)="setScope('players')">
+                            <span i18n="@@lol.search.seeAll">See all</span>
+                        </button>
+                    }
+                </header>
+
+                <ul class="search__results">
+                    @for (player of store.players(); track player.publicId) {
+                        <li class="search-hit">
+                            <a class="search-hit__name" [routerLink]="playerLink(player.publicId)">
+                                {{ player.handleLabel() }}
+                            </a>
+                            <p class="search-hit__meta">
+                                @if (player.riotId(); as riotId) {
+                                    {{ riotId }}
+                                    @if (player.regionCode || player.primaryLaneCode) {
+                                        ·
+                                    }
+                                }
+                                @if (player.regionCode) {
+                                    {{ player.regionCode | gameTerm }}
+                                }
+                                @if (player.regionCode && player.primaryLaneCode) {
+                                    ·
+                                }
+                                @if (player.primaryLaneCode) {
+                                    {{ player.primaryLaneCode | gameTerm }}
+                                }
+                            </p>
+                            @if (player.presentationIrl) {
+                                <p class="search-hit__sentence">{{ plainText(player.presentationIrl) }}</p>
+                            }
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+
+        @if (store.hasMore()) {
+            <div class="search__more">
+                <button nbButton ghost status="basic" [disabled]="store.loadingMore()" (click)="store.loadMore()">
+                    <span i18n="@@lol.search.loadMore">Load more</span>
+                </button>
+            </div>
+        }
+    }
+</section>

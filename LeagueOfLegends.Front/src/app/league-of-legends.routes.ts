@@ -25,6 +25,14 @@ export const leagueOfLegendsRoutes: Routes = [
       import("./features/lfg/pages/lfg-board/lfg-board.component").then((m) => m.LfgBoardComponent),
   },
   {
+    path: "search",
+    data: { breadcrumb: $localize`:@@lol.breadcrumb.search:Search` },
+    loadComponent: () =>
+      import("./features/search/pages/global-search/global-search.component").then(
+        (m) => m.GlobalSearchComponent,
+      ),
+  },
+  {
     path: "teams",
     data: { breadcrumb: $localize`:@@lol.breadcrumb.teams:Teams` },
     loadComponent: () =>

@@ -44,10 +44,93 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
             "Load" => JsonSafe.Serialize(await LoadAsync(message, ct)),
             "Resolve" => JsonSafe.Serialize(await ResolveByPlatformUserAsync(message, ct)),
             "Get" => JsonSafe.Serialize(await GetSheetAsync(message, ct)),
+            "Search" => JsonSafe.Serialize(await SearchAsync(message, ct)),
             "Options" => JsonSafe.Serialize(await OptionsAsync(ct)),
             "Update" => JsonSafe.Serialize(await UpdateSheetAsync(message, ct)),
             _ => throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented"),
         };
+    }
+
+    private const int MaxSearchTake = 50;
+
+    /// <summary>
+    /// Searches players by their Platform nickname or Riot ID. The nickname lives in the local
+    /// snapshot table, so the query never leaves the microservice.
+    /// </summary>
+    private async Task<PlayerSearchResultDto> SearchAsync(BusMessage message, CancellationToken ct)
+    {
+        var request = string.IsNullOrWhiteSpace(message.Data)
+            ? new PlayerSearchRequest()
+            : ConsumerParamParser.ToObject<PlayerSearchRequest>(message.Data);
+
+        var take = request.Take is > 0 and <= MaxSearchTake ? request.Take : 20;
+
+        var query = context.Players.AsNoTracking().Where(p => p.PlatformUserPublicId != null);
+
+        if (!string.IsNullOrWhiteSpace(request.Query))
+        {
+            var (name, discriminator) = SearchHandle.Split(request.Query);
+
+            query = discriminator is null
+                ? query.Where(p =>
+                    context.PlatformUserSnapshots.Any(s =>
+                        s.PlatformUserPublicId == p.PlatformUserPublicId && s.Nickname.Contains(name))
+                    || (p.GameName != null && p.GameName.Contains(name)))
+                : query.Where(p =>
+                    context.PlatformUserSnapshots.Any(s =>
+                        s.PlatformUserPublicId == p.PlatformUserPublicId
+                        && s.Nickname.Contains(name)
+                        && s.Discriminator == discriminator)
+                    || (p.GameName != null
+                        && p.GameName.Contains(name)
+                        && p.TagLine != null
+                        && p.TagLine == discriminator));
+        }
+
+        if (request.IdRegion is { } idRegion)
+            query = query.Where(p => p.IdRegion == idRegion);
+
+        if (request.BeforePublicId is { } beforePublicId && request.BeforeCreationDate is { } beforeDate)
+        {
+            query = query.Where(p =>
+                p.CreationDate < beforeDate
+                || (p.CreationDate == beforeDate && p.PublicId.CompareTo(beforePublicId) < 0));
+        }
+
+        var rows = await query
+            .OrderByDescending(p => p.CreationDate)
+            .ThenByDescending(p => p.PublicId)
+            .Take(take + 1)
+            .Select(p => new PlayerSummaryDto
+            {
+                PublicId = p.PublicId,
+                PlatformUserPublicId = p.PlatformUserPublicId ?? Guid.Empty,
+                Nickname = context.PlatformUserSnapshots
+                    .Where(s => s.PlatformUserPublicId == p.PlatformUserPublicId)
+                    .Select(s => s.Nickname)
+                    .FirstOrDefault() ?? "Player",
+                Discriminator = context.PlatformUserSnapshots
+                    .Where(s => s.PlatformUserPublicId == p.PlatformUserPublicId)
+                    .Select(s => s.Discriminator)
+                    .FirstOrDefault() ?? "0000",
+                AvatarUrl = context.PlatformUserSnapshots
+                    .Where(s => s.PlatformUserPublicId == p.PlatformUserPublicId)
+                    .Select(s => s.AvatarUrl)
+                    .FirstOrDefault() ?? "",
+                PresentationIrl = p.PresentationIrl,
+                GameName = p.GameName,
+                TagLine = p.TagLine,
+                RegionCode = p.IdRegionNavigation != null ? p.IdRegionNavigation.Code : null,
+                PrimaryLaneCode = p.IdPrimaryLaneNavigation != null ? p.IdPrimaryLaneNavigation.Code : null,
+                CreationDate = p.CreationDate,
+            })
+            .ToListAsync(ct);
+
+        var hasMore = rows.Count > take;
+        if (hasMore)
+            rows.RemoveAt(rows.Count - 1);
+
+        return new PlayerSearchResultDto { Items = rows, HasMore = hasMore };
     }
 
     private async Task<PlayerSheetDto> LoadAsync(BusMessage message, CancellationToken ct)

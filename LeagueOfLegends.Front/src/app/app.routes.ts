@@ -22,6 +22,10 @@ export const routes: Routes = [
                     label: $localize`:@@lol.playground.nav.teams:Teams`,
                 },
             ],
+            gameSearch: {
+                path: `${LOL_GAME_URL}/search`,
+                label: $localize`:@@lol.playground.search:Search a player or a team`,
+            },
         },
         children: leagueOfLegendsRoutes,
     },

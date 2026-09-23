@@ -650,6 +650,26 @@ export const handlers = [
         return HttpResponse.json(player);
     }),
     http.post(`${playersUrl}/actions/Options`, () => HttpResponse.json(mockPlayerOptions)),
+    http.post(`${playersUrl}/actions/Search`, async ({ request }) => {
+        const body = ((await request.json()) as { query?: string; idRegion?: number; take?: number }) ?? {};
+        const query = (body.query ?? "").trim().toLowerCase();
+        const region = body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
+        const items = mockHomeFeed.latestPlayers.filter((item) => {
+            const handle = `${item.nickname}#${item.discriminator}`.toLowerCase();
+            const riot =
+                item.gameName && item.tagLine ? `${item.gameName}#${item.tagLine}`.toLowerCase() : "";
+            const matchesQuery =
+                !query ||
+                handle.includes(query) ||
+                item.nickname.toLowerCase().includes(query) ||
+                (item.gameName ?? "").toLowerCase().includes(query) ||
+                riot.includes(query);
+            const matchesRegion = !region || item.regionCode === region.code;
+            return matchesQuery && matchesRegion;
+        });
+        const take = body.take && body.take > 0 ? body.take : 20;
+        return HttpResponse.json({ items: items.slice(0, take), hasMore: items.length > take });
+    }),
     http.get(`${playersUrl}/:publicId`, ({ params }) => {
         if (params["publicId"] !== player.publicId) {
             return HttpResponse.json({ message: "NOT_FOUND" }, { status: 404 });
