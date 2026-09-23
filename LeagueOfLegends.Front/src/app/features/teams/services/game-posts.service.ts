@@ -12,7 +12,7 @@ import { GamePost, GamePostPage } from "@features/teams/models/game-post.model";
 import { BaseService } from "@shared/services/base.service";
 import { map, Observable } from "rxjs";
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class GamePostsService extends BaseService {
     public constructor() {
         super("/leagueoflegends/GamePosts");

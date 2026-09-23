@@ -12,7 +12,7 @@ import { map, Observable } from "rxjs";
 
 const RESOURCE = "TeamLinks";
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class TeamLinkService extends BaseService {
     public constructor() {
         super("/leagueoflegends");

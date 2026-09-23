@@ -5,12 +5,13 @@ import {
   GameMembershipStore,
   PlatformGamesService,
   PlatformSessionService,
+  PlayerMediaService,
   provideGameRemoteKernel,
 } from "@bari77/gc-sdk";
 import { LOL_GAME_ID, LOL_GAME_URL } from "@core/constants/game.constants";
 import { HomeFeedService } from "@features/home/services/home-feed.service";
 import { LfgChatService, PostableTeamsService } from "@features/lfg/services/lfg-chat.service";
-import { PlayerMediaService } from "@features/media/services/player-media.service";
+import { LfgRealtimeService } from "@features/lfg/services/lfg-realtime.service";
 import { PlayersService } from "@features/players/services/players.service";
 import { GamePostsService } from "@features/teams/services/game-posts.service";
 import { TeamApplicationsService } from "@features/teams/services/team-applications.service";
@@ -20,8 +21,8 @@ import { environment } from "../environments/environment";
 import { HomeContainerComponent } from "./pages/home-container/home-container.component";
 
 /**
- * Federation loads these routes into the Platform shell without the remote `app.config`.
- * `providedIn: "root"` would hit the host root (no GC_ENVIRONMENT) — shadow those services here.
+ * Game services live on this remote injector (not providedIn: "root") so federation
+ * into the Platform shell does not resolve them against the host root.
  */
 const lolRemoteProviders = [
   provideGameRemoteKernel({
@@ -39,6 +40,7 @@ const lolRemoteProviders = [
   PlatformSessionService,
   PlatformGamesService,
   GameMembershipStore,
+  PlayerMediaService,
   HomeFeedService,
   PlayersService,
   TeamsService,
@@ -47,7 +49,7 @@ const lolRemoteProviders = [
   TeamApplicationsService,
   LfgChatService,
   PostableTeamsService,
-  PlayerMediaService,
+  LfgRealtimeService,
 ];
 
 export const leagueOfLegendsRoutes: Routes = [

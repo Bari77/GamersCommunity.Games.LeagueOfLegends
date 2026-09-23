@@ -4,7 +4,7 @@ import { HomeFeed } from "@features/home/models/home-feed.model";
 import { BaseService } from "@shared/services/base.service";
 import { Observable } from "rxjs";
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class HomeFeedService extends BaseService {
     public constructor() {
         super("/leagueoflegends/HomeFeed");

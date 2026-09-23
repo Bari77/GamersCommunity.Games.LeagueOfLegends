@@ -5,7 +5,7 @@ import * as signalR from "@microsoft/signalr";
 
 export type LfgRealtimeStatus = "offline" | "connecting" | "connected";
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class LfgRealtimeService {
     private readonly $status = signal<LfgRealtimeStatus>("offline");
 

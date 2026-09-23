@@ -23,7 +23,7 @@ export interface TeamSearchPage {
     hasMore: boolean;
 }
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class TeamsService extends BaseService {
     public constructor() {
         super("/leagueoflegends/Teams");

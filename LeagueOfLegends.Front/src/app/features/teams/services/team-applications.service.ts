@@ -10,7 +10,7 @@ import { TeamApplication } from "@features/teams/models/team-application.model";
 import { BaseService } from "@shared/services/base.service";
 import { map, Observable } from "rxjs";
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class TeamApplicationsService extends BaseService {
     public constructor() {
         super("/leagueoflegends/TeamApplications");

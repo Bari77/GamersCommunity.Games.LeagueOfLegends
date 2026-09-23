@@ -13,7 +13,7 @@ import { map, Observable } from "rxjs";
 
 const PAGE_SIZE = 50;
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class LfgChatService extends BaseService {
     public constructor() {
         super("/leagueoflegends/LfgAds");
@@ -51,7 +51,7 @@ export class LfgChatService extends BaseService {
     }
 }
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class PostableTeamsService extends BaseService {
     public constructor() {
         super("/leagueoflegends/Teams");
