@@ -1,181 +1,42 @@
-<section class="lfg-chat">
-    <header class="lfg-chat__header">
-        @if (isTeamRecruitment()) {
-            <h2 class="lfg-chat__title gc-display" i18n="@@lol.home.recruit">Team recruitment</h2>
-        } @else {
-            <h2 class="lfg-chat__title gc-display" i18n="@@lol.home.lfg">Looking for group</h2>
-        }
-        @if (realtime.isLive()) {
-            <span class="lfg-chat__live" i18n="@@lol.home.lfg.live">Live</span>
-        }
-    </header>
-
-    @if (!realtime.isLive() && realtime.offlineMessage()) {
-        <p
-            class="lfg-chat__offline"
-            [class.is-connecting]="realtime.status() === 'connecting'"
-            role="status"
-        >
-            {{ realtime.offlineMessage() }}
+<gc-lfg-chat
+    [title]="title()"
+    [messages]="viewMessages()"
+    [loading]="store.loading()"
+    [loadingOlder]="store.loadingOlder()"
+    [hasMore]="store.hasMore()"
+    [isLive]="realtime.isLive()"
+    [offlineMessage]="realtime.offlineMessage()"
+    [offlineConnecting]="realtime.status() === 'connecting'"
+    [composerState]="composerState()"
+    [cooldownSeconds]="store.cooldownSeconds()"
+    [showPosterPicker]="isTeamRecruitment() && store.canPost()"
+    [posterOptions]="posterOptions()"
+    [selectedPosterId]="store.postingAs()"
+    [labels]="labels"
+    (send)="onSend($event)"
+    (requestOlder)="onRequestOlder()"
+    (selectPoster)="store.selectTeam($event)"
+>
+    @if (store.publishError(); as code) {
+        <p gcLfgChatPublishError class="gc-lfg-chat__muted" role="alert">
+            @switch (code) {
+                @case ("MUTED") {
+                    <span i18n="@@lol.home.lfg.error.muted">You are muted and cannot post LFG messages.</span>
+                }
+                @case ("BANNED") {
+                    <span i18n="@@lol.home.lfg.error.banned">Your account is banned.</span>
+                }
+                @case ("SANCTIONS_UNAVAILABLE") {
+                    <span i18n="@@lol.home.lfg.error.unavailable">
+                        Publishing is unavailable right now. Please try again later.
+                    </span>
+                }
+                @default {
+                    <span i18n="@@lol.home.lfg.error.unknown">The message could not be sent.</span>
+                }
+            }
         </p>
     }
 
-    <div class="lfg-chat__thread" [attr.aria-busy]="store.loading() ? 'true' : null">
-        @if (store.loading()) {
-            <div class="lfg-chat__messages lfg-chat__messages--skeleton">
-                @for (row of messagePlaceholders; track row) {
-                    <article class="lfg-chat__bubble lfg-chat__bubble--skeleton">
-                        <gc-skeleton class="lfg-chat__bubble-avatar" width="1.7rem" height="1.7rem" shape="circle" />
-                        <div class="lfg-chat__bubble-body">
-                            <gc-skeleton width="4rem" height="0.72rem" />
-                            <gc-skeleton width="9.5rem" height="0.88rem" />
-                            <gc-skeleton width="3rem" height="0.68rem" />
-                        </div>
-                    </article>
-                }
-            </div>
-        } @else {
-            @if (store.loadingOlder()) {
-                <p class="lfg-chat__hint lfg-chat__hint--compact">{{ loadingOlderLabel }}</p>
-            }
-
-            <div #viewport class="lfg-chat__messages" (scroll)="onViewportScroll()">
-                @if (store.messages().length === 0) {
-                    <p class="lfg-chat__empty" i18n="@@lol.home.lfg.empty">No messages yet. Say hello!</p>
-                }
-                @for (message of store.messages(); track message.publicId) {
-                    <article
-                        class="lfg-chat__bubble"
-                        [class.is-mine]="message.isMine(store.session()?.publicId, store.playerPublicId())"
-                    >
-                        @if (message.isTeamAd()) {
-                            <span class="lfg-chat__bubble-avatar lfg-chat__bubble-avatar--fallback" aria-hidden="true">
-                                {{ message.initial() }}
-                            </span>
-                        } @else if (messageAvatar(message); as avatarUrl) {
-                            <img class="lfg-chat__bubble-avatar" [src]="avatarUrl" alt="" />
-                        } @else {
-                            <span class="lfg-chat__bubble-avatar lfg-chat__bubble-avatar--fallback" aria-hidden="true">
-                                {{ message.initial() }}
-                            </span>
-                        }
-                        <div class="lfg-chat__bubble-body">
-                            @if (message.isTeamAd()) {
-                                <a
-                                    class="lfg-chat__bubble-sender"
-                                    [routerLink]="['/league-of-legends/teams', message.teamPublicId]"
-                                >
-                                    {{ message.handleLabel() }}
-                                </a>
-                            } @else if (message.playerPublicId) {
-                                <a
-                                    class="lfg-chat__bubble-sender"
-                                    [routerLink]="['/league-of-legends/players', message.playerPublicId]"
-                                >
-                                    {{ message.handleLabel() }}
-                                </a>
-                            } @else {
-                                <span class="lfg-chat__bubble-sender lfg-chat__bubble-sender--static">
-                                    {{ message.handleLabel() }}
-                                </span>
-                            }
-                            @if (message.regionCode || message.laneCode) {
-                                <p class="lfg-chat__bubble-meta">
-                                    @if (message.regionCode) {
-                                        <span>{{ message.regionCode | gameTerm }}</span>
-                                    }
-                                    @if (message.regionCode && message.laneCode) {
-                                        <span aria-hidden="true"> · </span>
-                                    }
-                                    @if (message.laneCode) {
-                                        <span>{{ message.laneCode | gameTerm }}</span>
-                                    }
-                                </p>
-                            }
-                            <p class="lfg-chat__bubble-text">{{ message.body }}</p>
-                            <time class="lfg-chat__bubble-date">{{ message.creationDate | date: "short" }}</time>
-                        </div>
-                    </article>
-                }
-            </div>
-
-            @if (pendingBelowCount() > 0) {
-                <button type="button" class="lfg-chat__jump" (click)="jumpToLatest()">
-                    {{ newMessagesLabel }}
-                    <span class="lfg-chat__jump-count">{{ pendingBelowCount() }}</span>
-                </button>
-            }
-
-            @if (isTeamRecruitment() && store.canPost() && store.postableTeams().length > 1) {
-                <nb-select
-                    class="lfg-chat__team-picker"
-                    [placeholder]="teamPickerPlaceholder"
-                    [selected]="store.postingAs()"
-                    (selectedChange)="store.selectTeam($event)"
-                >
-                    @for (team of store.postableTeams(); track team.publicId) {
-                        <nb-option [value]="team.publicId">{{ team.handleLabel() }}</nb-option>
-                    }
-                </nb-select>
-            }
-
-            @if (store.publishError(); as code) {
-                <p class="lfg-chat__muted" role="alert">
-                    @switch (code) {
-                        @case ("MUTED") {
-                            <span i18n="@@lol.home.lfg.error.muted">
-                                You are muted and cannot post LFG messages.
-                            </span>
-                        }
-                        @case ("BANNED") {
-                            <span i18n="@@lol.home.lfg.error.banned">Your account is banned.</span>
-                        }
-                        @case ("SANCTIONS_UNAVAILABLE") {
-                            <span i18n="@@lol.home.lfg.error.unavailable">
-                                Publishing is unavailable right now. Please try again later.
-                            </span>
-                        }
-                        @default {
-                            <span i18n="@@lol.home.lfg.error.unknown">The message could not be sent.</span>
-                        }
-                    }
-                </p>
-            }
-
-            @if (store.isMuted()) {
-                <p class="lfg-chat__muted" i18n="@@lol.home.lfg.muted">
-                    You are muted and cannot post LFG messages.
-                </p>
-            } @else if (store.hasNoPostableTeam()) {
-                <p class="lfg-chat__hint" i18n="@@lol.home.recruit.noTeam">
-                    Only team captains, coaches and managers can post here.
-                </p>
-            } @else if (store.canPost() && store.cooldownSeconds() > 0) {
-                <p class="lfg-chat__cooldown" role="status">
-                    <span i18n="@@lol.home.lfg.cooldown">Please wait</span>
-                    {{ store.cooldownSeconds() }}s
-                    <span i18n="@@lol.home.lfg.cooldownHint"> before posting again.</span>
-                </p>
-            } @else if (store.canSend()) {
-                <nb-chat class="lfg-chat__composer" status="basic">
-                    <nb-chat-form
-                        [dropFiles]="false"
-                        [messagePlaceholder]="composePlaceholder"
-                        (send)="onChatSend($event)"
-                    ></nb-chat-form>
-                </nb-chat>
-            } @else if (store.canPost() && isTeamRecruitment()) {
-                <p class="lfg-chat__hint" i18n="@@lol.home.recruit.pickTeam">
-                    Pick the team you are posting for to enable the composer.
-                </p>
-            } @else if (store.needsSheet()) {
-                <lol-create-sheet-wall variant="inline" [message]="sheetWallMessage" />
-            } @else if (!store.canPost()) {
-                <p class="lfg-chat__login-hint">
-                    <a href="/users/login" i18n="@@lol.home.lfg.login">Log in</a>
-                    <span i18n="@@lol.home.lfg.loginHint"> to join the global LFG chat.</span>
-                </p>
-            }
-        }
-    </div>
-</section>
+    <lol-create-sheet-wall gcLfgChatNeedsSheet variant="inline" [message]="sheetWallMessage" />
+</gc-lfg-chat>

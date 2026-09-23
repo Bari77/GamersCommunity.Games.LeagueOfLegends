@@ -1,10 +1,10 @@
 <ul class="latest-players">
     @for (player of players(); track player.publicId) {
         <li>
-            <lol-entity-row
+            <gc-entity-row
                 [link]="['/league-of-legends/players', player.publicId]"
                 [name]="player.handleLabel()"
-                [subtitle]="player.riotId() || (player.regionCode | gameTerm) || null"
+                [subtitle]="player.riotId() || (player.regionCode | gameTerm) || ''"
                 [date]="player.creationDate"
                 [description]="player.presentationIrl || discoverLabel"
                 [descriptionMuted]="!player.presentationIrl"
@@ -16,7 +16,7 @@
                         <span class="latest-players__initials">{{ player.initials() }}</span>
                     }
                 </span>
-            </lol-entity-row>
+            </gc-entity-row>
         </li>
     } @empty {
         <li class="latest-players__empty" i18n="@@lol.home.players.empty">No player sheets yet.</li>

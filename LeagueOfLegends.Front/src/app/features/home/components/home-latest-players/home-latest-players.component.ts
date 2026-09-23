@@ -1,7 +1,7 @@
 import { Component, input } from "@angular/core";
+import { EntityRowComponent } from "@bari77/gc-ui";
 import { PlayerSummary } from "@features/home/models/home-feed.model";
 import { GameTermPipe } from "@shared/pipes/game-term.pipe";
-import { EntityRowComponent } from "@shared/components/entity-row/entity-row.component";
 
 @Component({
     standalone: true,

@@ -1,6 +1,6 @@
 import { Component, input } from "@angular/core";
+import { EntityRowComponent } from "@bari77/gc-ui";
 import { TeamSummary } from "@features/teams/models/team.model";
-import { EntityRowComponent } from "@shared/components/entity-row/entity-row.component";
 import { gameTerm } from "@shared/pipes/game-term.pipe";
 
 @Component({

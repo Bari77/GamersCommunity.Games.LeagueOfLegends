@@ -1,7 +1,7 @@
 <ul class="latest-teams">
     @for (team of teams(); track team.publicId) {
         <li>
-            <lol-entity-row
+            <gc-entity-row
                 [link]="['/league-of-legends/teams', team.publicId]"
                 [name]="team.handleLabel()"
                 [subtitle]="subtitle(team)"
@@ -16,7 +16,7 @@
                         {{ visual(team) }}
                     }
                 </span>
-            </lol-entity-row>
+            </gc-entity-row>
         </li>
     } @empty {
         <li class="latest-teams__empty" i18n="@@lol.home.teams.empty">No teams yet.</li>
