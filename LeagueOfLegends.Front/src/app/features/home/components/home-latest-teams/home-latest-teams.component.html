@@ -1,0 +1,24 @@
+<ul class="latest-teams">
+    @for (team of teams(); track team.publicId) {
+        <li>
+            <lol-entity-row
+                [link]="['/league-of-legends/teams', team.publicId]"
+                [name]="team.handleLabel()"
+                [subtitle]="subtitle(team)"
+                [date]="team.creationDate"
+                [description]="discoverLabel"
+                [descriptionMuted]="true"
+            >
+                <span rowVisual class="latest-teams__badge" aria-hidden="true">
+                    @if (team.tag) {
+                        {{ team.tag }}
+                    } @else {
+                        {{ visual(team) }}
+                    }
+                </span>
+            </lol-entity-row>
+        </li>
+    } @empty {
+        <li class="latest-teams__empty" i18n="@@lol.home.teams.empty">No teams yet.</li>
+    }
+</ul>

@@ -568,6 +568,7 @@ export const handlers = [
             ...mockHomeFeed,
             latestLfg: lfgMessages.slice(-5),
             latestPlayers: hasPlayerSheet ? mockHomeFeed.latestPlayers : [],
+            latestTeams: mockHomeFeed.latestTeams,
         }),
     ),
     http.post(`${lfgAdsUrl}/actions/ListRecent`, async ({ request }) => {

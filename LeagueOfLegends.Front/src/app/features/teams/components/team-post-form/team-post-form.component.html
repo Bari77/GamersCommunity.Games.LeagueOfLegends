@@ -16,6 +16,17 @@
                 @case ("TEAM_MEMBER_REQUIRED") {
                     <span i18n="@@lol.team.wall.error.member">Only members can post on this wall.</span>
                 }
+                @case ("MUTED") {
+                    <span i18n="@@lol.team.wall.error.muted">You are muted and cannot publish for now.</span>
+                }
+                @case ("BANNED") {
+                    <span i18n="@@lol.team.wall.error.banned">Your account is banned.</span>
+                }
+                @case ("SANCTIONS_UNAVAILABLE") {
+                    <span i18n="@@lol.team.wall.error.unavailable">
+                        Publishing is unavailable right now. Please try again later.
+                    </span>
+                }
                 @default {
                     <span i18n="@@lol.team.wall.error.unknown">The post could not be saved.</span>
                 }

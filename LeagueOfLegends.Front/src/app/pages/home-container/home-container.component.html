@@ -30,6 +30,24 @@
                 }
             </nb-card-body>
         </nb-card>
+
+        <nb-card class="lol-hub__rail">
+            <nb-card-header i18n="@@lol.home.teams">Latest teams</nb-card-header>
+            <nb-card-body>
+                @if (feedLoading()) {
+                    <div class="lol-hub__row-skeletons" aria-hidden="true">
+                        @for (row of rowPlaceholders; track row) {
+                            <div class="lol-hub__row-skeleton">
+                                <gc-skeleton width="2.25rem" height="2.25rem" radius="0.3rem" />
+                                <gc-skeleton-text [lines]="2" lineHeight="1.1rem" />
+                            </div>
+                        }
+                    </div>
+                } @else if (store.feed.value(); as feed) {
+                    <lol-home-latest-teams [teams]="feed.latestTeams" />
+                }
+            </nb-card-body>
+        </nb-card>
     </div>
 </section>
 

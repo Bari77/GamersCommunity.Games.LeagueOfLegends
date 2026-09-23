@@ -4,6 +4,7 @@ import { DecisionPromptComponent, SkeletonComponent, SkeletonTextComponent } fro
 import { LOL_GAME_URL } from "@core/constants/game.constants";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
 import { HomeLatestPlayersComponent } from "@features/home/components/home-latest-players/home-latest-players.component";
+import { HomeLatestTeamsComponent } from "@features/home/components/home-latest-teams/home-latest-teams.component";
 import { HomeFeedStore } from "@features/home/stores/home-feed.store";
 import { LfgChatComponent } from "@features/lfg/components/lfg-chat/lfg-chat.component";
 import { CreateSheetWallComponent } from "@shared/components/create-sheet-wall/create-sheet-wall.component";
@@ -19,6 +20,7 @@ import { NbCardModule } from "@nebular/theme";
         DecisionPromptComponent,
         LfgChatComponent,
         HomeLatestPlayersComponent,
+        HomeLatestTeamsComponent,
         SkeletonComponent,
         SkeletonTextComponent,
     ],

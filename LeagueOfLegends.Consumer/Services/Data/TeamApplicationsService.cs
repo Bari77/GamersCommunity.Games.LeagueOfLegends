@@ -13,7 +13,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeagueOfLegends.Consumer.Services.Data;
 
-public class TeamApplicationsService(LeagueOfLegendsDbContext context, ITeamWhispers whispers) : IBusService
+public class TeamApplicationsService(
+    LeagueOfLegendsDbContext context,
+    ITeamWhispers whispers,
+    IPlatformSanctionsClient sanctions) : IBusService
 {
     private const int MaxMessageLength = 1000;
     private readonly LeagueOfLegendsDbContext _context = context;
@@ -39,6 +42,7 @@ public class TeamApplicationsService(LeagueOfLegendsDbContext context, ITeamWhis
 
         var request = ConsumerParamParser.ToObject<TeamApplicationCreateRequest>(message.Data);
         var caller = await CallerAuth.RequirePlayerAsync(_context, message, ct);
+        await sanctions.EnsureCanPublishAsync(message, ct);
         var text = (RichHtml.SanitizeRequired(request.Message) ?? "").Trim();
         if (text.Length == 0)
             throw new BadRequestException("VALIDATION", "An application message is required");

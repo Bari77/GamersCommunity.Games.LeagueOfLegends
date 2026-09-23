@@ -16,6 +16,7 @@ export class LfgChatStore {
     public readonly loadingOlder = signal(false);
     public readonly hasMore = signal(true);
     public readonly posting = signal(false);
+    public readonly publishError = signal<string | null>(null);
     public readonly cooldownUntil = signal(0);
     public readonly cooldownSeconds = signal(0);
 
@@ -85,6 +86,7 @@ export class LfgChatStore {
         }
 
         this.posting.set(true);
+        this.publishError.set(null);
         try {
             const teamPublicId = this.postingAs();
             const payload: CreateLfgMessageRequestDto = {
@@ -100,6 +102,10 @@ export class LfgChatStore {
             if (code === "COOLDOWN") {
                 this.cooldownUntil.set(Date.now() + POST_COOLDOWN_MS);
                 this.startCooldownTicker();
+            } else if (code === "MUTED" || code === "BANNED" || code === "SANCTIONS_UNAVAILABLE") {
+                this.publishError.set(code);
+            } else {
+                this.publishError.set(code ?? "UNKNOWN");
             }
             throw err;
         } finally {

@@ -62,10 +62,28 @@ public class HomeFeedService(LeagueOfLegendsDbContext context) : IBusService
             })
             .ToListAsync(ct);
 
+        var latestTeams = await _context.Teams.AsNoTracking()
+            .OrderByDescending(t => t.CreationDate)
+            .Take(FeedTake)
+            .Select(t => new TeamSummaryDto
+            {
+                PublicId = t.PublicId,
+                Entitled = t.Entitled,
+                Discriminator = t.Discriminator,
+                Tag = t.Tag,
+                Sentence = t.Sentence,
+                RegionCode = t.IdRegionNavigation != null ? t.IdRegionNavigation.Code : null,
+                CreationDate = t.CreationDate,
+                MemberCount = t.TeamMembers.Count,
+                PlayerSlotCount = t.TeamMembers.Count(m => TeamRankCodes.PlayerSlots.Contains(m.IdTeamRankNavigation.Code)),
+            })
+            .ToListAsync(ct);
+
         return JsonSafe.Serialize(new HomeFeedDto
         {
             LatestLfg = latestLfg,
             LatestPlayers = latestPlayers,
+            LatestTeams = latestTeams,
         });
     }
 

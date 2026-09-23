@@ -119,6 +119,29 @@
                 </nb-select>
             }
 
+            @if (store.publishError(); as code) {
+                <p class="lfg-chat__muted" role="alert">
+                    @switch (code) {
+                        @case ("MUTED") {
+                            <span i18n="@@lol.home.lfg.error.muted">
+                                You are muted and cannot post LFG messages.
+                            </span>
+                        }
+                        @case ("BANNED") {
+                            <span i18n="@@lol.home.lfg.error.banned">Your account is banned.</span>
+                        }
+                        @case ("SANCTIONS_UNAVAILABLE") {
+                            <span i18n="@@lol.home.lfg.error.unavailable">
+                                Publishing is unavailable right now. Please try again later.
+                            </span>
+                        }
+                        @default {
+                            <span i18n="@@lol.home.lfg.error.unknown">The message could not be sent.</span>
+                        }
+                    }
+                </p>
+            }
+
             @if (store.isMuted()) {
                 <p class="lfg-chat__muted" i18n="@@lol.home.lfg.muted">
                     You are muted and cannot post LFG messages.

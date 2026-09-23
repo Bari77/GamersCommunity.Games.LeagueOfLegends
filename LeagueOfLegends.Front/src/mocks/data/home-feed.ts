@@ -1,7 +1,8 @@
 import { HomeFeedDto, PlayerSummaryDto } from "@features/home/dto/home-feed.dto";
 import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
+import { TeamSummaryDto } from "@features/teams/dto/team.dto";
 import { PLAYER_PUBLIC_ID, PLATFORM_USER_PUBLIC_ID, mockPlayerSheet } from "./players";
-import { TEAM_PUBLIC_ID, mockTeamSheet } from "./teams";
+import { TEAM_PUBLIC_ID, mockTeamSheet, mockTeamSummaries } from "./teams";
 
 const hoursAgo = (hours: number) => new Date(Date.now() - hours * 3600000).toISOString();
 const tomorrow = () => new Date(Date.now() + 86400000).toISOString();
@@ -85,7 +86,10 @@ export const mockLatestPlayers: PlayerSummaryDto[] = [
     },
 ];
 
+export const mockLatestTeams: TeamSummaryDto[] = [...mockTeamSummaries];
+
 export const mockHomeFeed: HomeFeedDto = {
     latestLfg: mockLfgMessages,
     latestPlayers: mockLatestPlayers,
+    latestTeams: mockLatestTeams,
 };

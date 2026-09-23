@@ -4,6 +4,7 @@ using GamersCommunity.Core.Html;
 using GamersCommunity.Core.Rabbit;
 using GamersCommunity.Core.Serialization;
 using GamersCommunity.Core.Services;
+using LeagueOfLegends.Consumer.Integration;
 using LeagueOfLegends.Consumer.Models;
 using LeagueOfLegends.Consumer.Security;
 using LeagueOfLegends.Database.Context;
@@ -12,7 +13,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeagueOfLegends.Consumer.Services.Data;
 
-public class GamePostsService(LeagueOfLegendsDbContext context) : IBusService
+public class GamePostsService(
+    LeagueOfLegendsDbContext context,
+    IPlatformSanctionsClient sanctions) : IBusService
 {
     private const int MaxTake = 50;
     private const int MaxBodyLength = 4000;
@@ -80,6 +83,7 @@ public class GamePostsService(LeagueOfLegendsDbContext context) : IBusService
 
         var request = ConsumerParamParser.ToObject<GamePostCreateRequest>(message.Data);
         var caller = await CallerAuth.RequirePlayerAsync(_context, message, ct);
+        await sanctions.EnsureCanPublishAsync(message, ct);
         var teamId = await RequireTeamIdAsync(request.TeamPublicId, ct);
         var standing = await TeamAuth.RequireStandingAsync(_context, teamId, caller.Id, TeamRankCodes.Player, ct);
         var body = NormalizePostBody(request.Body);
@@ -120,6 +124,8 @@ public class GamePostsService(LeagueOfLegendsDbContext context) : IBusService
         var caller = await CallerAuth.RequirePlayerAsync(_context, message, ct);
         if (post.IdPlayer != caller.Id)
             throw new ForbiddenException("FORBIDDEN", "Only the author can edit this post");
+
+        await sanctions.EnsureCanPublishAsync(message, ct);
 
         var standing = await TeamAuth.RequireStandingAsync(_context, post.IdTeam, caller.Id, TeamRankCodes.Player, ct);
         var now = DateTime.UtcNow;

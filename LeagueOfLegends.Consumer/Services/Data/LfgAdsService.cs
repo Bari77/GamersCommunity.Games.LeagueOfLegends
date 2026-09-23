@@ -5,6 +5,7 @@ using GamersCommunity.Core.Serialization;
 using GamersCommunity.Core.Services;
 using LeagueOfLegends.Consumer.Models;
 using LeagueOfLegends.Consumer.Realtime;
+using LeagueOfLegends.Consumer.Integration;
 using LeagueOfLegends.Consumer.Security;
 using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Models;
@@ -14,7 +15,8 @@ namespace LeagueOfLegends.Consumer.Services.Data;
 
 public class LfgAdsService(
     LeagueOfLegendsDbContext context,
-    IRealtimeEventPublisher realtimePublisher) : IBusService
+    IRealtimeEventPublisher realtimePublisher,
+    IPlatformSanctionsClient sanctions) : IBusService
 {
     private const int RecentTake = 50;
     private const int MaxBodyLength = 2000;
@@ -180,6 +182,7 @@ public class LfgAdsService(
             throw new BadRequestException("VALIDATION", "Message is too long");
 
         var player = await CallerAuth.RequirePlayerAsync(_context, message, ct);
+        await sanctions.EnsureCanPublishAsync(message, ct);
         var postedAt = DateTime.UtcNow;
 
         Team? team = null;

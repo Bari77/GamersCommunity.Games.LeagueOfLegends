@@ -51,10 +51,10 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 
 ## C4 — Enforcement du mute
 
-- [ ] Client RPC `Users.Sanctions` + cache
-- [ ] Garde `EnsureCanPublishAsync` sur LFG, posts, candidatures
-- [ ] Ban actif : blocage des publications
-- [ ] Front : erreurs `MUTED` / `BANNED` / `SANCTIONS_UNAVAILABLE`
+- [x] Client RPC `Users.Sanctions` + cache
+- [x] Garde `EnsureCanPublishAsync` sur LFG, posts, candidatures
+- [x] Ban actif : blocage des publications
+- [x] Front : erreurs `MUTED` / `BANNED` / `SANCTIONS_UNAVAILABLE`
 
 ## Gateway
 

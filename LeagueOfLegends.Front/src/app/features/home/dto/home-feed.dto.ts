@@ -1,8 +1,10 @@
 import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
+import { TeamSummaryDto } from "@features/teams/dto/team.dto";
 
 export interface HomeFeedDto {
     latestLfg: LfgMessageDto[];
     latestPlayers: PlayerSummaryDto[];
+    latestTeams: TeamSummaryDto[];
 }
 
 export interface PlayerSummaryDto {

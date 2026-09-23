@@ -45,6 +45,7 @@ public class Program
                     services.AddSingleton<Serilog.ILogger>(sp => Log.Logger);
                     services.AddSingleton<IRealtimeEventPublisher, RealtimeEventPublisher>();
                     services.AddSingleton<IPlatformConversationsClient, PlatformConversationsClient>();
+                    services.AddSingleton<IPlatformSanctionsClient, PlatformSanctionsClient>();
                     services.AddScoped<ITeamWhispers, TeamWhispers>();
                     services.Scan(scan => scan
                         .FromAssembliesOf(typeof(AppSettings))

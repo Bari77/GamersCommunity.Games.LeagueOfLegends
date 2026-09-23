@@ -1,0 +1,33 @@
+:host {
+    display: block;
+}
+
+.latest-teams {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.latest-teams__empty {
+    margin: 0;
+    padding: 0.5rem 0;
+    color: rgb(160 170 200 / 68%);
+    font-size: 0.9rem;
+}
+
+.latest-teams__badge {
+    display: grid;
+    place-items: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0 0.35rem;
+    border-radius: 0.3rem;
+    background: color-mix(in srgb, var(--game-accent, #c8aa6e) 28%, var(--gc-surface-2, #1a2234));
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
