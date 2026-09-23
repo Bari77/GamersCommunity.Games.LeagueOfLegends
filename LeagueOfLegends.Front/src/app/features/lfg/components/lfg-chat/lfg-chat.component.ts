@@ -4,18 +4,21 @@ import {
     Component,
     ElementRef,
     inject,
+    input,
     OnDestroy,
     OnInit,
     signal,
     viewChild,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
-import { LfgMessage } from "@features/lfg/models/lfg-message.model";
+import { LFG_KIND_TEAM, LfgKind, LfgMessage } from "@features/lfg/models/lfg-message.model";
 import { LfgChatStore } from "@features/lfg/stores/lfg-chat.store";
 import { LfgRealtimeService } from "@features/lfg/services/lfg-realtime.service";
-import { NbChatModule } from "@nebular/theme";
+import { NbChatModule, NbSelectModule } from "@nebular/theme";
 import { SkeletonComponent } from "@bari77/gc-ui";
 import { CreateSheetWallComponent } from "@shared/components/create-sheet-wall/create-sheet-wall.component";
+import { GameTermPipe } from "@shared/pipes/game-term.pipe";
 
 const NEAR_BOTTOM_PX = 48;
 const NEAR_TOP_PX = 48;
@@ -23,17 +26,29 @@ const NEAR_TOP_PX = 48;
 @Component({
     standalone: true,
     selector: "lol-lfg-chat",
-    imports: [DatePipe, RouterLink, NbChatModule, SkeletonComponent, CreateSheetWallComponent],
+    imports: [
+        DatePipe,
+        FormsModule,
+        RouterLink,
+        NbChatModule,
+        NbSelectModule,
+        SkeletonComponent,
+        CreateSheetWallComponent,
+        GameTermPipe,
+    ],
     providers: [LfgChatStore],
     templateUrl: "./lfg-chat.component.html",
     styleUrl: "./lfg-chat.component.scss",
 })
 export class LfgChatComponent implements OnInit, OnDestroy {
+    public readonly kind = input<LfgKind>("player");
+
     public readonly store = inject(LfgChatStore);
     public readonly realtime = inject(LfgRealtimeService);
     public readonly composePlaceholder = $localize`:@@lol.home.lfg.bodyPlaceholder:Type a message…`;
     public readonly newMessagesLabel = $localize`:@@lol.home.lfg.newMessages:New messages`;
     public readonly loadingOlderLabel = $localize`:@@lol.home.lfg.loadingOlder:Loading older messages…`;
+    public readonly teamPickerPlaceholder = $localize`:@@lol.home.recruit.teamPicker:Post as…`;
     public readonly sheetWallMessage = $localize`:@@lol.sheet.wall.lfgMessage:Create your player profile to post in this chat.`;
 
     protected readonly messagePlaceholders = [0, 1, 2, 3];
@@ -76,7 +91,11 @@ export class LfgChatComponent implements OnInit, OnDestroy {
     }
 
     public async ngOnInit(): Promise<void> {
-        await this.store.init();
+        await this.store.init(this.kind());
+    }
+
+    public isTeamRecruitment(): boolean {
+        return this.kind() === LFG_KIND_TEAM;
     }
 
     public ngOnDestroy(): void {

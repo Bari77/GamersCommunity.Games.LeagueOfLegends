@@ -110,19 +110,78 @@
     background: rgba(255, 255, 255, 0.06);
 }
 
+.member-card__champions {
+    display: flex;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.member-card__champions li {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    overflow: hidden;
+    border-radius: 0.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.member-card__champions li[data-kind="main"] {
+    border-color: color-mix(in srgb, var(--game-accent, #c8aa6e) 70%, transparent);
+}
+
+.member-card__champions img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .member-card__actions {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.45rem;
     margin-top: auto;
     padding-top: 0.6rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.member-card__lane {
-    flex: 0 1 9.5rem;
-    min-width: 7.5rem;
+.member-card__admin {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.member-card__lane-wrap {
+    display: block;
+    width: 100%;
+}
+
+:host ::ng-deep .member-card__lane-wrap nb-select,
+:host ::ng-deep .member-card__lane-wrap nb-select.full-width {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+:host ::ng-deep .member-card__lane-wrap .select-button {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.member-card__kinds {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.member-card__kinds button {
+    width: 100%;
+    justify-content: center;
 }
 
 .team-roster__empty {

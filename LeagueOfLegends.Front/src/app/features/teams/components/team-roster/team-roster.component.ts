@@ -18,6 +18,7 @@ import {
 import { NbButtonModule, NbSelectModule } from "@nebular/theme";
 import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
 import { GameTermPipe } from "@shared/pipes/game-term.pipe";
+import { championSquareUrl } from "@shared/utils/lol-art";
 
 export interface TeamRankChange {
     playerPublicId: string;
@@ -66,6 +67,10 @@ export class TeamRosterComponent {
 
     protected playerLink(publicId: string): string[] {
         return [`${LOL_GAME_URL}/players`, publicId];
+    }
+
+    protected championSquare(code: string): string {
+        return championSquareUrl(code);
     }
 
     protected isMine(member: TeamMember): boolean {

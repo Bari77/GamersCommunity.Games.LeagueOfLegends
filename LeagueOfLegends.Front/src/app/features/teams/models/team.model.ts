@@ -1,3 +1,4 @@
+import { PlayerChampion } from "@features/players/models/player.model";
 import { PlayerTeamDto, TeamMemberDto, TeamSheetDto, TeamSummaryDto } from "@features/teams/dto/team.dto";
 
 const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
@@ -39,6 +40,7 @@ export class TeamMember {
         public laneCode: string | null,
         public rosterKind: string | null,
         public joinedAt: Date,
+        public champions: PlayerChampion[],
     ) {}
 
     public static fromDto(dto: TeamMemberDto): TeamMember {
@@ -55,6 +57,7 @@ export class TeamMember {
             dto.laneCode ?? dto.primaryLaneCode ?? null,
             dto.rosterKind ?? null,
             new Date(dto.joinedAt),
+            (dto.champions ?? []).map((champion) => PlayerChampion.fromDto(champion)),
         );
     }
 

@@ -21,6 +21,7 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 - **Candidatures** : `TeamApplication` (`pending` / `accepted` / `rejected` / `withdrawn`). Joueur : lane visée. Staff : rang `coach` ou `manager`. Une seule `pending` par couple (team, player).
 - **Mur modéré** : captain / coach / manager publient en `approved` ; les `player` passent en `pending`.
 - **Pas de deep-link DM.** Parcours : LFG team → fiche team → roster → pseudo → profil public → ami → Whispers.
+- **Whispers team** : canal Platform `lol:team:{PublicId}` créé avec la team, roster synchronisé (join / leave / kick / dissolve), titre = handle. Pas de tchat répliqué en base jeu.
 - **Mute** : RPC synchrone vers `platform_queue` (`Users.Sanctions`), cache mémoire court. Sanctions jamais répliquées en base jeu.
 - **Client RPC** : à partager (package commun) — cette spec est le deuxième consommateur.
 - **Widgets team** : `Team.LayoutJson` + target workspace `team`.
@@ -35,6 +36,7 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 - [x] Acceptation joueur sans plafond de roster
 - [x] Acceptation staff refusée si le poste est pris
 - [x] Front : annuaire `/league-of-legends/teams`, fiche
+- [x] Whispers : canal team créé à la création, roster synchronisé
 
 ## C2 — Mur d’équipe modéré
 
@@ -43,9 +45,9 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, board LFG région / lan
 
 ## C3 — Board LFG
 
-- [ ] `LfgAds.Search` : `kind` / région / lane
-- [ ] Page `/league-of-legends/lfg`
-- [ ] Annonce team → fiche team ; annonce joueur → fiche joueur
+- [x] `LfgAds.Search` : `kind` / région / lane
+- [x] Page `/league-of-legends/lfg`
+- [x] Annonce team → fiche team ; annonce joueur → fiche joueur
 
 ## C4 — Enforcement du mute
 

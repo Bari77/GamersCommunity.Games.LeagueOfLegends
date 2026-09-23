@@ -16,6 +16,7 @@ export const mockPlayerOptions: PlayerOptionsDto = {
     ],
     champions: [
         { id: 2, code: "ahri" },
+        { id: 7, code: "leblanc" },
         { id: 36, code: "kaisa" },
         { id: 45, code: "leesin" },
         { id: 71, code: "thresh" },

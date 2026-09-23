@@ -1,0 +1,129 @@
+.lfg-board {
+    display: grid;
+    gap: 1rem;
+}
+
+.lfg-board__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.lfg-board__title {
+    margin: 0;
+}
+
+.lfg-board__subtitle {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.lfg-board__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lfg-board__kinds {
+    display: inline-flex;
+    gap: 0.35rem;
+}
+
+.lfg-board__search {
+    flex: 1 1 14rem;
+    min-width: 12rem;
+}
+
+.lfg-board__filter {
+    flex: 0 0 auto;
+    min-width: 10rem;
+}
+
+.lfg-board__list {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lfg-board__card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    padding: 0.85rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 8%);
+    background: var(--gc-surface-1, var(--game-surface-1, #121826));
+}
+
+.lfg-board__card--skeleton {
+    pointer-events: none;
+}
+
+.lfg-board__avatar {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--gc-accent, var(--game-accent, #c8aa6e)) 28%, transparent);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.lfg-board__card-body {
+    min-width: 0;
+    display: grid;
+    gap: 0.25rem;
+}
+
+.lfg-board__handle {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.lfg-board__handle:hover {
+    text-decoration: underline;
+}
+
+.lfg-board__meta {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: baseline;
+    font-size: 0.78rem;
+    opacity: 0.72;
+}
+
+.lfg-board__date {
+    margin-left: auto;
+}
+
+.lfg-board__body {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.lfg-board__empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.lfg-board__more {
+    display: flex;
+    justify-content: center;
+}

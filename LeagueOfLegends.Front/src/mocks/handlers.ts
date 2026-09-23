@@ -26,11 +26,12 @@ import {
 import { http, HttpResponse } from "msw";
 import { environment } from "../environments/environment";
 import { mockPlayerPictures, mockPlayerStreams, mockPlayerVideos } from "./data/media";
-import { CreateLfgMessageRequestDto } from "@features/lfg/dto/lfg-message.dto";
+import { CreateLfgMessageRequestDto, SearchLfgRequestDto } from "@features/lfg/dto/lfg-message.dto";
 import { mockHomeFeed, mockLfgMessages } from "./data/home-feed";
+import { pickRosterChampions } from "@features/players/models/player.model";
 import { mockPlayerOptions } from "./data/options";
 import { mockPlayerSheet, PLAYER_PUBLIC_ID, PLATFORM_USER_PUBLIC_ID } from "./data/players";
-import { mockTeamApplications, mockTeamSheet, mockTeamSummaries } from "./data/teams";
+import { mockTeamApplications, mockTeamSheet, mockTeamSummaries, TEAM_PUBLIC_ID } from "./data/teams";
 import { mockTeamLinks, mockTeamPosts } from "./data/team-wall";
 import {
     GamePostCreateRequestDto,
@@ -51,6 +52,7 @@ const teamsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "Teams");
 const teamApplicationsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "TeamApplications");
 const gamePostsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "GamePosts");
 const teamLinksUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "TeamLinks");
+const lfgAdsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "LfgAds");
 
 let player = { ...mockPlayerSheet };
 let hasPlayerSheet = !new URLSearchParams(location.search).has("noSheet");
@@ -59,6 +61,29 @@ let teams: TeamSheetDto[] = [{ ...mockTeamSheet, members: [...(mockTeamSheet.mem
 let teamApplications = [...mockTeamApplications];
 let teamPosts = [...mockTeamPosts];
 let teamLinks = [...mockTeamLinks];
+
+function filterLfgByKind(kind: string | undefined) {
+    const resolved = kind?.trim().toLowerCase() || "player";
+    return lfgMessages.filter((item) => item.kind === resolved);
+}
+
+function laneCodeForId(idLane: number | null | undefined): string | null {
+    if (idLane == null) {
+        return null;
+    }
+    return mockPlayerOptions.lanes.find((lane) => lane.id === idLane)?.code ?? null;
+}
+
+function regionCodeForId(idRegion: number | null | undefined): string | null {
+    if (idRegion == null) {
+        return null;
+    }
+    return mockPlayerOptions.regions.find((region) => region.id === idRegion)?.code ?? null;
+}
+
+function rosterChampions(laneCode: string | null | undefined) {
+    return pickRosterChampions(player.champions ?? [], laneCode);
+}
 
 function teamSummary(team: TeamSheetDto) {
     return {
@@ -182,6 +207,26 @@ export const handlers = [
         });
         return HttpResponse.json(items);
     }),
+    http.post(`${teamsUrl}/actions/ListPostable`, () => {
+        const postableRanks = new Set(["captain", "coach", "manager"]);
+        const items = teams.flatMap((team) => {
+            const member = (team.members ?? []).find(
+                (item) => item.playerPublicId === PLAYER_PUBLIC_ID && postableRanks.has(item.rank),
+            );
+            if (!member) {
+                return [];
+            }
+            return [
+                {
+                    publicId: team.publicId,
+                    entitled: team.entitled,
+                    discriminator: team.discriminator,
+                    rank: member.rank,
+                },
+            ];
+        });
+        return HttpResponse.json(items);
+    }),
     http.get(`${teamsUrl}/:publicId`, ({ params }) => {
         const team = teams.find((item) => item.publicId === params["publicId"]);
         if (!team) {
@@ -230,6 +275,7 @@ export const handlers = [
                     laneCode: player.primaryLane?.code ?? null,
                     rosterKind: "main",
                     joinedAt: new Date().toISOString(),
+                    champions: rosterChampions(player.primaryLane?.code ?? null),
                 },
             ],
             viewerRank: "captain",
@@ -268,11 +314,13 @@ export const handlers = [
                       ...team,
                       members: (team.members ?? []).map((member) => {
                           if (member.playerPublicId === body.playerPublicId) {
+                              const laneCode = lane?.code ?? member.laneCode;
                               return {
                                   ...member,
                                   idLane: body.idLane,
-                                  laneCode: lane?.code ?? member.laneCode,
+                                  laneCode,
                                   rosterKind: body.rosterKind,
+                                  champions: rosterChampions(laneCode),
                               };
                           }
                           if (
@@ -522,17 +570,45 @@ export const handlers = [
             latestPlayers: hasPlayerSheet ? mockHomeFeed.latestPlayers : [],
         }),
     ),
-    http.post(gatewayUrl(environment.apiUrl, "leagueoflegends", "LfgAds", "actions", "ListRecent"), () =>
-        HttpResponse.json(lfgMessages),
-    ),
-    http.post(gatewayUrl(environment.apiUrl, "leagueoflegends", "LfgAds", "actions", "ListBefore"), () =>
-        HttpResponse.json([]),
-    ),
-    http.post(gatewayUrl(environment.apiUrl, "leagueoflegends", "LfgAds", "actions", "Create"), async ({ request }) => {
+    http.post(`${lfgAdsUrl}/actions/ListRecent`, async ({ request }) => {
+        const body = ((await request.json()) as { kind?: string }) ?? {};
+        return HttpResponse.json(filterLfgByKind(body.kind));
+    }),
+    http.post(`${lfgAdsUrl}/actions/ListBefore`, () => HttpResponse.json([])),
+    http.post(`${lfgAdsUrl}/actions/Search`, async ({ request }) => {
+        const body = ((await request.json()) as SearchLfgRequestDto) ?? {};
+        const kind = body.kind?.trim().toLowerCase() || "player";
+        const query = (body.query ?? "").trim().toLowerCase();
+        const regionCode = regionCodeForId(body.idRegion);
+        const laneCode = laneCodeForId(body.idLane);
+        const items = lfgMessages.filter((ad) => {
+            if (ad.kind !== kind) {
+                return false;
+            }
+            if (query && !ad.body.toLowerCase().includes(query)) {
+                return false;
+            }
+            if (regionCode && ad.regionCode !== regionCode) {
+                return false;
+            }
+            if (laneCode && ad.laneCode !== laneCode) {
+                return false;
+            }
+            return true;
+        });
+        const take = body.take && body.take > 0 ? body.take : 20;
+        return HttpResponse.json({ items: items.slice(0, take), hasMore: items.length > take });
+    }),
+    http.post(`${lfgAdsUrl}/actions/Create`, async ({ request }) => {
         const body = (await request.json()) as CreateLfgMessageRequestDto;
+        const team =
+            body.teamPublicId != null
+                ? teams.find((item) => item.publicId === body.teamPublicId) ??
+                  (body.teamPublicId === TEAM_PUBLIC_ID ? mockTeamSheet : null)
+                : null;
         const created = {
             publicId: crypto.randomUUID(),
-            kind: "player",
+            kind: team ? "team" : "player",
             body: body.body,
             senderNickname: player.nickname,
             senderDiscriminator: player.discriminator,
@@ -541,8 +617,16 @@ export const handlers = [
             playerPublicId: PLAYER_PUBLIC_ID,
             platformUserPublicId: PLATFORM_USER_PUBLIC_ID,
             senderAvatarUrl: player.avatarUrl,
-            regionCode: player.region?.code ?? null,
-            laneCode: player.primaryLane?.code ?? null,
+            regionCode: team?.regionCode ?? player.region?.code ?? null,
+            laneCode: laneCodeForId(body.idLane) ?? player.primaryLane?.code ?? null,
+            ...(team
+                ? {
+                      teamPublicId: team.publicId,
+                      teamName: team.entitled,
+                      teamDiscriminator: team.discriminator,
+                      teamTag: team.tag,
+                  }
+                : {}),
         };
         lfgMessages = [...lfgMessages, created];
         return HttpResponse.json(created);

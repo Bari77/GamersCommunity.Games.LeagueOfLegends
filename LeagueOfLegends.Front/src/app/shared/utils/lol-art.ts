@@ -31,6 +31,10 @@ export function championSplashUrl(code: string): string {
     return `https://cdn.communitydragon.org/latest/champion/${encodeURIComponent(code)}/splash-art`;
 }
 
+export function championSquareUrl(code: string): string {
+    return `https://cdn.communitydragon.org/latest/champion/${encodeURIComponent(code)}/square`;
+}
+
 export function normalizeTier(tier: string | null | undefined): string {
     const code = (tier ?? "").trim().toLowerCase();
     return KNOWN_TIERS.has(code) ? code : "unranked";

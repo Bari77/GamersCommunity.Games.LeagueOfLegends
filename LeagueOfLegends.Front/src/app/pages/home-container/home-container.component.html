@@ -3,7 +3,14 @@
         <lol-create-sheet-wall variant="inline" [message]="wallHomeMessage" />
     }
 
-    <lol-lfg-chat />
+    <div class="lol-hub__chats">
+        <lol-lfg-chat kind="player" />
+        <lol-lfg-chat kind="team" />
+    </div>
+
+    <p class="lol-hub__board-link">
+        <a [routerLink]="boardLink" i18n="@@lol.home.lfg.boardLink">Browse the full LFG board</a>
+    </p>
 
     <div class="lol-hub__grid" [attr.aria-busy]="feedLoading() ? 'true' : null">
         <nb-card class="lol-hub__rail">

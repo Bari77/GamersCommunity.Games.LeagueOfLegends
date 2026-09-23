@@ -1,0 +1,142 @@
+<section class="lfg-board gc-enter">
+    <nb-card>
+        <nb-card-header class="lfg-board__header">
+            <div>
+                <h1 class="lfg-board__title gc-display" i18n="@@lol.lfg.board.title">LFG board</h1>
+                <p class="lfg-board__subtitle" i18n="@@lol.lfg.board.subtitle">
+                    Filter player and team ads by region and lane.
+                </p>
+            </div>
+        </nb-card-header>
+
+        <nb-card-body>
+            <form class="lfg-board__filters" (ngSubmit)="onSearchSubmit()">
+                <div class="lfg-board__kinds" role="group" aria-label="Ad kind">
+                    <button
+                        type="button"
+                        nbButton
+                        size="small"
+                        [status]="store.kind() === kindPlayer ? 'primary' : 'basic'"
+                        (click)="onKindChange(kindPlayer)"
+                    >
+                        <span i18n="@@lol.lfg.board.kindPlayer">Players</span>
+                    </button>
+                    <button
+                        type="button"
+                        nbButton
+                        size="small"
+                        [status]="store.kind() === kindTeam ? 'primary' : 'basic'"
+                        (click)="onKindChange(kindTeam)"
+                    >
+                        <span i18n="@@lol.lfg.board.kindTeam">Teams</span>
+                    </button>
+                </div>
+
+                <input
+                    class="lfg-board__search"
+                    nbInput
+                    fullWidth
+                    type="search"
+                    [placeholder]="searchPlaceholder"
+                    [ngModel]="store.query()"
+                    (ngModelChange)="store.query.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                />
+
+                <nb-select
+                    class="lfg-board__filter"
+                    placeholder="—"
+                    [disabled]="loadingOptions()"
+                    [ngModel]="store.idRegion()"
+                    (ngModelChange)="store.idRegion.set($event); onFilterChange()"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    <nb-option [value]="null" i18n="@@lol.lfg.board.allRegions">All regions</nb-option>
+                    @for (region of options.value()?.regions ?? []; track region.id) {
+                        <nb-option [value]="region.id">{{ region.code | gameTerm }}</nb-option>
+                    }
+                </nb-select>
+
+                <nb-select
+                    class="lfg-board__filter"
+                    placeholder="—"
+                    [disabled]="loadingOptions()"
+                    [ngModel]="store.idLane()"
+                    (ngModelChange)="store.idLane.set($event); onFilterChange()"
+                    [ngModelOptions]="{ standalone: true }"
+                >
+                    <nb-option [value]="null" i18n="@@lol.lfg.board.allLanes">All lanes</nb-option>
+                    @for (lane of options.value()?.lanes ?? []; track lane.id) {
+                        <nb-option [value]="lane.id">{{ lane.code | gameTerm }}</nb-option>
+                    }
+                </nb-select>
+
+                <button nbButton status="basic" type="submit">
+                    <span i18n="@@lol.lfg.board.search">Search</span>
+                </button>
+
+                @if (store.isFiltered()) {
+                    <button nbButton ghost status="basic" type="button" (click)="store.resetFilters()">
+                        <span i18n="@@lol.lfg.board.reset">Clear</span>
+                    </button>
+                }
+            </form>
+        </nb-card-body>
+    </nb-card>
+
+    <ul class="lfg-board__list" [attr.aria-busy]="store.loading() ? 'true' : null">
+        @if (store.loading()) {
+            @for (placeholder of adPlaceholders; track placeholder) {
+                <li class="lfg-board__card lfg-board__card--skeleton">
+                    <gc-skeleton width="2.25rem" height="2.25rem" shape="circle" />
+                    <div class="lfg-board__card-body">
+                        <gc-skeleton width="7rem" height="0.85rem" />
+                        <gc-skeleton-text [lines]="2" lineHeight="1rem" />
+                    </div>
+                </li>
+            }
+        } @else if (store.ads().length === 0) {
+            <li class="lfg-board__empty" i18n="@@lol.lfg.board.empty">No ads match these filters.</li>
+        } @else {
+            @for (ad of store.ads(); track ad.publicId) {
+                <li class="lfg-board__card">
+                    <span class="lfg-board__avatar" aria-hidden="true">{{ ad.initial() }}</span>
+                    <div class="lfg-board__card-body">
+                        <a class="lfg-board__handle" [routerLink]="adLink(ad)">{{ ad.handleLabel() }}</a>
+                        <p class="lfg-board__meta">
+                            @if (ad.regionCode) {
+                                <span>{{ ad.regionCode | gameTerm }}</span>
+                            }
+                            @if (ad.regionCode && ad.laneCode) {
+                                <span aria-hidden="true"> · </span>
+                            }
+                            @if (ad.laneCode) {
+                                <span>{{ ad.laneCode | gameTerm }}</span>
+                            }
+                            <time class="lfg-board__date">{{ ad.creationDate | date: "short" }}</time>
+                        </p>
+                        <p class="lfg-board__body">{{ ad.body }}</p>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+
+    @if (!store.loading() && store.hasMore()) {
+        <div class="lfg-board__more">
+            <button
+                nbButton
+                status="basic"
+                type="button"
+                [disabled]="store.loadingMore()"
+                (click)="store.loadMore()"
+            >
+                @if (store.loadingMore()) {
+                    <span i18n="@@lol.lfg.board.loadingMore">Loading…</span>
+                } @else {
+                    <span i18n="@@lol.lfg.board.loadMore">Load more</span>
+                }
+            </button>
+        </div>
+    }
+</section>

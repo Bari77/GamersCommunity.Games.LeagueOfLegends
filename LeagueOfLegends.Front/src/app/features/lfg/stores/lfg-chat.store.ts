@@ -1,7 +1,8 @@
 import { computed, Injectable, inject, signal } from "@angular/core";
+import { CreateLfgMessageRequestDto } from "@features/lfg/dto/lfg-message.dto";
+import { LFG_KIND_TEAM, LfgKind, LfgMessage, PostableTeam } from "@features/lfg/models/lfg-message.model";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
-import { LfgMessage } from "@features/lfg/models/lfg-message.model";
-import { LfgChatService } from "@features/lfg/services/lfg-chat.service";
+import { LfgChatService, PostableTeamsService } from "@features/lfg/services/lfg-chat.service";
 import { LfgRealtimeService } from "@features/lfg/services/lfg-realtime.service";
 import { firstValueFrom } from "rxjs";
 
@@ -22,26 +23,56 @@ export class LfgChatStore {
     public readonly playerPublicId = computed(() => this.membership.playerPublicId());
     public readonly isMuted = computed(() => this.session()?.activeMute != null);
 
+    /** Posting an ad ties it to a player sheet, so a visitor without one may only read. */
     public readonly canPost = computed(() => this.membership.isAuthenticated() && this.membership.hasSheet());
+
+    /** Logged in but sheet-less: the composer is replaced by an invitation to create it. */
     public readonly needsSheet = computed(() => this.membership.needsSheet());
+
+    /** Teams the player may post for. Only loaded on the team recruitment thread. */
+    public readonly postableTeams = signal<PostableTeam[]>([]);
+
+    /** Public id of the team the next ad is published for. Always null on the player thread. */
+    public readonly postingAs = signal<string | null>(null);
+
     public readonly canSend = computed(
-        () => this.canPost() && !this.isMuted() && !this.posting() && Date.now() >= this.cooldownUntil(),
+        () =>
+            this.canPost() &&
+            !this.isMuted() &&
+            !this.posting() &&
+            (this.kind !== LFG_KIND_TEAM || this.postingAs() !== null) &&
+            Date.now() >= this.cooldownUntil(),
     );
 
+    /** No team grants captain/coach/manager, so the recruitment composer can never be unlocked. */
+    public readonly hasNoPostableTeam = computed(
+        () => this.kind === LFG_KIND_TEAM && this.canPost() && this.postableTeams().length === 0,
+    );
+
+    private kind: LfgKind = "player";
+    private realtimeHandler: ((message: LfgMessage) => void) | null = null;
+
     private readonly chat = inject(LfgChatService);
+    private readonly teams = inject(PostableTeamsService);
     private readonly membership = inject(GameMembershipStore);
     private readonly realtime = inject(LfgRealtimeService);
     private cooldownTimer: ReturnType<typeof setInterval> | null = null;
 
-    public async init(): Promise<void> {
+    public async init(kind: LfgKind): Promise<void> {
+        this.kind = kind;
         this.loading.set(true);
         try {
-            await this.membership.whenResolved();
-            const messages = await firstValueFrom(this.chat.listRecent());
+            await this.loadSession();
+            const messages = await firstValueFrom(this.chat.listRecent(kind));
             this.messages.set(messages);
             this.hasMore.set(messages.length >= PAGE_SIZE);
             this.syncCooldownFromMessages(messages);
-            await this.realtime.connect((message) => this.appendMessage(message));
+            this.realtimeHandler = (message) => {
+                if (message.kind === this.kind) {
+                    this.appendMessage(message);
+                }
+            };
+            await this.realtime.connect(this.realtimeHandler);
         } finally {
             this.loading.set(false);
         }
@@ -55,7 +86,12 @@ export class LfgChatStore {
 
         this.posting.set(true);
         try {
-            const message = await firstValueFrom(this.chat.send({ body: trimmed }));
+            const teamPublicId = this.postingAs();
+            const payload: CreateLfgMessageRequestDto = {
+                body: trimmed,
+                ...(teamPublicId ? { teamPublicId } : {}),
+            };
+            const message = await firstValueFrom(this.chat.send(payload));
             this.appendMessage(message);
             this.cooldownUntil.set(Date.now() + POST_COOLDOWN_MS);
             this.startCooldownTicker();
@@ -80,7 +116,7 @@ export class LfgChatStore {
         const oldest = current[0];
         this.loadingOlder.set(true);
         try {
-            const page = await firstValueFrom(this.chat.listBefore(oldest));
+            const page = await firstValueFrom(this.chat.listBefore(this.kind, oldest));
             if (page.length === 0) {
                 this.hasMore.set(false);
                 return false;
@@ -98,7 +134,46 @@ export class LfgChatStore {
 
     public destroy(): void {
         this.stopCooldownTicker();
-        void this.realtime.disconnect();
+        if (this.realtimeHandler) {
+            void this.realtime.disconnect(this.realtimeHandler);
+            this.realtimeHandler = null;
+        }
+    }
+
+    public selectTeam(teamPublicId: string): void {
+        this.postingAs.set(teamPublicId);
+    }
+
+    /** Reading the chat must never create anything, so the sheet is only looked up, never loaded. */
+    private async loadSession(): Promise<void> {
+        await this.membership.whenResolved();
+        const session = this.session();
+        if (!session) {
+            this.postableTeams.set([]);
+            this.postingAs.set(null);
+            return;
+        }
+
+        if (this.kind !== LFG_KIND_TEAM || !this.canPost()) {
+            return;
+        }
+
+        try {
+            await this.loadPostableTeams();
+        } catch {
+            this.postableTeams.set([]);
+            this.postingAs.set(null);
+        }
+    }
+
+    /**
+     * A single team is pre-selected so nothing is asked of a player who only leads one. With
+     * several, the composer waits for an explicit choice to avoid posting for the wrong team.
+     */
+    private async loadPostableTeams(): Promise<void> {
+        const teams = await firstValueFrom(this.teams.listPostable());
+        this.postableTeams.set(teams);
+        this.postingAs.set(teams.length === 1 ? teams[0].publicId : null);
     }
 
     private appendMessage(message: LfgMessage): void {

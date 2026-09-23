@@ -1,5 +1,7 @@
 import { Component, computed, inject, signal } from "@angular/core";
+import { RouterLink } from "@angular/router";
 import { DecisionPromptComponent, SkeletonComponent, SkeletonTextComponent } from "@bari77/gc-ui";
+import { LOL_GAME_URL } from "@core/constants/game.constants";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
 import { HomeLatestPlayersComponent } from "@features/home/components/home-latest-players/home-latest-players.component";
 import { HomeFeedStore } from "@features/home/stores/home-feed.store";
@@ -11,6 +13,7 @@ import { NbCardModule } from "@nebular/theme";
     selector: "lol-home-container",
     standalone: true,
     imports: [
+        RouterLink,
         NbCardModule,
         CreateSheetWallComponent,
         DecisionPromptComponent,
@@ -29,6 +32,7 @@ export class HomeContainerComponent {
 
     public readonly feedLoading = computed(() => this.store.loading() || this.membership.creating());
     public readonly promptOpen = computed(() => this.membership.shouldPromptSheetCreation() && !this.promptAnswered());
+    public readonly boardLink = `${LOL_GAME_URL}/lfg`;
 
     public readonly promptHeading = $localize`:@@lol.sheet.prompt.heading:Create your player profile?`;
     public readonly promptMessage = $localize`:@@lol.sheet.prompt.message:A player profile lets you register your lanes, your champions and join a team. Without one you can still browse the game freely.`;

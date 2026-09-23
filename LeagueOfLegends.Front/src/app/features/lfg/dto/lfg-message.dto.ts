@@ -11,6 +11,10 @@ export interface LfgMessageDto {
     senderAvatarUrl?: string;
     regionCode?: string | null;
     laneCode?: string | null;
+    teamPublicId?: string | null;
+    teamName?: string | null;
+    teamDiscriminator?: string | null;
+    teamTag?: string | null;
 }
 
 export interface ListLfgBeforeRequestDto {
@@ -20,6 +24,30 @@ export interface ListLfgBeforeRequestDto {
     take?: number;
 }
 
+export interface SearchLfgRequestDto {
+    kind?: string;
+    query?: string;
+    idRegion?: number;
+    idLane?: number;
+    beforeCreationDate?: string;
+    beforePublicId?: string;
+    take?: number;
+}
+
+export interface LfgAdPageDto {
+    items: LfgMessageDto[];
+    hasMore: boolean;
+}
+
 export interface CreateLfgMessageRequestDto {
     body: string;
+    teamPublicId?: string;
+    idLane?: number;
+}
+
+export interface PostableTeamDto {
+    publicId: string;
+    entitled: string;
+    discriminator: string;
+    rank: string;
 }

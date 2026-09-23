@@ -1,6 +1,10 @@
 <section class="lfg-chat">
     <header class="lfg-chat__header">
-        <h2 class="lfg-chat__title gc-display" i18n="@@lol.home.lfg">Looking for group</h2>
+        @if (isTeamRecruitment()) {
+            <h2 class="lfg-chat__title gc-display" i18n="@@lol.home.recruit">Team recruitment</h2>
+        } @else {
+            <h2 class="lfg-chat__title gc-display" i18n="@@lol.home.lfg">Looking for group</h2>
+        }
         @if (realtime.isLive()) {
             <span class="lfg-chat__live" i18n="@@lol.home.lfg.live">Live</span>
         }
@@ -44,7 +48,11 @@
                         class="lfg-chat__bubble"
                         [class.is-mine]="message.isMine(store.session()?.publicId, store.playerPublicId())"
                     >
-                        @if (messageAvatar(message); as avatarUrl) {
+                        @if (message.isTeamAd()) {
+                            <span class="lfg-chat__bubble-avatar lfg-chat__bubble-avatar--fallback" aria-hidden="true">
+                                {{ message.initial() }}
+                            </span>
+                        } @else if (messageAvatar(message); as avatarUrl) {
                             <img class="lfg-chat__bubble-avatar" [src]="avatarUrl" alt="" />
                         } @else {
                             <span class="lfg-chat__bubble-avatar lfg-chat__bubble-avatar--fallback" aria-hidden="true">
@@ -52,7 +60,14 @@
                             </span>
                         }
                         <div class="lfg-chat__bubble-body">
-                            @if (message.playerPublicId) {
+                            @if (message.isTeamAd()) {
+                                <a
+                                    class="lfg-chat__bubble-sender"
+                                    [routerLink]="['/league-of-legends/teams', message.teamPublicId]"
+                                >
+                                    {{ message.handleLabel() }}
+                                </a>
+                            } @else if (message.playerPublicId) {
                                 <a
                                     class="lfg-chat__bubble-sender"
                                     [routerLink]="['/league-of-legends/players', message.playerPublicId]"
@@ -63,6 +78,19 @@
                                 <span class="lfg-chat__bubble-sender lfg-chat__bubble-sender--static">
                                     {{ message.handleLabel() }}
                                 </span>
+                            }
+                            @if (message.regionCode || message.laneCode) {
+                                <p class="lfg-chat__bubble-meta">
+                                    @if (message.regionCode) {
+                                        <span>{{ message.regionCode | gameTerm }}</span>
+                                    }
+                                    @if (message.regionCode && message.laneCode) {
+                                        <span aria-hidden="true"> · </span>
+                                    }
+                                    @if (message.laneCode) {
+                                        <span>{{ message.laneCode | gameTerm }}</span>
+                                    }
+                                </p>
                             }
                             <p class="lfg-chat__bubble-text">{{ message.body }}</p>
                             <time class="lfg-chat__bubble-date">{{ message.creationDate | date: "short" }}</time>
@@ -78,9 +106,26 @@
                 </button>
             }
 
+            @if (isTeamRecruitment() && store.canPost() && store.postableTeams().length > 1) {
+                <nb-select
+                    class="lfg-chat__team-picker"
+                    [placeholder]="teamPickerPlaceholder"
+                    [selected]="store.postingAs()"
+                    (selectedChange)="store.selectTeam($event)"
+                >
+                    @for (team of store.postableTeams(); track team.publicId) {
+                        <nb-option [value]="team.publicId">{{ team.handleLabel() }}</nb-option>
+                    }
+                </nb-select>
+            }
+
             @if (store.isMuted()) {
                 <p class="lfg-chat__muted" i18n="@@lol.home.lfg.muted">
                     You are muted and cannot post LFG messages.
+                </p>
+            } @else if (store.hasNoPostableTeam()) {
+                <p class="lfg-chat__hint" i18n="@@lol.home.recruit.noTeam">
+                    Only team captains, coaches and managers can post here.
                 </p>
             } @else if (store.canPost() && store.cooldownSeconds() > 0) {
                 <p class="lfg-chat__cooldown" role="status">
@@ -96,6 +141,10 @@
                         (send)="onChatSend($event)"
                     ></nb-chat-form>
                 </nb-chat>
+            } @else if (store.canPost() && isTeamRecruitment()) {
+                <p class="lfg-chat__hint" i18n="@@lol.home.recruit.pickTeam">
+                    Pick the team you are posting for to enable the composer.
+                </p>
             } @else if (store.needsSheet()) {
                 <lol-create-sheet-wall variant="inline" [message]="sheetWallMessage" />
             } @else if (!store.canPost()) {

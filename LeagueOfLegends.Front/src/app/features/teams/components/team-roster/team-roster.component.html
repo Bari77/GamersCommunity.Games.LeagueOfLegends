@@ -15,6 +15,13 @@
                         <gc-skeleton width="4.5rem" height="0.8rem" />
                         <gc-skeleton width="4rem" height="0.8rem" />
                     </div>
+                    <div class="member-card__champions">
+                        <gc-skeleton width="2rem" height="2rem" radius="0.4rem" />
+                        <gc-skeleton width="2rem" height="2rem" radius="0.4rem" />
+                        <gc-skeleton width="2rem" height="2rem" radius="0.4rem" />
+                        <gc-skeleton width="2rem" height="2rem" radius="0.4rem" />
+                        <gc-skeleton width="2rem" height="2rem" radius="0.4rem" />
+                    </div>
                 </article>
             }
         </div>
@@ -52,129 +59,162 @@
                         }
                     </ul>
 
+                    @if (member.champions.length) {
+                        <ul class="member-card__champions">
+                            @for (champion of member.champions; track champion.id) {
+                                <li [attr.data-kind]="champion.kind">
+                                    <img
+                                        [src]="championSquare(champion.code)"
+                                        [alt]="champion.code | gameTerm"
+                                        [title]="(champion.code | gameTerm) + ' · ' + (champion.kind | gameTerm)"
+                                    />
+                                </li>
+                            }
+                        </ul>
+                    }
+
                     @if (hasActions(member)) {
                         <footer class="member-card__actions">
                             @if (canSetRoster(member)) {
-                                <nb-select
-                                    class="member-card__lane"
-                                    size="small"
-                                    [placeholder]="laneFieldName"
-                                    [attr.aria-label]="laneFieldName"
-                                    [ngModel]="member.idLane"
-                                    [disabled]="busy()"
-                                    (selectedChange)="onLaneChange(member, $event)"
-                                    [ngModelOptions]="{ standalone: true }"
-                                >
-                                    @for (lane of lanes(); track lane.id) {
-                                        <nb-option [value]="lane.id">{{ lane.code | gameTerm }}</nb-option>
+                                <div class="member-card__lane-wrap">
+                                    <nb-select
+                                        class="member-card__lane"
+                                        size="small"
+                                        fullWidth
+                                        [placeholder]="laneFieldName"
+                                        [attr.aria-label]="laneFieldName"
+                                        [ngModel]="member.idLane"
+                                        [disabled]="busy()"
+                                        (selectedChange)="onLaneChange(member, $event)"
+                                        [ngModelOptions]="{ standalone: true }"
+                                    >
+                                        @for (lane of lanes(); track lane.id) {
+                                            <nb-option [value]="lane.id">{{ lane.code | gameTerm }}</nb-option>
+                                        }
+                                    </nb-select>
+                                </div>
+                            }
+
+                            @if (
+                                canSetRank(member, rankPlayer) ||
+                                canSetRank(member, rankCoach) ||
+                                canSetRank(member, rankManager) ||
+                                canTransfer(member) ||
+                                canKick(member) ||
+                                canLeave(member)
+                            ) {
+                                <div class="member-card__admin">
+                                    @if (canSetRank(member, rankPlayer)) {
+                                        <button
+                                            nbButton
+                                            ghost
+                                            size="small"
+                                            status="basic"
+                                            type="button"
+                                            [disabled]="busy()"
+                                            (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankPlayer })"
+                                        >
+                                            <span i18n="@@lol.team.roster.makePlayer">Make player</span>
+                                        </button>
                                     }
-                                </nb-select>
-                                <button
-                                    nbButton
-                                    size="small"
-                                    type="button"
-                                    [status]="member.isMain() ? 'primary' : 'basic'"
-                                    [ghost]="!member.isMain()"
-                                    [disabled]="busy() || !member.idLane"
-                                    (click)="onKind(member, kindMain)"
-                                >
-                                    <span i18n="@@lol.team.roster.main">Main</span>
-                                </button>
-                                <button
-                                    nbButton
-                                    size="small"
-                                    type="button"
-                                    [status]="member.isSub() ? 'primary' : 'basic'"
-                                    [ghost]="!member.isSub()"
-                                    [disabled]="busy() || !member.idLane"
-                                    (click)="onKind(member, kindSub)"
-                                >
-                                    <span i18n="@@lol.team.roster.sub">Sub</span>
-                                </button>
+
+                                    @if (canSetRank(member, rankCoach)) {
+                                        <button
+                                            nbButton
+                                            ghost
+                                            size="small"
+                                            status="info"
+                                            type="button"
+                                            [disabled]="busy()"
+                                            (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankCoach })"
+                                        >
+                                            <span i18n="@@lol.team.roster.makeCoach">Make coach</span>
+                                        </button>
+                                    }
+
+                                    @if (canSetRank(member, rankManager)) {
+                                        <button
+                                            nbButton
+                                            ghost
+                                            size="small"
+                                            status="info"
+                                            type="button"
+                                            [disabled]="busy()"
+                                            (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankManager })"
+                                        >
+                                            <span i18n="@@lol.team.roster.makeManager">Make manager</span>
+                                        </button>
+                                    }
+
+                                    @if (canTransfer(member)) {
+                                        <button
+                                            nbButton
+                                            ghost
+                                            size="small"
+                                            status="warning"
+                                            type="button"
+                                            [disabled]="busy()"
+                                            (click)="transfer.emit(member.playerPublicId)"
+                                        >
+                                            <span i18n="@@lol.team.roster.transfer">Make captain</span>
+                                        </button>
+                                    }
+
+                                    @if (canKick(member)) {
+                                        <button
+                                            nbButton
+                                            ghost
+                                            size="small"
+                                            status="danger"
+                                            type="button"
+                                            [disabled]="busy()"
+                                            (click)="kick.emit(member.playerPublicId)"
+                                        >
+                                            <span i18n="@@lol.team.roster.kick">Remove</span>
+                                        </button>
+                                    }
+
+                                    @if (canLeave(member)) {
+                                        <button
+                                            nbButton
+                                            ghost
+                                            size="small"
+                                            status="danger"
+                                            type="button"
+                                            [disabled]="busy()"
+                                            (click)="leave.emit(member.playerPublicId)"
+                                        >
+                                            <span i18n="@@lol.team.roster.leave">Leave</span>
+                                        </button>
+                                    }
+                                </div>
                             }
 
-                            @if (canSetRank(member, rankPlayer)) {
-                                <button
-                                    nbButton
-                                    ghost
-                                    size="small"
-                                    status="basic"
-                                    type="button"
-                                    [disabled]="busy()"
-                                    (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankPlayer })"
-                                >
-                                    <span i18n="@@lol.team.roster.makePlayer">Make player</span>
-                                </button>
-                            }
-
-                            @if (canSetRank(member, rankCoach)) {
-                                <button
-                                    nbButton
-                                    ghost
-                                    size="small"
-                                    status="info"
-                                    type="button"
-                                    [disabled]="busy()"
-                                    (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankCoach })"
-                                >
-                                    <span i18n="@@lol.team.roster.makeCoach">Make coach</span>
-                                </button>
-                            }
-
-                            @if (canSetRank(member, rankManager)) {
-                                <button
-                                    nbButton
-                                    ghost
-                                    size="small"
-                                    status="info"
-                                    type="button"
-                                    [disabled]="busy()"
-                                    (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankManager })"
-                                >
-                                    <span i18n="@@lol.team.roster.makeManager">Make manager</span>
-                                </button>
-                            }
-
-                            @if (canTransfer(member)) {
-                                <button
-                                    nbButton
-                                    ghost
-                                    size="small"
-                                    status="warning"
-                                    type="button"
-                                    [disabled]="busy()"
-                                    (click)="transfer.emit(member.playerPublicId)"
-                                >
-                                    <span i18n="@@lol.team.roster.transfer">Make captain</span>
-                                </button>
-                            }
-
-                            @if (canKick(member)) {
-                                <button
-                                    nbButton
-                                    ghost
-                                    size="small"
-                                    status="danger"
-                                    type="button"
-                                    [disabled]="busy()"
-                                    (click)="kick.emit(member.playerPublicId)"
-                                >
-                                    <span i18n="@@lol.team.roster.kick">Remove</span>
-                                </button>
-                            }
-
-                            @if (canLeave(member)) {
-                                <button
-                                    nbButton
-                                    ghost
-                                    size="small"
-                                    status="danger"
-                                    type="button"
-                                    [disabled]="busy()"
-                                    (click)="leave.emit(member.playerPublicId)"
-                                >
-                                    <span i18n="@@lol.team.roster.leave">Leave</span>
-                                </button>
+                            @if (canSetRoster(member)) {
+                                <div class="member-card__kinds">
+                                    <button
+                                        nbButton
+                                        size="small"
+                                        type="button"
+                                        [status]="member.isMain() ? 'primary' : 'basic'"
+                                        [ghost]="!member.isMain()"
+                                        [disabled]="busy() || !member.idLane"
+                                        (click)="onKind(member, kindMain)"
+                                    >
+                                        <span i18n="@@lol.team.roster.main">Main</span>
+                                    </button>
+                                    <button
+                                        nbButton
+                                        size="small"
+                                        type="button"
+                                        [status]="member.isSub() ? 'primary' : 'basic'"
+                                        [ghost]="!member.isSub()"
+                                        [disabled]="busy() || !member.idLane"
+                                        (click)="onKind(member, kindSub)"
+                                    >
+                                        <span i18n="@@lol.team.roster.sub">Sub</span>
+                                    </button>
+                                </div>
                             }
                         </footer>
                     }

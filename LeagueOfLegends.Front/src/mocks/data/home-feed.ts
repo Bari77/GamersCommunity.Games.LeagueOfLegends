@@ -1,6 +1,7 @@
 import { HomeFeedDto, PlayerSummaryDto } from "@features/home/dto/home-feed.dto";
 import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
 import { PLAYER_PUBLIC_ID, PLATFORM_USER_PUBLIC_ID, mockPlayerSheet } from "./players";
+import { TEAM_PUBLIC_ID, mockTeamSheet } from "./teams";
 
 const hoursAgo = (hours: number) => new Date(Date.now() - hours * 3600000).toISOString();
 const tomorrow = () => new Date(Date.now() + 86400000).toISOString();
@@ -47,6 +48,24 @@ export const mockLfgMessages: LfgMessageDto[] = [
         senderAvatarUrl: "",
         regionCode: "euw",
         laneCode: "support",
+    },
+    {
+        publicId: "41111111-1111-1111-1111-111111111114",
+        kind: "team",
+        body: "Looking for a Top laner, Emerald+, serious scrims.",
+        senderNickname: mockTeamSheet.members?.[0]?.nickname ?? "Faker",
+        senderDiscriminator: mockTeamSheet.members?.[0]?.discriminator ?? "0001",
+        creationDate: hoursAgo(0.8),
+        expiresAt: tomorrow(),
+        playerPublicId: PLAYER_PUBLIC_ID,
+        platformUserPublicId: PLATFORM_USER_PUBLIC_ID,
+        senderAvatarUrl: "",
+        regionCode: mockTeamSheet.regionCode,
+        laneCode: "top",
+        teamPublicId: TEAM_PUBLIC_ID,
+        teamName: mockTeamSheet.entitled,
+        teamDiscriminator: mockTeamSheet.discriminator,
+        teamTag: mockTeamSheet.tag,
     },
 ];
 

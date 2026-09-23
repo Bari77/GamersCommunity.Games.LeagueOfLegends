@@ -20,6 +20,10 @@ public sealed class LfgAdSummaryDto
     public string SenderAvatarUrl { get; init; } = "";
     public string? RegionCode { get; init; }
     public string? LaneCode { get; init; }
+    public Guid? TeamPublicId { get; init; }
+    public string? TeamName { get; init; }
+    public string? TeamDiscriminator { get; init; }
+    public string? TeamTag { get; init; }
 }
 
 public sealed class PlayerSummaryDto
@@ -50,8 +54,27 @@ public sealed class ListLfgBeforeRequest
     public int Take { get; init; } = 50;
 }
 
+public sealed class SearchLfgRequest
+{
+    public string? Kind { get; init; }
+    public string? Query { get; init; }
+    public int? IdRegion { get; init; }
+    public int? IdLane { get; init; }
+    public DateTime? BeforeCreationDate { get; init; }
+    public Guid? BeforePublicId { get; init; }
+    public int Take { get; init; } = 20;
+}
+
+public sealed class LfgAdPageDto
+{
+    public IReadOnlyList<LfgAdSummaryDto> Items { get; init; } = [];
+    public bool HasMore { get; init; }
+}
+
 public sealed class CreateLfgAdRequest
 {
     public string Body { get; init; } = "";
     public DateTime? ExpiresAt { get; init; }
+    public Guid? TeamPublicId { get; init; }
+    public int? IdLane { get; init; }
 }

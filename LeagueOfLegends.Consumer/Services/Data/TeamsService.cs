@@ -5,6 +5,7 @@ using GamersCommunity.Core.Html;
 using GamersCommunity.Core.Rabbit;
 using GamersCommunity.Core.Serialization;
 using GamersCommunity.Core.Services;
+using LeagueOfLegends.Consumer.Integration;
 using LeagueOfLegends.Consumer.Models;
 using LeagueOfLegends.Consumer.Security;
 using LeagueOfLegends.Consumer.Services;
@@ -15,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeagueOfLegends.Consumer.Services.Data;
 
-public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
+public class TeamsService(LeagueOfLegendsDbContext context, ITeamWhispers whispers) : IBusService
 {
     private const int MaxSearchTake = 50;
     private const int MaxLayoutLength = 32000;
@@ -104,40 +105,80 @@ public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
         };
     }
 
-    private async Task<List<TeamMemberDto>> ListMembersAsync(int teamId, CancellationToken ct) =>
-        await _context.TeamMembers.AsNoTracking()
+    private async Task<List<TeamMemberDto>> ListMembersAsync(int teamId, CancellationToken ct)
+    {
+        var members = await _context.TeamMembers.AsNoTracking()
             .Where(m => m.IdTeam == teamId)
             .OrderBy(m => m.IdTeamRankNavigation.SortOrder)
             .ThenBy(m => m.CreationDate)
-            .Select(m => new TeamMemberDto
+            .Select(m => new
             {
-                PlayerPublicId = m.IdPlayerNavigation.PublicId,
-                PlatformUserPublicId = m.IdPlayerNavigation.PlatformUserPublicId ?? Guid.Empty,
-                Nickname = _context.PlatformUserSnapshots
-                    .Where(s => s.PlatformUserPublicId == m.IdPlayerNavigation.PlatformUserPublicId)
-                    .Select(s => s.Nickname)
-                    .FirstOrDefault() ?? "Player",
-                Discriminator = _context.PlatformUserSnapshots
-                    .Where(s => s.PlatformUserPublicId == m.IdPlayerNavigation.PlatformUserPublicId)
-                    .Select(s => s.Discriminator)
-                    .FirstOrDefault() ?? "0000",
-                AvatarUrl = _context.PlatformUserSnapshots
-                    .Where(s => s.PlatformUserPublicId == m.IdPlayerNavigation.PlatformUserPublicId)
-                    .Select(s => s.AvatarUrl)
-                    .FirstOrDefault() ?? "",
-                Rank = m.IdTeamRankNavigation.Code,
-                GameName = m.IdPlayerNavigation.GameName,
-                TagLine = m.IdPlayerNavigation.TagLine,
-                IdLane = m.IdLane ?? m.IdPlayerNavigation.IdPrimaryLane,
-                LaneCode = m.IdLaneNavigation != null
-                    ? m.IdLaneNavigation.Code
-                    : m.IdPlayerNavigation.IdPrimaryLaneNavigation != null
-                        ? m.IdPlayerNavigation.IdPrimaryLaneNavigation.Code
-                        : null,
-                RosterKind = m.RosterKind,
-                JoinedAt = m.CreationDate,
+                PlayerId = m.IdPlayer,
+                SeatLaneId = m.IdLane ?? m.IdPlayerNavigation.IdPrimaryLane,
+                Dto = new TeamMemberDto
+                {
+                    PlayerPublicId = m.IdPlayerNavigation.PublicId,
+                    PlatformUserPublicId = m.IdPlayerNavigation.PlatformUserPublicId ?? Guid.Empty,
+                    Nickname = _context.PlatformUserSnapshots
+                        .Where(s => s.PlatformUserPublicId == m.IdPlayerNavigation.PlatformUserPublicId)
+                        .Select(s => s.Nickname)
+                        .FirstOrDefault() ?? "Player",
+                    Discriminator = _context.PlatformUserSnapshots
+                        .Where(s => s.PlatformUserPublicId == m.IdPlayerNavigation.PlatformUserPublicId)
+                        .Select(s => s.Discriminator)
+                        .FirstOrDefault() ?? "0000",
+                    AvatarUrl = _context.PlatformUserSnapshots
+                        .Where(s => s.PlatformUserPublicId == m.IdPlayerNavigation.PlatformUserPublicId)
+                        .Select(s => s.AvatarUrl)
+                        .FirstOrDefault() ?? "",
+                    Rank = m.IdTeamRankNavigation.Code,
+                    GameName = m.IdPlayerNavigation.GameName,
+                    TagLine = m.IdPlayerNavigation.TagLine,
+                    IdLane = m.IdLane ?? m.IdPlayerNavigation.IdPrimaryLane,
+                    LaneCode = m.IdLaneNavigation != null
+                        ? m.IdLaneNavigation.Code
+                        : m.IdPlayerNavigation.IdPrimaryLaneNavigation != null
+                            ? m.IdPlayerNavigation.IdPrimaryLaneNavigation.Code
+                            : null,
+                    RosterKind = m.RosterKind,
+                    JoinedAt = m.CreationDate,
+                },
             })
             .ToListAsync(ct);
+
+        var playerIds = members.Select(m => m.PlayerId).Distinct().ToList();
+        var champions = playerIds.Count == 0
+            ? []
+            : await _context.PlayerChampions.AsNoTracking()
+                .Where(c => playerIds.Contains(c.IdPlayer))
+                .Select(c => new
+                {
+                    c.IdPlayer,
+                    c.IdLane,
+                    KindOrder = c.IdKindNavigation.SortOrder,
+                    Dto = new PlayerChampionDto
+                    {
+                        Id = c.IdChampionNavigation.Id,
+                        Code = c.IdChampionNavigation.Code,
+                        Kind = c.IdKindNavigation.Code,
+                        Lane = c.IdLaneNavigation == null ? null : c.IdLaneNavigation.Code,
+                    },
+                })
+                .ToListAsync(ct);
+
+        foreach (var member in members)
+        {
+            member.Dto.Champions = champions
+                .Where(c => c.IdPlayer == member.PlayerId && c.IdLane == member.SeatLaneId)
+                .OrderBy(c => c.KindOrder)
+                .ThenBy(c => c.Dto.Code, StringComparer.OrdinalIgnoreCase)
+                .Take(5)
+                .Select(c => c.Dto)
+                .ToList();
+        }
+
+        return members.Select(m => m.Dto).ToList();
+    }
 
     private async Task<TeamSearchResultDto> SearchAsync(BusMessage message, CancellationToken ct)
     {
@@ -295,6 +336,8 @@ public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
         await _context.TeamMembers.AddAsync(captain, ct);
         await _context.SaveChangesAsync(ct);
 
+        await whispers.OnCreatedAsync(team, caller.Id, ct);
+
         return await GetSheetAsync(TeamMessageFor(message, team.PublicId), ct);
     }
 
@@ -326,6 +369,7 @@ public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
 
         team.ModificationDate = DateTime.UtcNow;
         await _context.SaveChangesAsync(ct);
+        await whispers.OnUpdatedAsync(team, ct);
         return await GetSheetAsync(TeamMessageFor(message, team.PublicId), ct);
     }
 
@@ -419,8 +463,10 @@ public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
         if (!TeamAuth.CanKick(standing.Rank, targetRank))
             throw new ForbiddenException("TEAM_RANK_REQUIRED", "Cannot kick a member of that rank");
 
+        var leftPlayerId = membership.IdPlayer;
         _context.TeamMembers.Remove(membership);
         await _context.SaveChangesAsync(ct);
+        await whispers.OnMemberLeftAsync(team.PublicId, leftPlayerId, ct);
         return await GetSheetAsync(TeamMessageFor(message, team.PublicId), ct);
     }
 
@@ -438,8 +484,10 @@ public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
         if (membership.IdPlayer == team.IdCaptain)
             throw new BadRequestException("CAPTAIN_CANNOT_LEAVE", "Transfer captaincy or disband the team first");
 
+        var leftPlayerId = membership.IdPlayer;
         _context.TeamMembers.Remove(membership);
         await _context.SaveChangesAsync(ct);
+        await whispers.OnMemberLeftAsync(team.PublicId, leftPlayerId, ct);
         return new TeamLeaveResult { TeamPublicId = team.PublicId };
     }
 
@@ -479,6 +527,7 @@ public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
         team.IdCaptain = successor.IdPlayer;
         team.ModificationDate = now;
         await _context.SaveChangesAsync(ct);
+        await whispers.OnUpdatedAsync(team, ct);
         return await GetSheetAsync(TeamMessageFor(message, team.PublicId), ct);
     }
 
@@ -496,6 +545,7 @@ public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
         if (!string.Equals((request.Confirmation ?? "").Trim(), handle, StringComparison.Ordinal))
             throw new BadRequestException("CONFIRMATION_MISMATCH", "Type the team handle to confirm");
 
+        var publicId = team.PublicId;
         _context.TeamApplications.RemoveRange(await _context.TeamApplications.Where(a => a.IdTeam == team.Id).ToListAsync(ct));
         _context.GamePosts.RemoveRange(await _context.GamePosts.Where(p => p.IdTeam == team.Id).ToListAsync(ct));
         _context.LfgAds.RemoveRange(await _context.LfgAds.Where(a => a.IdTeam == team.Id).ToListAsync(ct));
@@ -503,7 +553,8 @@ public class TeamsService(LeagueOfLegendsDbContext context) : IBusService
         _context.TeamMembers.RemoveRange(await _context.TeamMembers.Where(m => m.IdTeam == team.Id).ToListAsync(ct));
         _context.Teams.Remove(team);
         await _context.SaveChangesAsync(ct);
-        return new TeamDisbandResult { PublicId = team.PublicId, Handle = handle };
+        await whispers.OnDisbandedAsync(publicId, ct);
+        return new TeamDisbandResult { PublicId = publicId, Handle = handle };
     }
 
     internal static async Task EnsureRankSlotAvailableAsync(

@@ -26,5 +26,9 @@ export const mockPlayerSheet: PlayerSheetDto = {
     champions: [
         { id: 2, code: "ahri", kind: "main", lane: "mid" },
         { id: 85, code: "zed", kind: "pool", lane: "mid" },
+        { id: 82, code: "yasuo", kind: "pool", lane: "mid" },
+        { id: 7, code: "leblanc", kind: "learning", lane: "mid" },
+        { id: 45, code: "leesin", kind: "learning", lane: "mid" },
+        { id: 36, code: "kaisa", kind: "pool", lane: "bottom" },
     ],
 };

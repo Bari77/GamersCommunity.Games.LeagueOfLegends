@@ -1,4 +1,5 @@
 import type { GcGalleryItem, GcLink } from "@bari77/gc-widgets";
+import { PlayerChampion } from "@features/players/models/player.model";
 import {
     ROSTER_KIND_MAIN,
     ROSTER_KIND_SUB,
@@ -24,6 +25,13 @@ export const WORKSPACE_PREVIEW_TEAM_MEMBERS: TeamMember[] = [
         "mid",
         ROSTER_KIND_MAIN,
         new Date("2024-01-15T12:00:00Z"),
+        [
+            new PlayerChampion(2, "ahri", "main", "mid"),
+            new PlayerChampion(85, "zed", "pool", "mid"),
+            new PlayerChampion(82, "yasuo", "pool", "mid"),
+            new PlayerChampion(7, "leblanc", "learning", "mid"),
+            new PlayerChampion(45, "leesin", "learning", "mid"),
+        ],
     ),
     new TeamMember(
         "00000000-0000-0000-0000-000000000202",
@@ -38,6 +46,11 @@ export const WORKSPACE_PREVIEW_TEAM_MEMBERS: TeamMember[] = [
         "bottom",
         ROSTER_KIND_MAIN,
         new Date("2024-03-02T12:00:00Z"),
+        [
+            new PlayerChampion(36, "kaisa", "main", "bottom"),
+            new PlayerChampion(22, "jinx", "pool", "bottom"),
+            new PlayerChampion(81, "ezreal", "learning", "bottom"),
+        ],
     ),
     new TeamMember(
         "00000000-0000-0000-0000-000000000203",
@@ -52,6 +65,10 @@ export const WORKSPACE_PREVIEW_TEAM_MEMBERS: TeamMember[] = [
         "support",
         ROSTER_KIND_SUB,
         new Date("2024-03-02T12:00:00Z"),
+        [
+            new PlayerChampion(40, "thresh", "main", "support"),
+            new PlayerChampion(12, "lulu", "pool", "support"),
+        ],
     ),
 ];
 

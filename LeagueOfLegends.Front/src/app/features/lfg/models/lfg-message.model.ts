@@ -1,8 +1,11 @@
-import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
+import { LfgMessageDto, PostableTeamDto } from "@features/lfg/dto/lfg-message.dto";
 
 const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 
-export const LFG_KIND_PLAYER = "player";
+export type LfgKind = "player" | "team";
+
+export const LFG_KIND_PLAYER: LfgKind = "player";
+export const LFG_KIND_TEAM: LfgKind = "team";
 
 export class LfgMessage {
     public constructor(
@@ -18,6 +21,10 @@ export class LfgMessage {
         public senderAvatarUrl: string,
         public regionCode: string | null,
         public laneCode: string | null,
+        public teamPublicId: string | null,
+        public teamName: string | null,
+        public teamDiscriminator: string | null,
+        public teamTag: string | null,
     ) {}
 
     public static fromDto(dto: LfgMessageDto): LfgMessage {
@@ -34,14 +41,31 @@ export class LfgMessage {
             dto.senderAvatarUrl ?? "",
             dto.regionCode ?? null,
             dto.laneCode ?? null,
+            dto.teamPublicId ?? null,
+            dto.teamName ?? null,
+            dto.teamDiscriminator ?? null,
+            dto.teamTag ?? null,
         );
     }
 
+    public isTeamAd(): boolean {
+        return this.kind === LFG_KIND_TEAM && !!this.teamPublicId;
+    }
+
+    /**
+     * Team ads are displayed under the team handle; the author stays reachable through
+     * {@link playerPublicId} for moderation.
+     */
     public handleLabel(): string {
-        return `${this.senderNickname}#${this.senderDiscriminator}`;
+        return this.isTeamAd()
+            ? `${this.teamName}#${this.teamDiscriminator}`
+            : `${this.senderNickname}#${this.senderDiscriminator}`;
     }
 
     public initial(): string {
+        if (this.isTeamAd() && this.teamTag) {
+            return this.teamTag.charAt(0);
+        }
         return this.handleLabel().charAt(0);
     }
 
@@ -55,4 +79,26 @@ export class LfgMessage {
         }
         return !!sessionPublicId && this.hasPlatformProfile() && this.platformUserPublicId === sessionPublicId;
     }
+}
+
+export class PostableTeam {
+    public constructor(
+        public publicId: string,
+        public entitled: string,
+        public discriminator: string,
+        public rank: string,
+    ) {}
+
+    public static fromDto(dto: PostableTeamDto): PostableTeam {
+        return new PostableTeam(dto.publicId, dto.entitled, dto.discriminator, dto.rank);
+    }
+
+    public handleLabel(): string {
+        return `${this.entitled}#${this.discriminator}`;
+    }
+}
+
+export interface LfgAdPage {
+    items: LfgMessage[];
+    hasMore: boolean;
 }

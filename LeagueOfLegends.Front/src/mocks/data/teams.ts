@@ -1,3 +1,4 @@
+import { pickRosterChampions } from "@features/players/models/player.model";
 import { TeamApplicationDto } from "@features/teams/dto/team-application.dto";
 import { TeamSheetDto, TeamSummaryDto } from "@features/teams/dto/team.dto";
 import { PLAYER_PUBLIC_ID, PLATFORM_USER_PUBLIC_ID, mockPlayerSheet } from "./players";
@@ -29,6 +30,10 @@ export const mockTeamSheet: TeamSheetDto = {
             laneCode: mockPlayerSheet.primaryLane?.code ?? "mid",
             rosterKind: "main",
             joinedAt: new Date().toISOString(),
+            champions: pickRosterChampions(
+                mockPlayerSheet.champions ?? [],
+                mockPlayerSheet.primaryLane?.code ?? "mid",
+            ),
         },
     ],
     viewerRank: "captain",

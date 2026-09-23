@@ -19,5 +19,12 @@ public sealed class LfgMessageRealtimePayload
     public Guid PlayerPublicId { get; init; }
     public Guid PlatformUserPublicId { get; init; }
     public string SenderAvatarUrl { get; init; } = "";
+    public string? RegionCode { get; init; }
+    public string? LaneCode { get; init; }
+    public Guid? TeamPublicId { get; init; }
+    public string? TeamName { get; init; }
+    public string? TeamDiscriminator { get; init; }
+    public string? TeamTag { get; init; }
     public DateTime CreationDate { get; init; }
+    public DateTime ExpiresAt { get; init; }
 }

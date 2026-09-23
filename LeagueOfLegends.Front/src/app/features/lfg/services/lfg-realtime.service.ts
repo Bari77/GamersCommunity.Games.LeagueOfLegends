@@ -23,10 +23,10 @@ export class LfgRealtimeService {
     });
 
     private connection: signalR.HubConnection | null = null;
-    private onMessage: ((message: LfgMessage) => void) | null = null;
+    private readonly handlers = new Set<(message: LfgMessage) => void>();
 
     public async connect(handler: (message: LfgMessage) => void): Promise<void> {
-        this.onMessage = handler;
+        this.handlers.add(handler);
         if (!environment.hubUrl) {
             this.$status.set("offline");
             return;
@@ -36,8 +36,12 @@ export class LfgRealtimeService {
             return;
         }
 
+        if (this.connection?.state === signalR.HubConnectionState.Connecting) {
+            return;
+        }
+
         this.$status.set("connecting");
-        await this.teardown();
+        await this.teardownConnection();
 
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl(environment.hubUrl)
@@ -45,22 +49,27 @@ export class LfgRealtimeService {
             .build();
 
         this.connection.on("lfg.message.created", (payload: LfgMessageDtoPayload) => {
-            this.onMessage?.(
-                LfgMessage.fromDto({
-                    publicId: payload.publicId,
-                    kind: payload.kind ?? "player",
-                    body: payload.body,
-                    senderNickname: payload.senderNickname,
-                    senderDiscriminator: payload.senderDiscriminator,
-                    creationDate: payload.creationDate,
-                    expiresAt: payload.expiresAt ?? payload.creationDate,
-                    playerPublicId: payload.playerPublicId,
-                    platformUserPublicId: payload.platformUserPublicId,
-                    senderAvatarUrl: payload.senderAvatarUrl ?? "",
-                    regionCode: payload.regionCode ?? null,
-                    laneCode: payload.laneCode ?? null,
-                }),
-            );
+            const message = LfgMessage.fromDto({
+                publicId: payload.publicId,
+                kind: payload.kind ?? "player",
+                body: payload.body,
+                senderNickname: payload.senderNickname,
+                senderDiscriminator: payload.senderDiscriminator,
+                creationDate: payload.creationDate,
+                expiresAt: payload.expiresAt ?? payload.creationDate,
+                playerPublicId: payload.playerPublicId,
+                platformUserPublicId: payload.platformUserPublicId,
+                senderAvatarUrl: payload.senderAvatarUrl ?? "",
+                regionCode: payload.regionCode ?? null,
+                laneCode: payload.laneCode ?? null,
+                teamPublicId: payload.teamPublicId ?? null,
+                teamName: payload.teamName ?? null,
+                teamDiscriminator: payload.teamDiscriminator ?? null,
+                teamTag: payload.teamTag ?? null,
+            });
+            for (const notify of this.handlers) {
+                notify(message);
+            }
         });
 
         this.connection.onreconnected(() => this.$status.set("connected"));
@@ -74,13 +83,22 @@ export class LfgRealtimeService {
         }
     }
 
-    public async disconnect(): Promise<void> {
-        this.onMessage = null;
-        await this.teardown();
+    public async disconnect(handler?: (message: LfgMessage) => void): Promise<void> {
+        if (handler) {
+            this.handlers.delete(handler);
+        } else {
+            this.handlers.clear();
+        }
+
+        if (this.handlers.size > 0) {
+            return;
+        }
+
+        await this.teardownConnection();
         this.$status.set("offline");
     }
 
-    private async teardown(): Promise<void> {
+    private async teardownConnection(): Promise<void> {
         if (!this.connection) {
             return;
         }
@@ -106,4 +124,8 @@ interface LfgMessageDtoPayload {
     senderAvatarUrl?: string;
     regionCode?: string | null;
     laneCode?: string | null;
+    teamPublicId?: string | null;
+    teamName?: string | null;
+    teamDiscriminator?: string | null;
+    teamTag?: string | null;
 }

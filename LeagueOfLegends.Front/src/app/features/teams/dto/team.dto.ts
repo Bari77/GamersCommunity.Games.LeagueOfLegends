@@ -1,3 +1,10 @@
+export interface TeamMemberChampionDto {
+    id: number;
+    code: string;
+    kind: string;
+    lane?: string | null;
+}
+
 export interface TeamMemberDto {
     playerPublicId: string;
     platformUserPublicId: string;
@@ -12,6 +19,7 @@ export interface TeamMemberDto {
     primaryLaneCode?: string | null;
     rosterKind?: string | null;
     joinedAt: string;
+    champions?: TeamMemberChampionDto[];
 }
 
 export interface TeamSheetDto {

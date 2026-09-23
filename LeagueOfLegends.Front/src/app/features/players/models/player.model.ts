@@ -125,6 +125,24 @@ const CHAMPION_KIND_RANK: Record<string, number> = {
     training: 2,
 };
 
+export function pickRosterChampions<T extends { code: string; kind: string; lane?: string | null }>(
+    champions: readonly T[],
+    laneCode: string | null | undefined,
+    limit = 5,
+): T[] {
+    if (!laneCode) {
+        return [];
+    }
+
+    return [...champions]
+        .filter((champion) => champion.lane === laneCode)
+        .sort((left, right) => {
+            const kinds = (CHAMPION_KIND_RANK[left.kind] ?? 3) - (CHAMPION_KIND_RANK[right.kind] ?? 3);
+            return kinds !== 0 ? kinds : left.code.localeCompare(right.code);
+        })
+        .slice(0, limit);
+}
+
 export function sortChampionsByLanePriority(
     champions: PlayerChampion[],
     primaryLane: string | null | undefined,

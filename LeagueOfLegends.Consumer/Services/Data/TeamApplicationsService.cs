@@ -4,6 +4,7 @@ using GamersCommunity.Core.Html;
 using GamersCommunity.Core.Rabbit;
 using GamersCommunity.Core.Serialization;
 using GamersCommunity.Core.Services;
+using LeagueOfLegends.Consumer.Integration;
 using LeagueOfLegends.Consumer.Models;
 using LeagueOfLegends.Consumer.Security;
 using LeagueOfLegends.Database.Context;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeagueOfLegends.Consumer.Services.Data;
 
-public class TeamApplicationsService(LeagueOfLegendsDbContext context) : IBusService
+public class TeamApplicationsService(LeagueOfLegendsDbContext context, ITeamWhispers whispers) : IBusService
 {
     private const int MaxMessageLength = 1000;
     private readonly LeagueOfLegendsDbContext _context = context;
@@ -183,6 +184,11 @@ public class TeamApplicationsService(LeagueOfLegendsDbContext context) : IBusSer
         application.ReviewedAt = now;
         application.ModificationDate = now;
         await _context.SaveChangesAsync(ct);
+        if (request.Accept)
+        {
+            var team = await _context.Teams.AsNoTracking().FirstAsync(t => t.Id == application.IdTeam, ct);
+            await whispers.OnMemberJoinedAsync(team, application.IdPlayer, ct);
+        }
         return await ToDtoAsync(application.Id, ct);
     }
 

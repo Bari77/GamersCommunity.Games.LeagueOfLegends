@@ -33,6 +33,7 @@ public sealed class TeamMemberDto
     public string? LaneCode { get; init; }
     public string? RosterKind { get; init; }
     public DateTime JoinedAt { get; init; }
+    public IReadOnlyList<PlayerChampionDto> Champions { get; set; } = [];
 }
 
 public sealed class TeamSummaryDto
