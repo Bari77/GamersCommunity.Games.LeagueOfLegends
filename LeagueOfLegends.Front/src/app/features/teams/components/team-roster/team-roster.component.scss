@@ -110,6 +110,149 @@
     background: rgba(255, 255, 255, 0.06);
 }
 
+.member-card__ladder {
+    --rank-glow: rgb(200 170 110 / 18%);
+    --rank-solid: #c8aa6e;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    overflow: hidden;
+    padding: 0.4rem 0.6rem 0.4rem 0.45rem;
+    border-radius: 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--rank-solid) 38%, transparent);
+    background:
+        linear-gradient(115deg, color-mix(in srgb, var(--rank-solid) 16%, transparent), transparent 58%),
+        radial-gradient(120% 160% at 8% 50%, var(--rank-glow), transparent 68%),
+        rgba(0, 0, 0, 0.32);
+    box-shadow:
+        0 0 22px -10px var(--rank-solid),
+        inset 0 1px 0 rgb(255 255 255 / 8%);
+}
+
+.member-card__ladder[data-tier="iron"] {
+    --rank-glow: rgb(140 140 140 / 22%);
+    --rank-solid: #9a9a9a;
+}
+
+.member-card__ladder[data-tier="bronze"] {
+    --rank-glow: rgb(176 138 90 / 28%);
+    --rank-solid: #b88a5a;
+}
+
+.member-card__ladder[data-tier="silver"] {
+    --rank-glow: rgb(176 192 204 / 26%);
+    --rank-solid: #b0c0cc;
+}
+
+.member-card__ladder[data-tier="gold"] {
+    --rank-glow: rgb(212 175 55 / 30%);
+    --rank-solid: #d4af37;
+}
+
+.member-card__ladder[data-tier="platinum"] {
+    --rank-glow: rgb(94 200 200 / 28%);
+    --rank-solid: #5ec8c8;
+}
+
+.member-card__ladder[data-tier="emerald"] {
+    --rank-glow: rgb(61 191 122 / 28%);
+    --rank-solid: #3dbf7a;
+}
+
+.member-card__ladder[data-tier="diamond"] {
+    --rank-glow: rgb(90 168 255 / 30%);
+    --rank-solid: #5aa8ff;
+}
+
+.member-card__ladder[data-tier="master"] {
+    --rank-glow: rgb(155 89 208 / 30%);
+    --rank-solid: #9b59d0;
+}
+
+.member-card__ladder[data-tier="grandmaster"] {
+    --rank-glow: rgb(192 57 43 / 32%);
+    --rank-solid: #c0392b;
+}
+
+.member-card__ladder[data-tier="challenger"] {
+    --rank-glow: rgb(241 196 15 / 34%);
+    --rank-solid: #f1c40f;
+}
+
+.member-card__ladder-crest {
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--rank-solid) 55%, transparent));
+}
+
+.member-card__ladder-meta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    min-width: 0;
+}
+
+.member-card__ladder-queue {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.55;
+}
+
+.member-card__ladder-value {
+    font-size: 0.86rem;
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: color-mix(in srgb, var(--rank-solid) 55%, #fff);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--rank-solid) 40%, transparent);
+}
+
+.member-card__ladder-scan {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        105deg,
+        transparent 35%,
+        rgb(255 255 255 / 10%) 48%,
+        transparent 62%
+    );
+    transform: translateX(-60%);
+    animation: member-ladder-scan 4.8s ease-in-out infinite;
+}
+
+@keyframes member-ladder-scan {
+    0%,
+    55% {
+        transform: translateX(-70%);
+        opacity: 0;
+    }
+
+    65% {
+        opacity: 1;
+    }
+
+    85%,
+    100% {
+        transform: translateX(70%);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .member-card__ladder-scan {
+        animation: none;
+        display: none;
+    }
+}
+
 .member-card__champions {
     display: flex;
     gap: 0.35rem;

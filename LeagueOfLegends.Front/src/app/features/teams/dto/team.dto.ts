@@ -5,6 +5,12 @@ export interface TeamMemberChampionDto {
     lane?: string | null;
 }
 
+export interface TeamMemberRankDto {
+    tier?: string | null;
+    division?: string | null;
+    lp?: number | null;
+}
+
 export interface TeamMemberDto {
     playerPublicId: string;
     platformUserPublicId: string;
@@ -19,6 +25,8 @@ export interface TeamMemberDto {
     primaryLaneCode?: string | null;
     rosterKind?: string | null;
     joinedAt: string;
+    /** Solo/Duo ladder when known (players and staff). */
+    solo?: TeamMemberRankDto | null;
     champions?: TeamMemberChampionDto[];
 }
 

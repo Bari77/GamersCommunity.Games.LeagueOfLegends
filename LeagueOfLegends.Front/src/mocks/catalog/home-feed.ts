@@ -123,7 +123,7 @@ export const mockLfgMessages: LfgMessageDto[] = [
     teamAd({
         publicId: mockUuid("lol:feed:41111111-1111-1111-1111-111111111114"),
         who: "Lirael",
-        body: "Iron Circuit needs a Top laner, Emerald+, serious scrims twice a week.",
+        body: "Iron Circuit looking for a top sub, Emerald+, scrims Tue/Thu.",
         hoursAgo: 0.8,
         laneCode: "top",
         team: mockIronCircuitSheet,
@@ -131,15 +131,15 @@ export const mockLfgMessages: LfgMessageDto[] = [
     teamAd({
         publicId: mockUuid("lol:feed:41111111-1111-1111-1111-111111111117"),
         who: "Nyxara",
-        body: "Nightveil recruiting a Flex support for KR evening ranked blocks.",
+        body: "Nightveil recruiting a jungle sub for KR evening ranked blocks.",
         hoursAgo: 4,
-        laneCode: "support",
+        laneCode: "jungle",
         team: mockTeamSheet,
     }),
     teamAd({
         publicId: mockUuid("lol:feed:41111111-1111-1111-1111-11111111111a"),
         who: "Quill",
-        body: "Frostbyte (NA) looking for a coach / analyst for weekend Clash.",
+        body: "Frostbyte (NA) open for a second coach / analyst on weekend Clash.",
         hoursAgo: 7,
         laneCode: "jungle",
         team: mockFrostbyteSheet,
@@ -147,7 +147,7 @@ export const mockLfgMessages: LfgMessageDto[] = [
     teamAd({
         publicId: mockUuid("lol:feed:41111111-1111-1111-1111-11111111111b"),
         who: "Bramble",
-        body: "Emberlane needs a mid laner for EUW Clash — Emerald+.",
+        body: "Emberlane wants a mid sub for EUW Clash — Emerald+.",
         hoursAgo: 8.5,
         laneCode: "mid",
         team: mockEmberlaneSheet,
@@ -155,7 +155,7 @@ export const mockLfgMessages: LfgMessageDto[] = [
     teamAd({
         publicId: mockUuid("lol:feed:41111111-1111-1111-1111-11111111111c"),
         who: "Vesper",
-        body: "Silent Ward (KR) open tryouts for a top laner this week.",
+        body: "Silent Ward (KR) tryouts for a top sub this week.",
         hoursAgo: 9,
         laneCode: "top",
         team: mockSilentWardSheet,
@@ -163,9 +163,9 @@ export const mockLfgMessages: LfgMessageDto[] = [
     teamAd({
         publicId: mockUuid("lol:feed:41111111-1111-1111-1111-11111111111d"),
         who: "Solenne",
-        body: "Dawnbreak (EUNE) recruiting jungle for social Clash nights.",
+        body: "Dawnbreak (EUNE) recruiting a manager for social Clash nights.",
         hoursAgo: 10,
-        laneCode: "jungle",
+        laneCode: "support",
         team: mockDawnbreakSheet,
     }),
 ];

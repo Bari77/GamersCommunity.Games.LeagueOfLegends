@@ -3,7 +3,7 @@ import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
 import { DecisionPromptComponent, SkeletonComponent } from "@bari77/gc-ui";
 import { LOL_GAME_URL } from "@core/constants/game.constants";
-import { CatalogItem } from "@features/players/models/player.model";
+import { CatalogItem, PlayerRank } from "@features/players/models/player.model";
 import {
     isPlayerSlotRank,
     ROSTER_KIND_MAIN,
@@ -17,7 +17,8 @@ import {
 } from "@features/teams/models/team.model";
 import { NbButtonModule, NbSelectModule } from "@nebular/theme";
 import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
-import { GameTermPipe } from "@shared/pipes/game-term.pipe";
+import { RankEmblemComponent } from "@shared/components/rank-emblem/rank-emblem.component";
+import { gameTerm, GameTermPipe } from "@shared/pipes/game-term.pipe";
 import { championSquareUrl } from "@shared/utils/lol-art";
 
 export interface TeamRankChange {
@@ -55,6 +56,7 @@ type PendingAction = {
         NbSelectModule,
         SkeletonComponent,
         LaneIconComponent,
+        RankEmblemComponent,
         DecisionPromptComponent,
     ],
     templateUrl: "./team-roster.component.html",
@@ -80,6 +82,7 @@ export class TeamRosterComponent {
     protected readonly laneFieldName = $localize`:@@lol.team.roster.lane:Lane`;
     protected readonly rankFieldName = $localize`:@@lol.team.roster.rank:Rank`;
     protected readonly cancelLabel = $localize`:@@lol.team.roster.cancel:Cancel`;
+    protected readonly soloQueueLabel = $localize`:@@lol.player.stats.solo:Solo/Duo`;
 
     protected readonly pending = signal<PendingAction | null>(null);
 
@@ -94,6 +97,21 @@ export class TeamRosterComponent {
 
     protected championSquare(code: string): string {
         return championSquareUrl(code);
+    }
+
+    protected formatSolo(solo: PlayerRank | null | undefined): string {
+        if (!solo?.tier) {
+            return "";
+        }
+
+        const parts = [gameTerm(solo.tier)];
+        if (solo.division) {
+            parts.push(gameTerm(solo.division));
+        }
+        if (solo.lp != null) {
+            parts.push(`${solo.lp} LP`);
+        }
+        return parts.join(" ");
     }
 
     protected isMine(member: TeamMember): boolean {

@@ -33,6 +33,8 @@ public sealed class TeamMemberDto
     public string? LaneCode { get; init; }
     public string? RosterKind { get; init; }
     public DateTime JoinedAt { get; init; }
+    /// <summary>Solo/Duo ladder rank when the player has set one (players and staff).</summary>
+    public PlayerRankDto? Solo { get; set; }
     public IReadOnlyList<PlayerChampionDto> Champions { get; set; } = [];
 }
 

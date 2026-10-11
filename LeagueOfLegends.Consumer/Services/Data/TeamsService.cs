@@ -115,6 +115,9 @@ public class TeamsService(LeagueOfLegendsDbContext context, ITeamWhispers whispe
             {
                 PlayerId = m.IdPlayer,
                 SeatLaneId = m.IdLane ?? m.IdPlayerNavigation.IdPrimaryLane,
+                SoloTier = m.IdPlayerNavigation.SoloTier,
+                SoloDivision = m.IdPlayerNavigation.SoloDivision,
+                SoloLp = m.IdPlayerNavigation.SoloLp,
                 Dto = new TeamMemberDto
                 {
                     PlayerPublicId = m.IdPlayerNavigation.PublicId,
@@ -168,6 +171,7 @@ public class TeamsService(LeagueOfLegendsDbContext context, ITeamWhispers whispe
 
         foreach (var member in members)
         {
+            member.Dto.Solo = ToSoloRank(member.SoloTier, member.SoloDivision, member.SoloLp);
             member.Dto.Champions = champions
                 .Where(c => c.IdPlayer == member.PlayerId && c.IdLane == member.SeatLaneId)
                 .OrderBy(c => c.KindOrder)
@@ -179,6 +183,11 @@ public class TeamsService(LeagueOfLegendsDbContext context, ITeamWhispers whispe
 
         return members.Select(m => m.Dto).ToList();
     }
+
+    private static PlayerRankDto? ToSoloRank(string? tier, string? division, int? lp)
+        => string.IsNullOrEmpty(tier)
+            ? null
+            : new PlayerRankDto { Tier = tier, Division = division, Lp = lp };
 
     private async Task<TeamSearchResultDto> SearchAsync(BusMessage message, CancellationToken ct)
     {

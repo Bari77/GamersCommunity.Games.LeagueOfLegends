@@ -274,6 +274,7 @@ export const handlers = [
                     laneCode: player.primaryLane?.code ?? null,
                     rosterKind: "main",
                     joinedAt: new Date().toISOString(),
+                    solo: player.solo ?? null,
                     champions: rosterChampions(player.primaryLane?.code ?? null),
                 },
             ],

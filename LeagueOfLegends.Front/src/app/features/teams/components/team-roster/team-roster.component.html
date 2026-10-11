@@ -15,6 +15,7 @@
                         <gc-skeleton width="4.5rem" height="0.8rem" />
                         <gc-skeleton width="4rem" height="0.8rem" />
                     </div>
+                    <gc-skeleton width="100%" height="3.1rem" radius="0.65rem" />
                     <div class="member-card__champions">
                         <gc-skeleton width="2rem" height="2rem" radius="0.4rem" />
                         <gc-skeleton width="2rem" height="2rem" radius="0.4rem" />
@@ -58,6 +59,22 @@
                             </li>
                         }
                     </ul>
+
+                    @if (member.solo; as solo) {
+                        <div class="member-card__ladder" [attr.data-tier]="solo.tier">
+                            <lol-rank-emblem
+                                class="member-card__ladder-crest"
+                                [tier]="solo.tier"
+                                size="hero"
+                                [alt]="formatSolo(solo)"
+                            />
+                            <div class="member-card__ladder-meta">
+                                <span class="member-card__ladder-queue">{{ soloQueueLabel }}</span>
+                                <strong class="member-card__ladder-value">{{ formatSolo(solo) }}</strong>
+                            </div>
+                            <span class="member-card__ladder-scan" aria-hidden="true"></span>
+                        </div>
+                    }
 
                     @if (member.champions.length) {
                         <ul class="member-card__champions">
