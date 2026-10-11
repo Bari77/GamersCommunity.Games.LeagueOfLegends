@@ -1,104 +1,20 @@
 import type { GcGalleryItem, GcLink } from "@bari77/gc-widgets";
-import { PlayerChampion } from "@features/players/models/player.model";
-import {
-    ROSTER_KIND_MAIN,
-    ROSTER_KIND_SUB,
-    TEAM_RANK_CAPTAIN,
-    TEAM_RANK_PLAYER,
-    TeamMember,
-    TeamSheet,
-} from "@features/teams/models/team.model";
+import { TeamSheet } from "@features/teams/models/team.model";
+import { mockTeamSheet, TEAM_PUBLIC_ID } from "../../../../mocks/catalog/orgs";
+import { mockTeamLinks } from "../../../../mocks/catalog/team-wall";
 
-const PLATFORM_USER = "00000000-0000-0000-0000-000000000001";
+export const WORKSPACE_PREVIEW_TEAM_MEMBERS = TeamSheet.fromDto(mockTeamSheet).members;
 
-export const WORKSPACE_PREVIEW_TEAM_MEMBERS: TeamMember[] = [
-    new TeamMember(
-        "00000000-0000-0000-0000-000000000201",
-        PLATFORM_USER,
-        "Faker",
-        "0001",
-        "",
-        TEAM_RANK_CAPTAIN,
-        "Hide on bush",
-        "KR1",
-        3,
-        "mid",
-        ROSTER_KIND_MAIN,
-        new Date("2024-01-15T12:00:00Z"),
-        [
-            new PlayerChampion(2, "ahri", "main", "mid"),
-            new PlayerChampion(85, "zed", "pool", "mid"),
-            new PlayerChampion(82, "yasuo", "pool", "mid"),
-            new PlayerChampion(7, "leblanc", "learning", "mid"),
-            new PlayerChampion(45, "leesin", "learning", "mid"),
-        ],
-    ),
-    new TeamMember(
-        "00000000-0000-0000-0000-000000000202",
-        PLATFORM_USER,
-        "Gumayusi",
-        "0002",
-        "",
-        TEAM_RANK_PLAYER,
-        "Gumayusi",
-        "KR1",
-        4,
-        "bottom",
-        ROSTER_KIND_MAIN,
-        new Date("2024-03-02T12:00:00Z"),
-        [
-            new PlayerChampion(36, "kaisa", "main", "bottom"),
-            new PlayerChampion(22, "jinx", "pool", "bottom"),
-            new PlayerChampion(81, "ezreal", "learning", "bottom"),
-        ],
-    ),
-    new TeamMember(
-        "00000000-0000-0000-0000-000000000203",
-        PLATFORM_USER,
-        "Keria",
-        "0003",
-        "",
-        TEAM_RANK_PLAYER,
-        "Keria",
-        "KR1",
-        5,
-        "support",
-        ROSTER_KIND_SUB,
-        new Date("2024-03-02T12:00:00Z"),
-        [
-            new PlayerChampion(40, "thresh", "main", "support"),
-            new PlayerChampion(12, "lulu", "pool", "support"),
-        ],
-    ),
-];
+export const WORKSPACE_PREVIEW_TEAM = TeamSheet.fromDto(mockTeamSheet);
 
-export const WORKSPACE_PREVIEW_TEAM = new TeamSheet(
-    "00000000-0000-0000-0000-000000000099",
-    "T1",
-    "0001",
-    "T1",
-    "We play to win. Five players, one call, every scrim.",
-    null,
-    "kr",
-    new Date("2024-01-15T12:00:00Z"),
-    WORKSPACE_PREVIEW_TEAM_MEMBERS.length,
-    3,
-    WORKSPACE_PREVIEW_TEAM_MEMBERS,
-    TEAM_RANK_CAPTAIN,
-    null,
-    null,
-    2,
-);
-
-export const WORKSPACE_PREVIEW_TEAM_LINKS: GcLink[] = [
-    { url: "https://discord.gg/example", label: "Team Discord" },
-    { url: "https://www.twitch.tv/t1", label: "Twitch" },
-    { url: "https://www.youtube.com/@T1", label: "YouTube" },
-];
+export const WORKSPACE_PREVIEW_TEAM_LINKS: GcLink[] = mockTeamLinks
+    .filter((link) => link.teamPublicId === TEAM_PUBLIC_ID)
+    .map((link) => ({ url: link.url, label: link.label ?? link.url }));
 
 export const WORKSPACE_PREVIEW_TEAM_PHOTOS: GcGalleryItem[] = [
-    { url: "https://picsum.photos/seed/gc-lol-team-1/960/720", title: "Worlds photo" },
-    { url: "https://picsum.photos/seed/gc-lol-team-2/960/720", title: "Scrim week" },
+    { url: "https://picsum.photos/seed/gc-lol-team-1/960/720", title: "Scrim photo" },
+    { url: "https://picsum.photos/seed/gc-lol-team-2/960/720", title: "Watch party" },
+    { url: "https://picsum.photos/seed/gc-lol-team-3/960/720", title: "Bootcamp whiteboard" },
 ];
 
 export const WORKSPACE_PREVIEW_TEAM_VIDEOS: GcGalleryItem[] = [

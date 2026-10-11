@@ -95,98 +95,22 @@
                                 </div>
                             }
 
-                            @if (
-                                canSetRank(member, rankPlayer) ||
-                                canSetRank(member, rankCoach) ||
-                                canSetRank(member, rankManager) ||
-                                canTransfer(member) ||
-                                canKick(member) ||
-                                canLeave(member)
-                            ) {
+                            @if (canManageMembership(member)) {
                                 <div class="member-card__admin">
-                                    @if (canSetRank(member, rankPlayer)) {
-                                        <button
-                                            nbButton
-                                            ghost
-                                            size="small"
-                                            status="basic"
-                                            type="button"
-                                            [disabled]="busy()"
-                                            (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankPlayer })"
-                                        >
-                                            <span i18n="@@lol.team.roster.makePlayer">Make player</span>
-                                        </button>
-                                    }
-
-                                    @if (canSetRank(member, rankCoach)) {
-                                        <button
-                                            nbButton
-                                            ghost
-                                            size="small"
-                                            status="info"
-                                            type="button"
-                                            [disabled]="busy()"
-                                            (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankCoach })"
-                                        >
-                                            <span i18n="@@lol.team.roster.makeCoach">Make coach</span>
-                                        </button>
-                                    }
-
-                                    @if (canSetRank(member, rankManager)) {
-                                        <button
-                                            nbButton
-                                            ghost
-                                            size="small"
-                                            status="info"
-                                            type="button"
-                                            [disabled]="busy()"
-                                            (click)="setRank.emit({ playerPublicId: member.playerPublicId, rank: rankManager })"
-                                        >
-                                            <span i18n="@@lol.team.roster.makeManager">Make manager</span>
-                                        </button>
-                                    }
-
-                                    @if (canTransfer(member)) {
-                                        <button
-                                            nbButton
-                                            ghost
-                                            size="small"
-                                            status="warning"
-                                            type="button"
-                                            [disabled]="busy()"
-                                            (click)="transfer.emit(member.playerPublicId)"
-                                        >
-                                            <span i18n="@@lol.team.roster.transfer">Make captain</span>
-                                        </button>
-                                    }
-
-                                    @if (canKick(member)) {
-                                        <button
-                                            nbButton
-                                            ghost
-                                            size="small"
-                                            status="danger"
-                                            type="button"
-                                            [disabled]="busy()"
-                                            (click)="kick.emit(member.playerPublicId)"
-                                        >
-                                            <span i18n="@@lol.team.roster.kick">Remove</span>
-                                        </button>
-                                    }
-
-                                    @if (canLeave(member)) {
-                                        <button
-                                            nbButton
-                                            ghost
-                                            size="small"
-                                            status="danger"
-                                            type="button"
-                                            [disabled]="busy()"
-                                            (click)="leave.emit(member.playerPublicId)"
-                                        >
-                                            <span i18n="@@lol.team.roster.leave">Leave</span>
-                                        </button>
-                                    }
+                                    <nb-select
+                                        class="member-card__rank-select"
+                                        size="small"
+                                        fullWidth
+                                        [placeholder]="rankFieldName"
+                                        [attr.aria-label]="rankFieldName"
+                                        [selected]="selectValue(member)"
+                                        [disabled]="busy()"
+                                        (selectedChange)="onRankSelect(member, $event)"
+                                    >
+                                        @for (option of rankOptions(member); track option.value) {
+                                            <nb-option [value]="option.value">{{ option.label }}</nb-option>
+                                        }
+                                    </nb-select>
                                 </div>
                             }
 
@@ -225,3 +149,16 @@
         </div>
     }
 </section>
+
+@if (pending(); as action) {
+    <gc-decision-prompt
+        [open]="true"
+        [heading]="action.heading"
+        [message]="action.message"
+        [primaryLabel]="action.primaryLabel"
+        [secondaryLabel]="cancelLabel"
+        [busy]="busy()"
+        (primary)="confirmPending()"
+        (secondary)="cancelPending()"
+    />
+}

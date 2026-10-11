@@ -25,14 +25,29 @@ import {
 } from "@features/teams/dto/team.dto";
 import { http, HttpResponse } from "msw";
 import { environment } from "../environments/environment";
-import { mockPlayerPictures, mockPlayerStreams, mockPlayerVideos } from "./data/media";
+import { mockPlayerPictures, mockPlayerStreams, mockPlayerVideos } from "./catalog/media";
 import { CreateLfgMessageRequestDto } from "@features/lfg/dto/lfg-message.dto";
-import { mockHomeFeed, mockLfgMessages } from "./data/home-feed";
+import { mockHomeFeed, mockLfgMessages } from "./catalog/home-feed";
 import { pickRosterChampions } from "@features/players/models/player.model";
-import { mockPlayerOptions } from "./data/options";
-import { mockPlayerSheet, PLAYER_PUBLIC_ID, PLATFORM_USER_PUBLIC_ID } from "./data/players";
-import { mockTeamApplications, mockTeamSheet, mockTeamSummaries, TEAM_PUBLIC_ID } from "./data/teams";
-import { mockTeamLinks, mockTeamPosts } from "./data/team-wall";
+import { mockPlayerOptions } from "./catalog/options";
+import {
+    mockPlayerSheet,
+    PLAYER_PUBLIC_ID,
+    PLATFORM_USER_PUBLIC_ID,
+    allPlayerSheets,
+    playerSheetByPublicId,
+    toPlayerSummary,
+} from "./catalog/players";
+import { getSessionPersona } from "./catalog/session";
+import {
+    mockTeamApplications,
+    mockTeamSheet,
+    mockTeamSheets,
+    mockTeamSummaries,
+    TEAM_PUBLIC_ID,
+    teamSheetByPublicId,
+} from "./catalog/orgs";
+import { mockTeamLinks, mockTeamPosts } from "./catalog/team-wall";
 import {
     GamePostCreateRequestDto,
     GamePostModerateRequestDto,
@@ -57,7 +72,10 @@ const lfgAdsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "LfgAds");
 let player = { ...mockPlayerSheet };
 let hasPlayerSheet = !new URLSearchParams(location.search).has("noSheet");
 let lfgMessages = [...mockLfgMessages];
-let teams: TeamSheetDto[] = [{ ...mockTeamSheet, members: [...(mockTeamSheet.members ?? [])] }];
+let teams: TeamSheetDto[] = mockTeamSheets.map((team) => ({
+    ...team,
+    members: [...(team.members ?? [])],
+}));
 let teamApplications = [...mockTeamApplications];
 let teamPosts = [...mockTeamPosts];
 let teamLinks = [...mockTeamLinks];
@@ -221,23 +239,11 @@ export const handlers = [
         return HttpResponse.json(items);
     }),
     http.get(`${teamsUrl}/:publicId`, ({ params }) => {
-        const team = teams.find((item) => item.publicId === params["publicId"]);
+        const team =
+            teams.find((item) => item.publicId === params["publicId"]) ??
+            teamSheetByPublicId(String(params["publicId"] ?? ""));
         if (!team) {
-            const summary = mockTeamSummaries.find((item) => item.publicId === params["publicId"]);
-            if (!summary) {
-                return HttpResponse.json({ message: "NOT_FOUND" }, { status: 404 });
-            }
-            return HttpResponse.json(
-                withViewer({
-                    ...summary,
-                    layoutJson: null,
-                    members: [],
-                    viewerRank: null,
-                    viewerApplicationStatus: null,
-                    viewerApplicationPublicId: null,
-                    pendingApplicationCount: 0,
-                }),
-            );
+            return HttpResponse.json({ message: "NOT_FOUND" }, { status: 404 });
         }
         return HttpResponse.json(withViewer(team));
     }),
@@ -623,27 +629,30 @@ export const handlers = [
         const body = ((await request.json()) as { query?: string; idRegion?: number; take?: number }) ?? {};
         const query = (body.query ?? "").trim().toLowerCase();
         const region = body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
-        const items = mockHomeFeed.latestPlayers.filter((item) => {
-            const handle = `${item.nickname}#${item.discriminator}`.toLowerCase();
-            const riot =
-                item.gameName && item.tagLine ? `${item.gameName}#${item.tagLine}`.toLowerCase() : "";
-            const matchesQuery =
-                !query ||
-                handle.includes(query) ||
-                item.nickname.toLowerCase().includes(query) ||
-                (item.gameName ?? "").toLowerCase().includes(query) ||
-                riot.includes(query);
-            const matchesRegion = !region || item.regionCode === region.code;
-            return matchesQuery && matchesRegion;
-        });
+        const items = allPlayerSheets(player)
+            .map(toPlayerSummary)
+            .filter((item) => {
+                const handle = `${item.nickname}#${item.discriminator}`.toLowerCase();
+                const riot =
+                    item.gameName && item.tagLine ? `${item.gameName}#${item.tagLine}`.toLowerCase() : "";
+                const matchesQuery =
+                    !query ||
+                    handle.includes(query) ||
+                    item.nickname.toLowerCase().includes(query) ||
+                    (item.gameName ?? "").toLowerCase().includes(query) ||
+                    riot.includes(query);
+                const matchesRegion = !region || item.regionCode === region.code;
+                return matchesQuery && matchesRegion;
+            });
         const take = body.take && body.take > 0 ? body.take : 20;
         return HttpResponse.json({ items: items.slice(0, take), hasMore: items.length > take });
     }),
     http.get(`${playersUrl}/:publicId`, ({ params }) => {
-        if (params["publicId"] !== player.publicId) {
+        const sheet = playerSheetByPublicId(String(params["publicId"] ?? ""), player);
+        if (!sheet) {
             return HttpResponse.json({ message: "NOT_FOUND" }, { status: 404 });
         }
-        return HttpResponse.json(player);
+        return HttpResponse.json(sheet);
     }),
     http.get(`${environment.apiUrl}/gateway/availability`, () =>
         HttpResponse.json({
@@ -702,14 +711,15 @@ export const handlers = [
         };
         return HttpResponse.json(player);
     }),
-    http.post(gatewayUrl(environment.apiUrl, "platform", "users", "actions", "Touch"), () =>
-        HttpResponse.json({
+    http.post(gatewayUrl(environment.apiUrl, "platform", "users", "actions", "Touch"), () => {
+        const session = getSessionPersona();
+        return HttpResponse.json({
             id: 1,
-            publicId: PLATFORM_USER_PUBLIC_ID,
-            nickname: mockPlayerSheet.nickname,
-            discriminator: mockPlayerSheet.discriminator,
+            publicId: session.platformUserPublicId,
+            nickname: session.nickname,
+            discriminator: session.discriminator,
             avatarUrl: mockPlayerSheet.avatarUrl,
             activeMute: null,
-        }),
-    ),
+        });
+    }),
 ];

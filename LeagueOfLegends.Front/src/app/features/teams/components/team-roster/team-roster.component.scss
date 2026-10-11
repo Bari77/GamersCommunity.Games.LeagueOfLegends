@@ -150,9 +150,20 @@
 }
 
 .member-card__admin {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
+    display: block;
+    width: 100%;
+}
+
+:host ::ng-deep .member-card__admin nb-select,
+:host ::ng-deep .member-card__admin nb-select.full-width {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+:host ::ng-deep .member-card__admin .select-button {
+    width: 100% !important;
+    max-width: none !important;
 }
 
 .member-card__lane-wrap {
