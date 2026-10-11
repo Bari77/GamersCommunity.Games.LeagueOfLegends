@@ -7,6 +7,12 @@ export interface HomeFeedDto {
     latestTeams: TeamSummaryDto[];
 }
 
+export interface PlayerSummaryRankDto {
+    tier?: string | null;
+    division?: string | null;
+    lp?: number | null;
+}
+
 export interface PlayerSummaryDto {
     publicId: string;
     platformUserPublicId: string;
@@ -18,5 +24,6 @@ export interface PlayerSummaryDto {
     tagLine?: string | null;
     regionCode?: string | null;
     primaryLaneCode?: string | null;
+    solo?: PlayerSummaryRankDto | null;
     creationDate: string;
 }

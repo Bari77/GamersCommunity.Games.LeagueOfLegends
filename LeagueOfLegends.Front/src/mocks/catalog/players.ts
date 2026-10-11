@@ -587,8 +587,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 2, code: "eune" },
         primaryLane: { id: 1, code: "top" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "gold", division: "1", lp: 58 },
-        flex: { tier: "platinum", division: "4", lp: 11 },
+        solo: { tier: "grandmaster", division: null, lp: 278 },
+        flex: { tier: "master", division: null, lp: 40 },
         champions: [
             { id: 49, code: "malphite", kind: "main", lane: "top" },
             { id: 58, code: "ornn", kind: "pool", lane: "top" },
@@ -606,8 +606,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 2, code: "eune" },
         primaryLane: { id: 2, code: "jungle" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "gold", division: "2", lp: 37 },
-        flex: { tier: "gold", division: "1", lp: 72 },
+        solo: { tier: "master", division: null, lp: 156 },
+        flex: { tier: "diamond", division: "1", lp: 22 },
         champions: [
             { id: 79, code: "warwick", kind: "main", lane: "jungle" },
             { id: 5, code: "amumu", kind: "pool", lane: "jungle" },
@@ -625,8 +625,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 2, code: "eune" },
         primaryLane: { id: 3, code: "mid" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "platinum", division: "3", lp: 24 },
-        flex: { tier: "gold", division: "1", lp: 90 },
+        solo: { tier: "diamond", division: "2", lp: 64 },
+        flex: { tier: "emerald", division: "1", lp: 18 },
         champions: [
             { id: 7, code: "annie", kind: "main", lane: "mid" },
             { id: 48, code: "lux", kind: "pool", lane: "mid" },
@@ -663,8 +663,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 3, code: "na" },
         primaryLane: { id: 3, code: "mid" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "platinum", division: "2", lp: 48 },
-        flex: { tier: "platinum", division: "1", lp: 5 },
+        solo: { tier: "challenger", division: null, lp: 892 },
+        flex: { tier: "grandmaster", division: null, lp: 30 },
         champions: [
             { id: 2, code: "ahri", kind: "main", lane: "mid" },
             { id: 57, code: "orianna", kind: "pool", lane: "mid" },
@@ -717,6 +717,7 @@ export function toPlayerSummary(sheetDto: PlayerSheetDto): PlayerSummaryDto {
         tagLine: sheetDto.tagLine,
         regionCode: sheetDto.region?.code ?? null,
         primaryLaneCode: sheetDto.primaryLane?.code ?? null,
+        solo: sheetDto.solo ?? null,
         creationDate: sheetDto.creationDate,
     };
 }

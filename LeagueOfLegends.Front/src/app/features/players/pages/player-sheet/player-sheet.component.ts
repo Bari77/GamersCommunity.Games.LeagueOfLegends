@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, input, resource, signal, untracked } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
+    bindWorkspacePageQuery,
     parseWorkspace,
     serializeWorkspace,
     WidgetWorkspace,
@@ -61,6 +62,7 @@ export class PlayerSheetComponent {
     });
 
     public readonly editing = signal(false);
+    public readonly activePageId = bindWorkspacePageQuery();
     public readonly saving = signal(false);
     public readonly saveFailed = signal(false);
     public readonly savingField = signal(false);

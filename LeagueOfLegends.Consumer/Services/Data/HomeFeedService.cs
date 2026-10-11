@@ -33,13 +33,13 @@ public class HomeFeedService(LeagueOfLegendsDbContext context) : IBusService
             .ToListAsync(ct);
         latestLfg.Reverse();
 
-        var latestPlayers = await _context.Players.AsNoTracking()
+        var latestPlayerRows = await _context.Players.AsNoTracking()
             .Where(p => p.PlatformUserPublicId != null)
             .OrderByDescending(p => p.CreationDate)
             .Take(FeedTake)
-            .Select(p => new PlayerSummaryDto
+            .Select(p => new
             {
-                PublicId = p.PublicId,
+                p.PublicId,
                 PlatformUserPublicId = p.PlatformUserPublicId ?? Guid.Empty,
                 Nickname = _context.PlatformUserSnapshots
                     .Where(s => s.PlatformUserPublicId == p.PlatformUserPublicId)
@@ -53,14 +53,33 @@ public class HomeFeedService(LeagueOfLegendsDbContext context) : IBusService
                     .Where(s => s.PlatformUserPublicId == p.PlatformUserPublicId)
                     .Select(s => s.AvatarUrl)
                     .FirstOrDefault() ?? "",
-                PresentationIrl = p.PresentationIrl,
-                GameName = p.GameName,
-                TagLine = p.TagLine,
+                p.PresentationIrl,
+                p.GameName,
+                p.TagLine,
                 RegionCode = p.IdRegionNavigation != null ? p.IdRegionNavigation.Code : null,
                 PrimaryLaneCode = p.IdPrimaryLaneNavigation != null ? p.IdPrimaryLaneNavigation.Code : null,
-                CreationDate = p.CreationDate,
+                p.SoloTier,
+                p.SoloDivision,
+                p.SoloLp,
+                p.CreationDate,
             })
             .ToListAsync(ct);
+
+        var latestPlayers = latestPlayerRows.Select(p => new PlayerSummaryDto
+        {
+            PublicId = p.PublicId,
+            PlatformUserPublicId = p.PlatformUserPublicId,
+            Nickname = p.Nickname,
+            Discriminator = p.Discriminator,
+            AvatarUrl = p.AvatarUrl,
+            PresentationIrl = p.PresentationIrl,
+            GameName = p.GameName,
+            TagLine = p.TagLine,
+            RegionCode = p.RegionCode,
+            PrimaryLaneCode = p.PrimaryLaneCode,
+            Solo = ToSoloRank(p.SoloTier, p.SoloDivision, p.SoloLp),
+            CreationDate = p.CreationDate,
+        }).ToList();
 
         var latestTeams = await _context.Teams.AsNoTracking()
             .OrderByDescending(t => t.CreationDate)
@@ -89,4 +108,9 @@ public class HomeFeedService(LeagueOfLegendsDbContext context) : IBusService
 
     private IQueryable<LfgAdSummaryDto> ToLfgSummaries(IQueryable<LfgAd> ads) =>
         LfgAdsService.ProjectSummaries(_context, ads);
+
+    private static PlayerRankDto? ToSoloRank(string? tier, string? division, int? lp)
+        => string.IsNullOrEmpty(tier)
+            ? null
+            : new PlayerRankDto { Tier = tier, Division = division, Lp = lp };
 }

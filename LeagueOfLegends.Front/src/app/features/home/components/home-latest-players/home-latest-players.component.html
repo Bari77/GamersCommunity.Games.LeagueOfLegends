@@ -3,11 +3,11 @@
         <li>
             <gc-entity-row
                 [link]="['/league-of-legends/players', player.publicId]"
+                [accent]="rankAccent(player)"
                 [name]="player.handleLabel()"
-                [subtitle]="player.riotId() || (player.regionCode | gameTerm) || ''"
+                [subtitle]="subtitle(player)"
+                [subtitleMuted]="!player.solo"
                 [date]="player.creationDate"
-                [description]="player.presentationIrl || discoverLabel"
-                [descriptionMuted]="!player.presentationIrl"
             >
                 <span rowVisual class="latest-players__avatar">
                     @if (player.avatarUrl) {
@@ -16,6 +16,34 @@
                         <span class="latest-players__initials">{{ player.initials() }}</span>
                     }
                 </span>
+
+                @if (hasSubtitleIcons(player)) {
+                    <span rowSubtitleLeading class="latest-players__subtitle-icons">
+                        @if (player.primaryLaneCode; as lane) {
+                            <lol-lane-icon [code]="lane" [alt]="lane | gameTerm" />
+                        }
+                        @if (player.solo; as solo) {
+                            <lol-rank-emblem
+                                class="latest-players__rank-crest"
+                                [attr.data-tier]="solo.tier"
+                                [tier]="solo.tier"
+                                size="crest"
+                                [alt]="formatSolo(solo)"
+                            />
+                        }
+                    </span>
+                }
+
+                @if (hasFacts(player)) {
+                    <span rowFacts>
+                        @if (player.regionCode; as region) {
+                            <span class="gc-entity-row__fact">{{ region | gameTerm }}</span>
+                        }
+                        @if (player.riotId(); as riotId) {
+                            <span class="gc-entity-row__fact gc-entity-row__fact--accent">{{ riotId }}</span>
+                        }
+                    </span>
+                }
             </gc-entity-row>
         </li>
     } @empty {

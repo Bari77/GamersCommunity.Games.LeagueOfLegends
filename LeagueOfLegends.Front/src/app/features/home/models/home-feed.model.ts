@@ -1,5 +1,6 @@
 import { HomeFeedDto, PlayerSummaryDto } from "@features/home/dto/home-feed.dto";
 import { LfgMessage } from "@features/lfg/models/lfg-message.model";
+import { PlayerRank } from "@features/players/models/player.model";
 import { TeamSummary } from "@features/teams/models/team.model";
 
 export class PlayerSummary {
@@ -14,6 +15,7 @@ export class PlayerSummary {
         public tagLine: string | null,
         public regionCode: string | null,
         public primaryLaneCode: string | null,
+        public solo: PlayerRank | null,
         public creationDate: Date,
     ) {}
 
@@ -29,6 +31,7 @@ export class PlayerSummary {
             dto.tagLine ?? null,
             dto.regionCode ?? null,
             dto.primaryLaneCode ?? null,
+            PlayerRank.fromDto(dto.solo),
             new Date(dto.creationDate),
         );
     }

@@ -39,6 +39,7 @@ public sealed class PlayerSummaryDto
     public string? TagLine { get; init; }
     public string? RegionCode { get; init; }
     public string? PrimaryLaneCode { get; init; }
+    public PlayerRankDto? Solo { get; init; }
     public DateTime CreationDate { get; init; }
 }
 

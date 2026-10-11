@@ -139,18 +139,27 @@
                             <p class="search-hit__meta">
                                 @if (player.riotId(); as riotId) {
                                     {{ riotId }}
-                                    @if (player.regionCode || player.primaryLaneCode) {
+                                    @if (player.regionCode || player.primaryLaneCode || player.solo) {
                                         ·
                                     }
                                 }
                                 @if (player.regionCode) {
                                     {{ player.regionCode | gameTerm }}
                                 }
-                                @if (player.regionCode && player.primaryLaneCode) {
+                                @if (player.regionCode && (player.primaryLaneCode || player.solo)) {
                                     ·
                                 }
                                 @if (player.primaryLaneCode) {
                                     {{ player.primaryLaneCode | gameTerm }}
+                                }
+                                @if (player.primaryLaneCode && player.solo) {
+                                    ·
+                                }
+                                @if (player.solo; as solo) {
+                                    {{ solo.tier | gameTerm }}
+                                    @if (solo.division) {
+                                        {{ solo.division | gameTerm }}
+                                    }
                                 }
                             </p>
                             @if (player.presentationIrl) {

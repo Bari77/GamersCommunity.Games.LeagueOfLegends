@@ -5,6 +5,7 @@
         <title>Playground - League of Legends</title>
         <base href="/" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/png" href="favicon.png" />
         <style>
             html,
             body {
@@ -30,6 +31,12 @@
             #app-splash.is-hidden {
                 opacity: 0;
                 pointer-events: none;
+            }
+
+            #app-splash img {
+                height: min(18vh, 6.5rem);
+                margin-bottom: 1rem;
+                filter: drop-shadow(0 0 18px rgb(102 170 255 / 45%));
             }
 
             #app-splash h1 {
@@ -59,6 +66,7 @@
     </head>
     <body>
         <div id="app-splash" aria-live="polite" aria-busy="true">
+            <img src="favicon.png" alt="" />
             <h1>League Of Legends</h1>
             <p>Loading…</p>
         </div>

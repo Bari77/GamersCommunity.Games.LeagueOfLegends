@@ -122,6 +122,14 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
                 TagLine = p.TagLine,
                 RegionCode = p.IdRegionNavigation != null ? p.IdRegionNavigation.Code : null,
                 PrimaryLaneCode = p.IdPrimaryLaneNavigation != null ? p.IdPrimaryLaneNavigation.Code : null,
+                Solo = string.IsNullOrEmpty(p.SoloTier)
+                    ? null
+                    : new PlayerRankDto
+                    {
+                        Tier = p.SoloTier,
+                        Division = p.SoloDivision,
+                        Lp = p.SoloLp,
+                    },
                 CreationDate = p.CreationDate,
             })
             .ToListAsync(ct);

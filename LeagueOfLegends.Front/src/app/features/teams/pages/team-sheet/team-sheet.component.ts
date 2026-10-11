@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, input, OnInit, resource, signal, u
 import { Router } from "@angular/router";
 import { SkeletonComponent } from "@bari77/gc-ui";
 import {
+    bindWorkspacePageQuery,
     parseWorkspace,
     serializeWorkspace,
     WidgetWorkspace,
@@ -62,6 +63,7 @@ export class TeamSheetComponent implements OnInit {
     protected readonly canEditLayout = computed(() => this.store.isCaptain());
 
     protected readonly editing = signal(false);
+    protected readonly activePageId = bindWorkspacePageQuery();
     protected readonly settingsOpen = signal(false);
     protected readonly saveFailed = signal(false);
 

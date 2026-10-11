@@ -16,6 +16,20 @@ const KNOWN_TIERS = new Set([
     "challenger",
 ]);
 
+/** Solid accent hex per solo/duo tier (roster badges, home rails, etc.). */
+const RANK_SOLID: Record<string, string> = {
+    iron: "#9a9a9a",
+    bronze: "#b88a5a",
+    silver: "#b0c0cc",
+    gold: "#d4af37",
+    platinum: "#5ec8c8",
+    emerald: "#3dbf7a",
+    diamond: "#5aa8ff",
+    master: "#9b59d0",
+    grandmaster: "#c0392b",
+    challenger: "#f1c40f",
+};
+
 const LANE_FILES: Record<string, string> = {
     top: "position-top",
     jungle: "position-jungle",
@@ -38,6 +52,11 @@ export function championSquareUrl(code: string): string {
 export function normalizeTier(tier: string | null | undefined): string {
     const code = (tier ?? "").trim().toLowerCase();
     return KNOWN_TIERS.has(code) ? code : "unranked";
+}
+
+export function rankSolidColor(tier: string | null | undefined): string | null {
+    const code = (tier ?? "").trim().toLowerCase();
+    return RANK_SOLID[code] ?? null;
 }
 
 export function rankCrestUrl(tier: string | null | undefined): string {

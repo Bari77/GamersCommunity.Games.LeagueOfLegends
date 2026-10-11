@@ -43,3 +43,54 @@
     font-weight: 700;
     text-transform: uppercase;
 }
+
+.latest-players__subtitle-icons {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.latest-players__rank-crest {
+    --rank-solid: var(--game-accent, #c8aa6e);
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--rank-solid) 50%, transparent));
+}
+
+.latest-players__rank-crest[data-tier="iron"] {
+    --rank-solid: #9a9a9a;
+}
+
+.latest-players__rank-crest[data-tier="bronze"] {
+    --rank-solid: #b88a5a;
+}
+
+.latest-players__rank-crest[data-tier="silver"] {
+    --rank-solid: #b0c0cc;
+}
+
+.latest-players__rank-crest[data-tier="gold"] {
+    --rank-solid: #d4af37;
+}
+
+.latest-players__rank-crest[data-tier="platinum"] {
+    --rank-solid: #5ec8c8;
+}
+
+.latest-players__rank-crest[data-tier="emerald"] {
+    --rank-solid: #3dbf7a;
+}
+
+.latest-players__rank-crest[data-tier="diamond"] {
+    --rank-solid: #5aa8ff;
+}
+
+.latest-players__rank-crest[data-tier="master"] {
+    --rank-solid: #9b59d0;
+}
+
+.latest-players__rank-crest[data-tier="grandmaster"] {
+    --rank-solid: #c0392b;
+}
+
+.latest-players__rank-crest[data-tier="challenger"] {
+    --rank-solid: #f1c40f;
+}
