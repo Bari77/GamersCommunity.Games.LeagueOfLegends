@@ -80,3 +80,13 @@ jobs:
         run: npm run workspace:validate
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        id: chrome
+
+      - name: Test
+        run: npm run test:ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}

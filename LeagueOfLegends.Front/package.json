@@ -9,6 +9,8 @@
     "start:api": "ng serve --port 4202 --configuration api",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "i18n": "ng extract-i18n --build-target=leagueoflegends.front:esbuild --output-path src/locale --out-file source.json --format=json",
     "workspace:validate": "gc-workspace validate --all",
     "workspace:edit": "gc-workspace edit"
@@ -59,6 +61,13 @@
     "@angular/compiler-cli": "21.2.17",
     "@bari77/gc-workspace-editor": "^1.0.6",
     "@softarc/native-federation-orchestrator": "^4.2.2",
+    "@types/jasmine": "5.1.13",
+    "jasmine-core": "5.12.1",
+    "karma": "6.4.4",
+    "karma-chrome-launcher": "3.2.0",
+    "karma-coverage": "2.2.1",
+    "karma-jasmine": "5.1.0",
+    "karma-jasmine-html-reporter": "2.1.0",
     "typescript": "~5.9.2"
   },
   "msw": {
