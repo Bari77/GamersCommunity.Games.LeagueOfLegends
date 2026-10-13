@@ -242,6 +242,69 @@ export const mockTeamSheets: TeamSheetDto[] = [
 
 export const mockTeamSummaries: TeamSummaryDto[] = mockTeamSheets.map(toSummary);
 
+const FILL_TEAM_POOL = ["Nyxara", "Vexthorn", "Lirael", "Kaelith", "Soryn", "Quill", "Dravik", "Myrren", "Calyx", "Bramble"];
+const FILL_TEAM_LANES = ["top", "jungle", "mid", "bottom", "support"] as const;
+const FILL_TEAM_REGIONS = ["euw", "eune", "na", "kr"];
+const FILL_TEAM_NAMES = [
+    "Ash Choir",
+    "Blue Wardens",
+    "Cinder Draft",
+    "Driftline",
+    "Echo Five",
+    "Farstride",
+    "Gold Lantern",
+    "Hollow Ace",
+    "Ivory Tempo",
+    "Jade Barrage",
+    "Kite Theory",
+    "Low Economy",
+    "Mirror Call",
+    "North Gate",
+    "Open Nexus",
+    "Pale Engage",
+    "Quiet Reset",
+    "Red Tempo",
+    "Soft Throw",
+    "Third Drake",
+    "Under Turret",
+    "Void Tempo",
+    "White Ward",
+    "Yellow Trinket",
+    "Zero Sum",
+    "Arc Second",
+    "Baron Bait",
+    "Crash Course",
+    "Deep Vision",
+    "Even Trade",
+    "First Blood",
+    "Good Angle",
+    "Hard Reset",
+    "Inner Turret",
+    "Jungle Gap",
+    "Last Pick",
+];
+
+for (const [index, entitled] of FILL_TEAM_NAMES.entries()) {
+    const sheet = buildTeam({
+        publicId: mockUuid(`lol:team:${entitled}`),
+        entitled,
+        discriminator: String(1100 + index).padStart(4, "0"),
+        tag: entitled.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase(),
+        sentence: "Scrim block, two nights a week.",
+        regionCode: FILL_TEAM_REGIONS[index % FILL_TEAM_REGIONS.length],
+        creationDate: new Date(Date.UTC(2023, index % 12, 1 + (index % 27), 18, 0, 0)).toISOString(),
+        members: FILL_TEAM_LANES.map((lane, laneIndex) => ({
+            who: FILL_TEAM_POOL[(index + laneIndex) % FILL_TEAM_POOL.length],
+            rank: laneIndex === 0 ? "captain" : "player",
+            lane,
+            rosterKind: "main" as const,
+            joinedAt: "2023-06-01T12:00:00.000Z",
+        })),
+    });
+    mockTeamSheets.push(sheet);
+    mockTeamSummaries.push(toSummary(sheet));
+}
+
 const quill = sheetByNickname("Quill");
 
 export const mockTeamApplications: TeamApplicationDto[] = [

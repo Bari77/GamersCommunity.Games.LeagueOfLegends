@@ -14,8 +14,16 @@ export const routes: Routes = [
                     label: $localize`:@@lol.playground.nav.sheet:My profile`,
                 },
                 {
-                    path: `${LOL_GAME_URL}/teams`,
+                    path: `${LOL_GAME_URL}/search`,
+                    queryParams: { type: "teams" },
+                    activePrefix: `${LOL_GAME_URL}/teams`,
                     label: $localize`:@@lol.playground.nav.teams:Teams`,
+                },
+                {
+                    path: `${LOL_GAME_URL}/search`,
+                    queryParams: { type: "players" },
+                    activePrefix: `${LOL_GAME_URL}/players`,
+                    label: $localize`:@@lol.playground.nav.players:Players`,
                 },
             ],
             gameSearch: {

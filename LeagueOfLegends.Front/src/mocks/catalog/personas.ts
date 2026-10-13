@@ -316,6 +316,34 @@ export const MOCK_PERSONAS: MockPersona[] = [
     },
 ];
 
+/** Older cast so a dedicated search tab has a second page. */
+const SEARCH_FILL = [
+    ["Arden", "EUW"],
+    ["Blythe", "NA1"],
+    ["Cassian", "KR1"],
+    ["Diora", "EUNE"],
+    ["Elowen", "EUW"],
+    ["Faris", "NA1"],
+    ["Gwyn", "KR1"],
+    ["Hester", "EUNE"],
+    ["Idris", "EUW"],
+    ["Jorah", "NA1"],
+    ["Keira", "KR1"],
+    ["Lumen", "EUNE"],
+] as const;
+
+for (const [index, [nickname, tagLine]] of SEARCH_FILL.entries()) {
+    MOCK_PERSONAS.push({
+        id: nickname,
+        platformUserPublicId: mockUuid(`lol:platform:${nickname}`),
+        playerPublicId: mockUuid(`lol:player:${nickname}`),
+        nickname,
+        discriminator: String(3001 + index).padStart(4, "0"),
+        gameName: nickname,
+        tagLine,
+    });
+}
+
 export const DEFAULT_PERSONA_ID = "Nyxara";
 
 export function persona(nickname: string): MockPersona {

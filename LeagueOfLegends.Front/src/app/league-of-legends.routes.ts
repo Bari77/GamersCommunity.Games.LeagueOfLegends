@@ -44,6 +44,20 @@ const lolRemoteProviders = [
     LfgRealtimeService,
 ];
 
+/** Keeps old directory links working. */
+function redirectToSearch(type: string) {
+    return ({ queryParams }: { queryParams: Record<string, unknown> }) => {
+        const params = new URLSearchParams();
+        params.set("type", type);
+        for (const [key, value] of Object.entries(queryParams)) {
+            if (key !== "type" && typeof value === "string" && value.length > 0) {
+                params.set(key, value);
+            }
+        }
+        return `${LOL_GAME_URL}/search?${params.toString()}`;
+    };
+}
+
 export const leagueOfLegendsRoutes: Routes = [
     {
         path: "",
@@ -73,11 +87,8 @@ export const leagueOfLegendsRoutes: Routes = [
             },
             {
                 path: "teams",
-                data: { breadcrumb: $localize`:@@lol.breadcrumb.teams:Teams` },
-                loadComponent: () =>
-                    import("./features/teams/pages/team-directory/team-directory.component").then(
-                        (m) => m.TeamDirectoryComponent,
-                    ),
+                pathMatch: "full",
+                redirectTo: redirectToSearch("teams"),
             },
             {
                 path: "teams/:publicId",

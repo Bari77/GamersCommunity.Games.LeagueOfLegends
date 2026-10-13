@@ -43,6 +43,7 @@ import {
     TEAM_PUBLIC_ID,
     teamSheetByPublicId,
 } from "./catalog/orgs";
+import { pageByCursor } from "./catalog/search-page";
 import { mockTeamLinks, mockTeamPosts } from "./catalog/team-wall";
 import { TeamWallRequestDto } from "@features/teams/dto/team-wall-request.dto";
 import { GamePostUpdateRequestDto } from "@features/teams/dto/game-post-update-request.dto";
@@ -176,6 +177,7 @@ export const handlers = [
         const query = (body.query ?? "").trim().toLowerCase();
         const region =
             body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
+        const missingLane = laneCodeForId(body.idMissingLane);
         const items = [
             ...teams.map(teamSummary),
             ...mockTeamSummaries.filter((item) => !teams.some((team) => team.publicId === item.publicId)),
@@ -183,9 +185,20 @@ export const handlers = [
             const matchesQuery =
                 !query || team.entitled.toLowerCase().includes(query) || (team.tag ?? "").toLowerCase().includes(query);
             const matchesRegion = !region || team.regionCode === region.code;
-            return matchesQuery && matchesRegion;
+            const matchesMembers = body.minMembers == null || team.memberCount >= body.minMembers;
+            const matchesOpen = body.openRoster !== true || team.playerSlotCount < 5;
+            const sheet = teams.find((item) => item.publicId === team.publicId);
+            const coversLane =
+                !!missingLane &&
+                (sheet?.members ?? []).some(
+                    (member) =>
+                        member.laneCode === missingLane &&
+                        (member.rosterKind ?? "main") === "main" &&
+                        (member.rank === "captain" || member.rank === "player"),
+                );
+            return matchesQuery && matchesRegion && matchesMembers && matchesOpen && !coversLane;
         });
-        return HttpResponse.json({ items, hasMore: false });
+        return HttpResponse.json(pageByCursor(items, body));
     }),
     http.post(`${teamsUrl}/actions/ListByPlayer`, async ({ request }) => {
         const body = ((await request.json()) as TeamListByPlayerRequestDto) ?? { playerPublicId: "" };
@@ -615,10 +628,41 @@ export const handlers = [
     }),
     http.post(`${playersUrl}/actions/Options`, () => HttpResponse.json(mockPlayerOptions)),
     http.post(`${playersUrl}/actions/Search`, async ({ request }) => {
-        const body = ((await request.json()) as { query?: string; idRegion?: number; take?: number }) ?? {};
+        const body =
+            ((await request.json()) as {
+                query?: string;
+                idRegion?: number;
+                idLane?: number;
+                minSoloTier?: string;
+                lookingForTeam?: boolean;
+                take?: number;
+                beforeCreationDate?: string;
+                beforePublicId?: string;
+            }) ?? {};
         const query = (body.query ?? "").trim().toLowerCase();
         const region =
             body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
+        const lane = laneCodeForId(body.idLane);
+        const tierOrder = [
+            "iron",
+            "bronze",
+            "silver",
+            "gold",
+            "platinum",
+            "emerald",
+            "diamond",
+            "master",
+            "grandmaster",
+            "challenger",
+        ];
+        const minTier = tierOrder.indexOf((body.minSoloTier ?? "").toLowerCase());
+        const onATeam = new Set(
+            teams.flatMap((team) =>
+                (team.members ?? [])
+                    .filter((member) => member.rank === "captain" || member.rank === "player")
+                    .map((member) => member.playerPublicId),
+            ),
+        );
         const items = allPlayerSheets(player)
             .map(toPlayerSummary)
             .filter((item) => {
@@ -631,10 +675,13 @@ export const handlers = [
                     (item.gameName ?? "").toLowerCase().includes(query) ||
                     riot.includes(query);
                 const matchesRegion = !region || item.regionCode === region.code;
-                return matchesQuery && matchesRegion;
+                const matchesLane = !lane || item.primaryLaneCode === lane;
+                const rank = tierOrder.indexOf((item.solo?.tier ?? "").toLowerCase());
+                const matchesTier = minTier < 0 || rank >= minTier;
+                const matchesTeam = body.lookingForTeam !== true || !onATeam.has(item.publicId);
+                return matchesQuery && matchesRegion && matchesLane && matchesTier && matchesTeam;
             });
-        const take = body.take && body.take > 0 ? body.take : 20;
-        return HttpResponse.json({ items: items.slice(0, take), hasMore: items.length > take });
+        return HttpResponse.json(pageByCursor(items, body));
     }),
     http.get(`${playersUrl}/:publicId`, ({ params }) => {
         const sheet = playerSheetByPublicId(String(params["publicId"] ?? ""), player);

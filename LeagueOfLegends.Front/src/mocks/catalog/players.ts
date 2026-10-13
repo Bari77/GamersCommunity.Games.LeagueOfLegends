@@ -678,6 +678,81 @@ const SEEDS: SheetSeed[] = [
     },
 ];
 
+const FILL_LANES: { id: number; code: string; champions: SheetSeed["champions"] }[] = [
+    {
+        id: 1,
+        code: "top",
+        champions: [
+            { id: 1, code: "aatrox", kind: "main", lane: "top" },
+            { id: 16, code: "camille", kind: "pool", lane: "top" },
+        ],
+    },
+    {
+        id: 2,
+        code: "jungle",
+        champions: [
+            { id: 45, code: "leesin", kind: "main", lane: "jungle" },
+            { id: 27, code: "graves", kind: "pool", lane: "jungle" },
+        ],
+    },
+    {
+        id: 3,
+        code: "mid",
+        champions: [
+            { id: 2, code: "ahri", kind: "main", lane: "mid" },
+            { id: 70, code: "syndra", kind: "pool", lane: "mid" },
+        ],
+    },
+    {
+        id: 4,
+        code: "bottom",
+        champions: [
+            { id: 9, code: "ashe", kind: "main", lane: "bottom" },
+            { id: 35, code: "jinx", kind: "pool", lane: "bottom" },
+        ],
+    },
+    {
+        id: 5,
+        code: "support",
+        champions: [
+            { id: 71, code: "thresh", kind: "main", lane: "support" },
+            { id: 46, code: "leona", kind: "pool", lane: "support" },
+        ],
+    },
+];
+
+const FILL_REGIONS = [
+    { id: 1, code: "euw" },
+    { id: 2, code: "eune" },
+    { id: 3, code: "na" },
+    { id: 4, code: "kr" },
+];
+
+const FILL_TIERS = ["silver", "gold", "platinum", "emerald", "diamond", "bronze"] as const;
+
+const seeded = new Set(SEEDS.map((seed) => seed.who));
+let fillIndex = 0;
+for (const who of MOCK_PERSONAS) {
+    if (seeded.has(who.nickname)) {
+        continue;
+    }
+    const lane = FILL_LANES[fillIndex % FILL_LANES.length];
+    const tier = FILL_TIERS[fillIndex % FILL_TIERS.length];
+    SEEDS.push({
+        who: who.nickname,
+        presentationIrl: "Ranked after work, voice when the lobby is calm.",
+        presentationIg: `${lane.code} main, still filling the pool.`,
+        region: FILL_REGIONS[fillIndex % FILL_REGIONS.length],
+        primaryLane: { id: lane.id, code: lane.code },
+        secondaryLanes: [],
+        solo: { tier, division: "2", lp: 15 + fillIndex },
+        flex: { tier: "gold", division: "4", lp: 8 },
+        champions: lane.champions,
+        creationDate: new Date(Date.UTC(2023, fillIndex % 12, 2 + fillIndex, 12, 0, 0)).toISOString(),
+    });
+    fillIndex++;
+}
+
 if (SEEDS.length !== MOCK_PERSONAS.length) {
     throw new Error(`LoL mock sheet seeds (${SEEDS.length}) must match personas (${MOCK_PERSONAS.length}).`);
 }

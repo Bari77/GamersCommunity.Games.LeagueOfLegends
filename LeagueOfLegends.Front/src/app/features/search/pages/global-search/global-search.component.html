@@ -1,13 +1,67 @@
 <section class="search gc-enter">
     <nb-card>
-        <nb-card-header>
-            <h1 class="search__title gc-display" i18n="@@lol.search.title">Search</h1>
-            <p class="search__subtitle" i18n="@@lol.search.subtitle">
-                Find a team or a player. Type a full handle such as Name#1234 to jump straight to it.
-            </p>
+        <nb-card-header class="search__header">
+            <div>
+                <h1 class="search__title gc-display" i18n="@@lol.search.title">Search</h1>
+                <p class="search__subtitle" i18n="@@lol.search.subtitle">
+                    Find a team or a player. Type a full handle such as Name#1234 to jump straight to it.
+                </p>
+            </div>
+
+            @if (scope() === "teams") {
+                @if (membership.loading()) {
+                    <gc-skeleton width="9rem" height="2.5rem" radius="0.25rem" />
+                } @else if (!membership.isAuthenticated()) {
+                    <a href="/users/login" nbButton status="primary">
+                        <span i18n="@@lol.team.directory.loginToFound">Log in to found a team</span>
+                    </a>
+                } @else if (membership.needsSheet()) {
+                    <lol-create-sheet-wall variant="inline" [message]="sheetWallMessage" />
+                } @else if (!formOpen()) {
+                    <button nbButton status="primary" type="button" (click)="formOpen.set(true)">
+                        <span i18n="@@lol.team.directory.found">Found a team</span>
+                    </button>
+                }
+            }
         </nb-card-header>
 
         <nb-card-body>
+            <nav class="search__tabs" [attr.aria-label]="tabsLabel">
+                <button
+                    class="search__tab"
+                    nbButton
+                    size="small"
+                    [status]="scope() === 'all' ? 'primary' : 'basic'"
+                    [ghost]="scope() !== 'all'"
+                    (click)="setScope('all')"
+                >
+                    <nb-icon icon="grid-outline" />
+                    <span i18n="@@lol.search.tab.all">All</span>
+                </button>
+                <button
+                    class="search__tab"
+                    nbButton
+                    size="small"
+                    [status]="scope() === 'teams' ? 'primary' : 'basic'"
+                    [ghost]="scope() !== 'teams'"
+                    (click)="setScope('teams')"
+                >
+                    <nb-icon icon="people-outline" />
+                    <span i18n="@@lol.search.tab.teams">Teams</span>
+                </button>
+                <button
+                    class="search__tab"
+                    nbButton
+                    size="small"
+                    [status]="scope() === 'players' ? 'primary' : 'basic'"
+                    [ghost]="scope() !== 'players'"
+                    (click)="setScope('players')"
+                >
+                    <nb-icon icon="person-outline" />
+                    <span i18n="@@lol.search.tab.players">Players</span>
+                </button>
+            </nav>
+
             <form class="search__form" (ngSubmit)="submitTerm()">
                 <input
                     class="search__term"
@@ -19,56 +73,285 @@
                     (ngModelChange)="term.set($event)"
                     [ngModelOptions]="{ standalone: true }"
                 />
-                <button nbButton status="primary" type="submit">
+                <button class="search__submit" nbButton status="primary" type="submit">
+                    <nb-icon icon="search-outline" />
                     <span i18n="@@lol.search.submit">Search</span>
                 </button>
             </form>
 
             <div class="search__filters">
-                <nb-select
-                    class="search__filter"
-                    placeholder="—"
-                    [disabled]="loadingOptions()"
-                    [ngModel]="store.criteria().idRegion"
-                    (ngModelChange)="setRegion($event)"
-                    [ngModelOptions]="{ standalone: true }"
-                >
-                    <nb-option [value]="null" i18n="@@lol.search.allRegions">All regions</nb-option>
-                    @for (region of options.value()?.regions ?? []; track region.id) {
-                        <nb-option [value]="region.id">{{ region.code | gameTerm }}</nb-option>
+                <div class="search__row">
+                <nb-form-field class="search__field" [class.search__field--set]="store.criteria().idRegion !== null">
+                    <nb-icon nbPrefix icon="globe-2-outline" />
+                    <nb-select
+                        fullWidth
+                        size="small"
+                        i18n-placeholder="@@lol.search.regionPlaceholder"
+                        placeholder="Region"
+                        [disabled]="loadingOptions()"
+                        [ngModel]="store.criteria().idRegion"
+                        (ngModelChange)="setRegion($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                    >
+                        <nb-option [value]="null" i18n="@@lol.search.allRegions">All regions</nb-option>
+                        @for (region of options.value()?.regions ?? []; track region.id) {
+                            <nb-option [value]="region.id">{{ region.code | gameTerm }}</nb-option>
+                        }
+                    </nb-select>
+                </nb-form-field>
+
+                @if (showsPlayers()) {
+                    <nb-form-field class="search__field" [class.search__field--set]="store.criteria().idLane !== null">
+                        <nb-icon nbPrefix icon="compass-outline" />
+                        <nb-select
+                            fullWidth
+                            size="small"
+                            i18n-placeholder="@@lol.search.lanePlaceholder"
+                            placeholder="Lane"
+                            [disabled]="loadingOptions()"
+                            [ngModel]="store.criteria().idLane"
+                            (ngModelChange)="setLane($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                        >
+                            @if (laneById(store.criteria().idLane); as lane) {
+                                <nb-select-label>
+                                    <span class="gc-select-option">
+                                        <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                                        {{ lane.code | gameTerm }}
+                                    </span>
+                                </nb-select-label>
+                            }
+                            <nb-option [value]="null" i18n="@@lol.search.allLanes">All lanes</nb-option>
+                            @for (lane of options.value()?.lanes ?? []; track lane.id) {
+                                <nb-option [value]="lane.id">
+                                    <span class="gc-select-option">
+                                        <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                                        {{ lane.code | gameTerm }}
+                                    </span>
+                                </nb-option>
+                            }
+                        </nb-select>
+                    </nb-form-field>
+
+                    <nb-form-field
+                        class="search__field"
+                        [class.search__field--set]="store.criteria().minSoloTier !== null"
+                    >
+                        <nb-icon nbPrefix icon="award-outline" />
+                        <nb-select
+                            fullWidth
+                            size="small"
+                            i18n-placeholder="@@lol.search.tierPlaceholder"
+                            placeholder="Rank"
+                            [disabled]="loadingOptions()"
+                            [ngModel]="store.criteria().minSoloTier"
+                            (ngModelChange)="setTier($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                        >
+                            @if (store.criteria().minSoloTier; as tier) {
+                                <nb-select-label>
+                                    <span class="gc-select-option">
+                                        <lol-rank-emblem [tier]="tier" size="crest" [alt]="tier | gameTerm" />
+                                        {{ tier | gameTerm }}
+                                    </span>
+                                </nb-select-label>
+                            }
+                            <nb-option [value]="null" i18n="@@lol.search.allTiers">All ranks</nb-option>
+                            @for (tier of tiers(); track tier) {
+                                <nb-option [value]="tier">
+                                    <span class="gc-select-option">
+                                        <lol-rank-emblem [tier]="tier" size="crest" [alt]="tier | gameTerm" />
+                                        {{ tier | gameTerm }}
+                                    </span>
+                                </nb-option>
+                            }
+                        </nb-select>
+                    </nb-form-field>
+                }
+
+                @if (showsTeams()) {
+                    <nb-form-field
+                        class="search__field"
+                        [class.search__field--set]="store.criteria().idMissingLane !== null"
+                    >
+                        <nb-icon nbPrefix icon="plus-circle-outline" />
+                        <nb-select
+                            fullWidth
+                            size="small"
+                            i18n-placeholder="@@lol.search.needPlaceholder"
+                            placeholder="Needs lane"
+                            [disabled]="loadingOptions()"
+                            [ngModel]="store.criteria().idMissingLane"
+                            (ngModelChange)="setMissingLane($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                        >
+                            @if (laneById(store.criteria().idMissingLane); as lane) {
+                                <nb-select-label>
+                                    <span class="gc-select-option">
+                                        <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                                        {{ lane.code | gameTerm }}
+                                    </span>
+                                </nb-select-label>
+                            }
+                            <nb-option [value]="null" i18n="@@lol.search.anyNeed">Any roster need</nb-option>
+                            @for (lane of options.value()?.lanes ?? []; track lane.id) {
+                                <nb-option [value]="lane.id">
+                                    <span class="gc-select-option">
+                                        <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                                        {{ lane.code | gameTerm }}
+                                    </span>
+                                </nb-option>
+                            }
+                        </nb-select>
+                    </nb-form-field>
+                }
+
+                <div class="search__actions">
+                    <button
+                        class="search__more"
+                        nbButton
+                        ghost
+                        size="small"
+                        type="button"
+                        [status]="extraCount() > 0 ? 'primary' : 'basic'"
+                        [attr.aria-expanded]="showMore()"
+                        (click)="toggleMore()"
+                    >
+                        <nb-icon [icon]="showMore() ? 'minus-outline' : 'plus-outline'" />
+                        @if (showMore()) {
+                            <span i18n="@@lol.search.fewerFilters">Fewer filters</span>
+                        } @else {
+                            <span i18n="@@lol.search.moreFilters">More filters</span>
+                            @if (extraCount() > 0) {
+                                <span class="search__moreCount">{{ extraCount() }}</span>
+                            }
+                        }
+                    </button>
+                    @if (hasFilters()) {
+                        <button class="search__clear" nbButton ghost size="small" status="basic" type="button" (click)="clearFilters()">
+                            <nb-icon icon="close-outline" />
+                            <span i18n="@@lol.search.clear">Clear</span>
+                        </button>
                     }
-                </nb-select>
+                </div>
+                </div>
+
+                @if (showMore()) {
+                    <div class="search__row">
+                        @if (showsPlayers()) {
+                            <nb-form-field class="search__field" [class.search__field--set]="lookingChoice() !== null">
+                                <nb-icon nbPrefix icon="person-add-outline" />
+                                <nb-select
+                                    fullWidth
+                                    size="small"
+                                    i18n-placeholder="@@lol.search.teamPlaceholder"
+                                    placeholder="Team"
+                                    [ngModel]="lookingChoice()"
+                                    (ngModelChange)="setLookingForTeam($event)"
+                                    [ngModelOptions]="{ standalone: true }"
+                                >
+                                    @if (lookingChoice() === "yes") {
+                                        <nb-select-label>
+                                            <span class="gc-select-option">
+                                                <nb-icon icon="person-add-outline" />
+                                                <span i18n="@@lol.search.lookingForTeam">Looking for a team</span>
+                                            </span>
+                                        </nb-select-label>
+                                    }
+                                    <nb-option [value]="null" i18n="@@lol.search.anyTeamStatus">On a team or not</nb-option>
+                                    <nb-option value="yes">
+                                        <span class="gc-select-option">
+                                            <nb-icon icon="person-add-outline" />
+                                            <span i18n="@@lol.search.lookingForTeam">Looking for a team</span>
+                                        </span>
+                                    </nb-option>
+                                </nb-select>
+                            </nb-form-field>
+                        }
+
+                        @if (showsTeams()) {
+                            <nb-form-field class="search__field" [class.search__field--set]="store.criteria().minMembers !== null">
+                                <nb-icon nbPrefix icon="people-outline" />
+                                <input
+                                    nbInput
+                                    fullWidth
+                                    fieldSize="small"
+                                    type="number"
+                                    min="1"
+                                    [placeholder]="minMembersPlaceholder"
+                                    [attr.aria-label]="minMembersPlaceholder"
+                                    [ngModel]="store.criteria().minMembers"
+                                    (ngModelChange)="setMinMembers($event)"
+                                    [ngModelOptions]="{ standalone: true }"
+                                />
+                            </nb-form-field>
+
+                            <nb-form-field class="search__field" [class.search__field--set]="openChoice() !== null">
+                                <nb-icon nbPrefix icon="unlock-outline" />
+                                <nb-select
+                                    fullWidth
+                                    size="small"
+                                    i18n-placeholder="@@lol.search.rosterPlaceholder"
+                                    placeholder="Roster"
+                                    [ngModel]="openChoice()"
+                                    (ngModelChange)="setOpenRoster($event)"
+                                    [ngModelOptions]="{ standalone: true }"
+                                >
+                                    @if (openChoice() === "yes") {
+                                        <nb-select-label>
+                                            <span class="gc-select-option">
+                                                <nb-icon icon="unlock-outline" />
+                                                <span i18n="@@lol.search.openRoster">Open roster</span>
+                                            </span>
+                                        </nb-select-label>
+                                    }
+                                    <nb-option [value]="null" i18n="@@lol.search.anyRoster">Any roster</nb-option>
+                                    <nb-option value="yes">
+                                        <span class="gc-select-option">
+                                            <nb-icon icon="unlock-outline" />
+                                            <span i18n="@@lol.search.openRoster">Open roster</span>
+                                        </span>
+                                    </nb-option>
+                                </nb-select>
+                            </nb-form-field>
+                        }
+                    </div>
+                }
             </div>
 
-            <nav class="search__tabs" [attr.aria-label]="tabsLabel">
-                <button
-                    nbButton
-                    size="small"
-                    [status]="scope() === 'all' ? 'primary' : 'basic'"
-                    [ghost]="scope() !== 'all'"
-                    (click)="setScope('all')"
-                >
-                    <span i18n="@@lol.search.tab.all">All</span>
-                </button>
-                <button
-                    nbButton
-                    size="small"
-                    [status]="scope() === 'teams' ? 'primary' : 'basic'"
-                    [ghost]="scope() !== 'teams'"
-                    (click)="setScope('teams')"
-                >
-                    <span i18n="@@lol.search.tab.teams">Teams</span>
-                </button>
-                <button
-                    nbButton
-                    size="small"
-                    [status]="scope() === 'players' ? 'primary' : 'basic'"
-                    [ghost]="scope() !== 'players'"
-                    (click)="setScope('players')"
-                >
-                    <span i18n="@@lol.search.tab.players">Players</span>
-                </button>
-            </nav>
+            @if (scope() === "teams" && formOpen()) {
+                <div class="search__create">
+                    <lol-team-create-form
+                        [saving]="creating()"
+                        [errorCode]="createErrorCode()"
+                        (create)="onCreate($event)"
+                        (cancel)="closeForm()"
+                    />
+                </div>
+            }
+
+            @if (scope() === "teams" && pendingApplications().length > 0) {
+                <aside class="search__applications">
+                    <h2 class="search__applicationsTitle" i18n="@@lol.team.directory.pendingTitle">
+                        Applications awaiting an answer
+                    </h2>
+                    <ul>
+                        @for (application of pendingApplications(); track application.publicId) {
+                            <li>
+                                <a [routerLink]="teamLink(application.teamPublicId)">
+                                    {{ application.teamHandleLabel() }}
+                                </a>
+                                <span class="search__applicationsWith">
+                                    {{ application.soughtRank | gameTerm }}
+                                    @if (application.laneCode) {
+                                        · {{ application.laneCode | gameTerm }}
+                                    }
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                </aside>
+            }
         </nb-card-body>
     </nb-card>
 
@@ -76,8 +359,14 @@
         <ul class="search__results">
             @for (placeholder of resultPlaceholders; track placeholder) {
                 <li class="search-hit search-hit--skeleton" aria-busy="true">
-                    <gc-skeleton width="55%" height="1.1rem" />
-                    <gc-skeleton-text [lines]="2" />
+                    <div class="search-hit__head">
+                        <gc-skeleton width="2.15rem" height="2.15rem" radius="0.3rem" />
+                        <span class="search-hit__who">
+                            <gc-skeleton width="8rem" height="1rem" />
+                            <gc-skeleton width="4.5rem" height="0.7rem" />
+                        </span>
+                    </div>
+                    <gc-skeleton width="72%" height="0.85rem" />
                 </li>
             }
         </ul>
@@ -98,21 +387,28 @@
                 <ul class="search__results">
                     @for (team of store.teams(); track team.publicId) {
                         <li class="search-hit">
-                            <a class="search-hit__name" [routerLink]="teamLink(team.publicId)">
-                                {{ team.handleLabel() }}
-                            </a>
-                            <p class="search-hit__meta">
+                            <a class="search-hit__cover" [routerLink]="teamLink(team.publicId)" [attr.aria-label]="team.handleLabel()"></a>
+                            <div class="search-hit__head">
+                                <span class="search-hit__mark" aria-hidden="true">
+                                    {{ team.tag || team.entitled.charAt(0) }}
+                                </span>
+                                <span class="search-hit__who">
+                                    <span class="search-hit__name gc-display">{{ team.handleLabel() }}</span>
+                                </span>
+                            </div>
+                            <ul class="search-hit__facts">
                                 @if (team.regionCode) {
-                                    {{ team.regionCode | gameTerm }} ·
+                                    <li>{{ team.regionCode | gameTerm }}</li>
                                 }
-                                {{ team.playerSlotCount }}
-                                <span i18n="@@lol.search.playerSlots">players</span>
-                                · {{ team.memberCount }}
-                                <span i18n="@@lol.search.memberCount">members</span>
-                            </p>
-                            @if (team.sentence) {
-                                <p class="search-hit__sentence">{{ plainText(team.sentence) }}</p>
-                            }
+                                <li>
+                                    {{ team.playerSlotCount }}
+                                    <span i18n="@@lol.search.playerSlots">players</span>
+                                </li>
+                                <li>
+                                    {{ team.memberCount }}
+                                    <span i18n="@@lol.search.memberCount">members</span>
+                                </li>
+                            </ul>
                         </li>
                     }
                 </ul>
@@ -132,39 +428,45 @@
 
                 <ul class="search__results">
                     @for (player of store.players(); track player.publicId) {
-                        <li class="search-hit">
-                            <a class="search-hit__name" [routerLink]="playerLink(player.publicId)">
-                                {{ player.handleLabel() }}
-                            </a>
-                            <p class="search-hit__meta">
-                                @if (player.riotId(); as riotId) {
-                                    {{ riotId }}
-                                    @if (player.regionCode || player.primaryLaneCode || player.solo) {
-                                        ·
+                        <li class="search-hit" [attr.data-tier]="player.solo?.tier || null">
+                            <a class="search-hit__cover" [routerLink]="playerLink(player.publicId)" [attr.aria-label]="player.handleLabel()"></a>
+                            <div class="search-hit__head">
+                                <span class="search-hit__avatar">
+                                    @if (player.avatarUrl) {
+                                        <img [src]="player.avatarUrl" alt="" />
+                                    } @else {
+                                        <span class="search-hit__initials">{{ player.initials() }}</span>
                                     }
-                                }
-                                @if (player.regionCode) {
-                                    {{ player.regionCode | gameTerm }}
-                                }
-                                @if (player.regionCode && (player.primaryLaneCode || player.solo)) {
-                                    ·
-                                }
-                                @if (player.primaryLaneCode) {
-                                    {{ player.primaryLaneCode | gameTerm }}
-                                }
-                                @if (player.primaryLaneCode && player.solo) {
-                                    ·
-                                }
-                                @if (player.solo; as solo) {
-                                    {{ solo.tier | gameTerm }}
-                                    @if (solo.division) {
-                                        {{ solo.division | gameTerm }}
+                                </span>
+                                <span class="search-hit__who">
+                                    <span class="search-hit__name gc-display">{{ player.handleLabel() }}</span>
+                                    @if (player.primaryLaneCode; as lane) {
+                                        <span class="search-hit__lane">
+                                            <lol-lane-icon [code]="lane" [alt]="lane | gameTerm" />
+                                            {{ lane | gameTerm }}
+                                        </span>
                                     }
-                                }
-                            </p>
-                            @if (player.presentationIrl) {
-                                <p class="search-hit__sentence">{{ plainText(player.presentationIrl) }}</p>
+                                </span>
+                            </div>
+                            @if (player.solo; as solo) {
+                                <div class="search-hit__ladder">
+                                    <lol-rank-emblem [tier]="solo.tier" size="crest" [alt]="solo.tier | gameTerm" />
+                                    <strong>
+                                        {{ solo.tier | gameTerm }}
+                                        @if (solo.division) {
+                                            {{ solo.division | gameTerm }}
+                                        }
+                                    </strong>
+                                </div>
                             }
+                            <ul class="search-hit__facts">
+                                @if (player.regionCode) {
+                                    <li>{{ player.regionCode | gameTerm }}</li>
+                                }
+                                @if (player.riotId(); as riotId) {
+                                    <li class="search-hit__fact--accent">{{ riotId }}</li>
+                                }
+                            </ul>
                         </li>
                     }
                 </ul>

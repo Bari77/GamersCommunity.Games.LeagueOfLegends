@@ -23,6 +23,12 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
     {
         "master", "grandmaster", "challenger",
     };
+
+    /// <summary>Ladder order used both by the options catalog and by the minimum-tier search filter.</summary>
+    private static readonly string[] SoloTierOrder =
+    [
+        "iron", "bronze", "silver", "gold", "platinum", "emerald", "diamond", "master", "grandmaster", "challenger",
+    ];
     private static readonly HashSet<string> RankedTiers = new(StringComparer.OrdinalIgnoreCase)
     {
         "iron", "bronze", "silver", "gold", "platinum", "emerald", "diamond",
@@ -101,6 +107,27 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
 
         if (request.IdRegion is { } idRegion)
             query = query.Where(p => p.IdRegion == idRegion);
+
+        if (request.IdLane is { } idLane)
+            query = query.Where(p => p.IdPrimaryLane == idLane);
+
+        if (!string.IsNullOrWhiteSpace(request.MinSoloTier))
+        {
+            var index = Array.FindIndex(
+                SoloTierOrder,
+                tier => tier.Equals(request.MinSoloTier, StringComparison.OrdinalIgnoreCase));
+            if (index >= 0)
+            {
+                var accepted = SoloTierOrder[index..];
+                query = query.Where(p => p.SoloTier != null && accepted.Contains(p.SoloTier));
+            }
+        }
+
+        if (request.LookingForTeam is true)
+        {
+            query = query.Where(p => !p.TeamMembers.Any(m =>
+                TeamRankCodes.PlayerSlots.Contains(m.IdTeamRankNavigation.Code)));
+        }
 
         if (request.BeforePublicId is { } beforePublicId && request.BeforeCreationDate is { } beforeDate)
         {
@@ -231,19 +258,9 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
                 .OrderBy(k => k.SortOrder)
                 .Select(k => new CatalogItemDto { Id = k.Id, Code = k.Code })
                 .ToListAsync(ct),
-            Tiers =
-            [
-                new() { Id = 1, Code = "iron" },
-                new() { Id = 2, Code = "bronze" },
-                new() { Id = 3, Code = "silver" },
-                new() { Id = 4, Code = "gold" },
-                new() { Id = 5, Code = "platinum" },
-                new() { Id = 6, Code = "emerald" },
-                new() { Id = 7, Code = "diamond" },
-                new() { Id = 8, Code = "master" },
-                new() { Id = 9, Code = "grandmaster" },
-                new() { Id = 10, Code = "challenger" },
-            ],
+            Tiers = SoloTierOrder
+                .Select((code, index) => new CatalogItemDto { Id = index + 1, Code = code })
+                .ToList(),
             Divisions =
             [
                 new() { Id = 4, Code = "4" },

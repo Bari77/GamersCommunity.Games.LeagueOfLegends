@@ -18,6 +18,7 @@ namespace LeagueOfLegends.Consumer.Services.Data;
 public class TeamsService(LeagueOfLegendsDbContext context, ITeamWhispers whispers) : IBusService
 {
     private const int MaxSearchTake = 50;
+    private const int RosterPlayerSeats = 5;
     private const int MaxLayoutLength = 32000;
     private static readonly Regex TagPattern = new("^[A-Za-z0-9]{2,5}$", RegexOptions.Compiled);
     private readonly LeagueOfLegendsDbContext _context = context;
@@ -233,6 +234,24 @@ public class TeamsService(LeagueOfLegendsDbContext context, ITeamWhispers whispe
 
         if (request.IdRegion is { } idRegion)
             query = query.Where(t => t.IdRegion == idRegion);
+
+        if (request.MinMembers is { } minMembers)
+            query = query.Where(t => t.TeamMembers.Count >= minMembers);
+
+        if (request.IdMissingLane is { } idMissingLane)
+        {
+            query = query.Where(t => !t.TeamMembers.Any(m =>
+                m.IdLane == idMissingLane
+                && m.RosterKind == RosterKindCodes.Main
+                && TeamRankCodes.PlayerSlots.Contains(m.IdTeamRankNavigation.Code)));
+        }
+
+        if (request.OpenRoster is true)
+        {
+            query = query.Where(t =>
+                t.TeamMembers.Count(m => TeamRankCodes.PlayerSlots.Contains(m.IdTeamRankNavigation.Code))
+                < RosterPlayerSeats);
+        }
 
         if (request.BeforePublicId is { } beforePublicId && request.BeforeCreationDate is { } beforeDate)
         {

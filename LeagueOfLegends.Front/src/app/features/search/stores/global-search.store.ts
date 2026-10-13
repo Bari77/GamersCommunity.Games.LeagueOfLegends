@@ -14,6 +14,12 @@ export const EMPTY_CRITERIA: SearchCriteria = {
     query: "",
     scope: "all",
     idRegion: null,
+    idLane: null,
+    idMissingLane: null,
+    minSoloTier: null,
+    minMembers: null,
+    openRoster: false,
+    lookingForTeam: false,
 };
 
 /** Rows per type on the overview, which hands over to a dedicated tab rather than paginating. */
@@ -187,6 +193,9 @@ export class GlobalSearchStore {
         return {
             ...(query ? { query } : {}),
             ...(criteria.idRegion !== null ? { idRegion: criteria.idRegion } : {}),
+            ...(criteria.minMembers !== null ? { minMembers: criteria.minMembers } : {}),
+            ...(criteria.idMissingLane !== null ? { idMissingLane: criteria.idMissingLane } : {}),
+            ...(criteria.openRoster ? { openRoster: true } : {}),
         };
     }
 
@@ -195,6 +204,9 @@ export class GlobalSearchStore {
         return {
             ...(query ? { query } : {}),
             ...(criteria.idRegion !== null ? { idRegion: criteria.idRegion } : {}),
+            ...(criteria.idLane !== null ? { idLane: criteria.idLane } : {}),
+            ...(criteria.minSoloTier ? { minSoloTier: criteria.minSoloTier } : {}),
+            ...(criteria.lookingForTeam ? { lookingForTeam: true } : {}),
         };
     }
 }

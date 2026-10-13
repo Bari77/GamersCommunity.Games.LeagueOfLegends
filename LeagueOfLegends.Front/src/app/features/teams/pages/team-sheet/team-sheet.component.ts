@@ -145,10 +145,10 @@ export class TeamSheetComponent implements OnInit {
         void this.store.withdrawApplication();
     }
 
-    /** The sheet no longer exists once disbanded, so the visitor lands back on the directory. */
+    /** The sheet no longer exists once disbanded, so the visitor lands back on the team search. */
     protected async onDisband(confirmation: string): Promise<void> {
         if (await this.store.disband(confirmation)) {
-            await this.router.navigate([`${LOL_GAME_URL}/teams`]);
+            await this.router.navigate([`${LOL_GAME_URL}/search`], { queryParams: { type: "teams" } });
         }
     }
 

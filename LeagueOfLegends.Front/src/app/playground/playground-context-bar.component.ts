@@ -2,7 +2,7 @@
 
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterLink } from "@angular/router";
 import { BreadcrumbComponent } from "@bari77/gc-ui";
 import { LOL_GAME_URL } from "@core/constants/game.constants";
 import { NbFormFieldModule, NbIconModule, NbInputModule } from "@nebular/theme";
@@ -22,6 +22,25 @@ function isGameLinkList(value: unknown): value is GameLink[] {
     return Array.isArray(value) && value.every(isGameLink);
 }
 
+function isGameLinkActive(link: GameLink, url: string): boolean {
+    const [path, query = ""] = url.split("#")[0].split("?");
+    const params = new URLSearchParams(query);
+
+    if (link.activePrefix && (path === link.activePrefix || path.startsWith(`${link.activePrefix}/`))) {
+        return true;
+    }
+
+    if (path !== link.path) {
+        return false;
+    }
+
+    if (!link.queryParams) {
+        return true;
+    }
+
+    return Object.entries(link.queryParams).every(([key, value]) => params.get(key) === value);
+}
+
 /**
  * Playground stand-in for Platform's context bar: breadcrumb, My profile / Teams, and search.
  * Collapses on routes that declare none of that data.
@@ -33,7 +52,6 @@ function isGameLinkList(value: unknown): value is GameLink[] {
     imports: [
         FormsModule,
         RouterLink,
-        RouterLinkActive,
         BreadcrumbComponent,
         NbFormFieldModule,
         NbIconModule,
@@ -56,17 +74,23 @@ export class PlaygroundContextBarComponent {
     protected readonly gameSearch = computed(() => this.state().search);
 
     private readonly router = inject(Router);
+    private readonly url = signal(this.router.url.split("#")[0]);
     private readonly state = signal<ContextBarState>(this.read());
 
     public constructor() {
         const subscription = this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
+                this.url.set(this.router.url.split("#")[0]);
                 this.state.set(this.read());
                 this.syncTerm();
             }
         });
 
         inject(DestroyRef).onDestroy(() => subscription.unsubscribe());
+    }
+
+    protected linkActive(link: GameLink): boolean {
+        return isGameLinkActive(link, this.url());
     }
 
     protected submit(): void {
@@ -77,7 +101,9 @@ export class PlaygroundContextBarComponent {
             return;
         }
 
-        void this.router.navigate([target.path], { queryParams: { q: term } });
+        const path = this.router.url.split("#")[0].split("?")[0];
+        const current = path === target.path ? this.router.parseUrl(this.router.url).queryParams : {};
+        void this.router.navigate([target.path], { queryParams: { ...current, q: term } });
     }
 
     private read(): ContextBarState {

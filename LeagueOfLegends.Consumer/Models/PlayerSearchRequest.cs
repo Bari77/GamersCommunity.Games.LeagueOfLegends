@@ -10,6 +10,15 @@ public sealed class PlayerSearchRequest
 
     public int? IdRegion { get; init; }
 
+    /// <summary>Primary lane the player queues.</summary>
+    public int? IdLane { get; init; }
+
+    /// <summary>Lowest solo queue tier to keep, from iron up to challenger.</summary>
+    public string? MinSoloTier { get; init; }
+
+    /// <summary>Keeps players who do not already hold a player seat on a team.</summary>
+    public bool? LookingForTeam { get; init; }
+
     public DateTime? BeforeCreationDate { get; init; }
     public Guid? BeforePublicId { get; init; }
 
