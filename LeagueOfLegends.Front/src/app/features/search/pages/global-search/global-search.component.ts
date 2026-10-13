@@ -1,5 +1,5 @@
-import { Component, computed, DestroyRef, effect, inject, OnInit, resource, signal } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Component, computed, effect, inject, resource, signal } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router, RouterLink } from "@angular/router";
 import { SkeletonComponent } from "@bari77/gc-ui";
@@ -96,7 +96,7 @@ function readTier(value: string | null): string | null {
     templateUrl: "./global-search.component.html",
     styleUrl: "./global-search.component.scss",
 })
-export class GlobalSearchComponent implements OnInit {
+export class GlobalSearchComponent {
     protected readonly store = inject(GlobalSearchStore);
     protected readonly membership = inject(GameMembershipStore);
 
@@ -119,6 +119,12 @@ export class GlobalSearchComponent implements OnInit {
     });
 
     protected readonly loadingOptions = computed(() => ResourceUtils.isPending(this.options));
+
+    /**
+     * Nebular drops a value written while only the empty option exists and never retries.
+     * Options are rendered once the catalog is actually loaded.
+     */
+    protected readonly optionsReady = computed(() => this.options.hasValue() && !this.loadingOptions());
 
     protected readonly scope = computed(() => this.store.criteria().scope);
 
@@ -172,9 +178,17 @@ export class GlobalSearchComponent implements OnInit {
     private readonly players = inject(PlayersService);
     private readonly applications = inject(TeamApplicationsService);
     private readonly teams = inject(TeamsService);
-    private readonly destroyRef = inject(DestroyRef);
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
+    private readonly queryParams = toSignal(this.route.queryParamMap);
+
+    /** Set once the visitor clears a deduced filter, so it does not snap back during this visit. */
+    private readonly suppressDefaults = signal(false);
+
+    private readonly viewerSheet = resource({
+        params: () => this.membership.playerPublicId() ?? undefined,
+        loader: ({ params }) => firstValueFrom(this.players.getByPublicId(params)),
+    });
 
     private readonly resetMoreDismissal = effect(() => {
         if (this.extraCount() === 0) {
@@ -188,13 +202,32 @@ export class GlobalSearchComponent implements OnInit {
         defaultValue: [] as TeamApplication[],
     });
 
-    public ngOnInit(): void {
-        this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-            const criteria = this.readCriteria(params);
-            this.term.set(criteria.query);
-            void this.runSearch(criteria);
-        });
-    }
+    /**
+     * The URL stays the source of truth. When it does not name a region yet, the visitor's own
+     * region is written in once their sheet is known, then the search runs.
+     */
+    private readonly applyDefaults = effect(() => {
+        const params = this.queryParams();
+        if (!params) {
+            return;
+        }
+
+        const criteria = this.readCriteria(params);
+        this.term.set(criteria.query);
+
+        if (!params.has("region") && !this.suppressDefaults()) {
+            const regionId = this.inferredRegion();
+            if (regionId === undefined) {
+                return;
+            }
+            if (regionId !== null) {
+                this.patchCriteria({ region: regionId });
+                return;
+            }
+        }
+
+        void this.runSearch(criteria);
+    });
 
     protected toggleMore(): void {
         const open = !this.showMore();
@@ -214,6 +247,9 @@ export class GlobalSearchComponent implements OnInit {
     }
 
     protected setRegion(idRegion: number | null): void {
+        if (idRegion === null) {
+            this.suppressDefaults.set(true);
+        }
         this.patchCriteria({ region: idRegion });
     }
 
@@ -258,6 +294,7 @@ export class GlobalSearchComponent implements OnInit {
     }
 
     protected clearFilters(): void {
+        this.suppressDefaults.set(true);
         this.patchCriteria({
             region: null,
             lane: null,
@@ -306,6 +343,22 @@ export class GlobalSearchComponent implements OnInit {
 
     private hitLink(hit: SearchHit): string[] {
         return hit.kind === "team" ? this.teamLink(hit.publicId) : this.playerLink(hit.publicId);
+    }
+
+    /**
+     * `undefined` while the sheet is still loading, `null` when there is nothing to deduce.
+     */
+    private inferredRegion(): number | null | undefined {
+        if (this.membership.loading()) {
+            return undefined;
+        }
+        if (!this.membership.playerPublicId()) {
+            return null;
+        }
+        if (!this.viewerSheet.hasValue()) {
+            return this.viewerSheet.status() === "error" ? null : undefined;
+        }
+        return this.viewerSheet.value().region?.id ?? null;
     }
 
     private readCriteria(params: ParamMap): SearchCriteria {

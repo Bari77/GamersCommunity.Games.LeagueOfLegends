@@ -60,6 +60,8 @@
 }
 
 .search__row {
+    container-type: inline-size;
+    container-name: search-row;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -79,12 +81,20 @@
 }
 
 .search__actions {
-    display: flex;
-    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: auto auto;
     align-items: center;
-    justify-content: flex-end;
     gap: 0.25rem;
-    margin-left: auto;
+}
+
+.search__actions .search__more,
+.search__actions .search__clear {
+    margin: 0;
+}
+
+.search__clear--idle {
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .search__moreCount {
@@ -99,6 +109,14 @@
     font-size: 0.68rem;
     font-weight: 700;
     line-height: 1;
+}
+
+/* Four filters plus both action buttons still share one line, at the same width on every row. */
+@container search-row (max-width: 66rem) {
+    .search__field {
+        flex-basis: 10.25rem;
+        width: 10.25rem;
+    }
 }
 
 @media (max-width: 720px) {
@@ -361,7 +379,7 @@
     color: var(--text-hint-color);
 }
 
-.search__more {
+.search__loadMore {
     display: flex;
     justify-content: center;
     margin-top: 1.25rem;

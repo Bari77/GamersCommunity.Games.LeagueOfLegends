@@ -83,54 +83,60 @@
                 <div class="search__row">
                 <nb-form-field class="search__field" [class.search__field--set]="store.criteria().idRegion !== null">
                     <nb-icon nbPrefix icon="globe-2-outline" />
-                    <nb-select
-                        fullWidth
-                        size="small"
-                        i18n-placeholder="@@lol.search.regionPlaceholder"
-                        placeholder="Region"
-                        [disabled]="loadingOptions()"
-                        [ngModel]="store.criteria().idRegion"
-                        (ngModelChange)="setRegion($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                    >
-                        <nb-option [value]="null" i18n="@@lol.search.allRegions">All regions</nb-option>
-                        @for (region of options.value()?.regions ?? []; track region.id) {
-                            <nb-option [value]="region.id">{{ region.code | gameTerm }}</nb-option>
-                        }
-                    </nb-select>
+                    @if (optionsReady()) {
+                        <nb-select
+                            fullWidth
+                            size="small"
+                            i18n-placeholder="@@lol.search.regionPlaceholder"
+                            placeholder="Region"
+                            [ngModel]="store.criteria().idRegion"
+                            (ngModelChange)="setRegion($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                        >
+                            <nb-option [value]="null" i18n="@@lol.search.allRegions">All regions</nb-option>
+                            @for (region of options.value()?.regions ?? []; track region.id) {
+                                <nb-option [value]="region.id">{{ region.code | gameTerm }}</nb-option>
+                            }
+                        </nb-select>
+                    } @else {
+                        <nb-select fullWidth size="small" disabled i18n-placeholder="@@lol.search.regionPlaceholder" placeholder="Region"></nb-select>
+                    }
                 </nb-form-field>
 
                 @if (showsPlayers()) {
                     <nb-form-field class="search__field" [class.search__field--set]="store.criteria().idLane !== null">
                         <nb-icon nbPrefix icon="compass-outline" />
-                        <nb-select
-                            fullWidth
-                            size="small"
-                            i18n-placeholder="@@lol.search.lanePlaceholder"
-                            placeholder="Lane"
-                            [disabled]="loadingOptions()"
-                            [ngModel]="store.criteria().idLane"
-                            (ngModelChange)="setLane($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                        >
-                            @if (laneById(store.criteria().idLane); as lane) {
-                                <nb-select-label>
-                                    <span class="gc-select-option">
-                                        <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
-                                        {{ lane.code | gameTerm }}
-                                    </span>
-                                </nb-select-label>
-                            }
-                            <nb-option [value]="null" i18n="@@lol.search.allLanes">All lanes</nb-option>
-                            @for (lane of options.value()?.lanes ?? []; track lane.id) {
-                                <nb-option [value]="lane.id">
-                                    <span class="gc-select-option">
-                                        <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
-                                        {{ lane.code | gameTerm }}
-                                    </span>
-                                </nb-option>
-                            }
-                        </nb-select>
+                        @if (optionsReady()) {
+                            <nb-select
+                                fullWidth
+                                size="small"
+                                i18n-placeholder="@@lol.search.lanePlaceholder"
+                                placeholder="Lane"
+                                [ngModel]="store.criteria().idLane"
+                                (ngModelChange)="setLane($event)"
+                                [ngModelOptions]="{ standalone: true }"
+                            >
+                                @if (laneById(store.criteria().idLane); as lane) {
+                                    <nb-select-label>
+                                        <span class="gc-select-option">
+                                            <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                                            {{ lane.code | gameTerm }}
+                                        </span>
+                                    </nb-select-label>
+                                }
+                                <nb-option [value]="null" i18n="@@lol.search.allLanes">All lanes</nb-option>
+                                @for (lane of options.value()?.lanes ?? []; track lane.id) {
+                                    <nb-option [value]="lane.id">
+                                        <span class="gc-select-option">
+                                            <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                                            {{ lane.code | gameTerm }}
+                                        </span>
+                                    </nb-option>
+                                }
+                            </nb-select>
+                        } @else {
+                            <nb-select fullWidth size="small" disabled i18n-placeholder="@@lol.search.lanePlaceholder" placeholder="Lane"></nb-select>
+                        }
                     </nb-form-field>
 
                     <nb-form-field
@@ -138,34 +144,37 @@
                         [class.search__field--set]="store.criteria().minSoloTier !== null"
                     >
                         <nb-icon nbPrefix icon="award-outline" />
-                        <nb-select
-                            fullWidth
-                            size="small"
-                            i18n-placeholder="@@lol.search.tierPlaceholder"
-                            placeholder="Rank"
-                            [disabled]="loadingOptions()"
-                            [ngModel]="store.criteria().minSoloTier"
-                            (ngModelChange)="setTier($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                        >
-                            @if (store.criteria().minSoloTier; as tier) {
-                                <nb-select-label>
-                                    <span class="gc-select-option">
-                                        <lol-rank-emblem [tier]="tier" size="crest" [alt]="tier | gameTerm" />
-                                        {{ tier | gameTerm }}
-                                    </span>
-                                </nb-select-label>
-                            }
-                            <nb-option [value]="null" i18n="@@lol.search.allTiers">All ranks</nb-option>
-                            @for (tier of tiers(); track tier) {
-                                <nb-option [value]="tier">
-                                    <span class="gc-select-option">
-                                        <lol-rank-emblem [tier]="tier" size="crest" [alt]="tier | gameTerm" />
-                                        {{ tier | gameTerm }}
-                                    </span>
-                                </nb-option>
-                            }
-                        </nb-select>
+                        @if (optionsReady()) {
+                            <nb-select
+                                fullWidth
+                                size="small"
+                                i18n-placeholder="@@lol.search.tierPlaceholder"
+                                placeholder="Rank"
+                                [ngModel]="store.criteria().minSoloTier"
+                                (ngModelChange)="setTier($event)"
+                                [ngModelOptions]="{ standalone: true }"
+                            >
+                                @if (store.criteria().minSoloTier; as tier) {
+                                    <nb-select-label>
+                                        <span class="gc-select-option">
+                                            <lol-rank-emblem [tier]="tier" size="crest" [alt]="tier | gameTerm" />
+                                            {{ tier | gameTerm }}
+                                        </span>
+                                    </nb-select-label>
+                                }
+                                <nb-option [value]="null" i18n="@@lol.search.allTiers">All ranks</nb-option>
+                                @for (tier of tiers(); track tier) {
+                                    <nb-option [value]="tier">
+                                        <span class="gc-select-option">
+                                            <lol-rank-emblem [tier]="tier" size="crest" [alt]="tier | gameTerm" />
+                                            {{ tier | gameTerm }}
+                                        </span>
+                                    </nb-option>
+                                }
+                            </nb-select>
+                        } @else {
+                            <nb-select fullWidth size="small" disabled i18n-placeholder="@@lol.search.tierPlaceholder" placeholder="Rank"></nb-select>
+                        }
                     </nb-form-field>
                 }
 
@@ -175,34 +184,37 @@
                         [class.search__field--set]="store.criteria().idMissingLane !== null"
                     >
                         <nb-icon nbPrefix icon="plus-circle-outline" />
-                        <nb-select
-                            fullWidth
-                            size="small"
-                            i18n-placeholder="@@lol.search.needPlaceholder"
-                            placeholder="Needs lane"
-                            [disabled]="loadingOptions()"
-                            [ngModel]="store.criteria().idMissingLane"
-                            (ngModelChange)="setMissingLane($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                        >
-                            @if (laneById(store.criteria().idMissingLane); as lane) {
-                                <nb-select-label>
-                                    <span class="gc-select-option">
-                                        <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
-                                        {{ lane.code | gameTerm }}
-                                    </span>
-                                </nb-select-label>
-                            }
-                            <nb-option [value]="null" i18n="@@lol.search.anyNeed">Any roster need</nb-option>
-                            @for (lane of options.value()?.lanes ?? []; track lane.id) {
-                                <nb-option [value]="lane.id">
-                                    <span class="gc-select-option">
-                                        <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
-                                        {{ lane.code | gameTerm }}
-                                    </span>
-                                </nb-option>
-                            }
-                        </nb-select>
+                        @if (optionsReady()) {
+                            <nb-select
+                                fullWidth
+                                size="small"
+                                i18n-placeholder="@@lol.search.needPlaceholder"
+                                placeholder="Needs lane"
+                                [ngModel]="store.criteria().idMissingLane"
+                                (ngModelChange)="setMissingLane($event)"
+                                [ngModelOptions]="{ standalone: true }"
+                            >
+                                @if (laneById(store.criteria().idMissingLane); as lane) {
+                                    <nb-select-label>
+                                        <span class="gc-select-option">
+                                            <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                                            {{ lane.code | gameTerm }}
+                                        </span>
+                                    </nb-select-label>
+                                }
+                                <nb-option [value]="null" i18n="@@lol.search.anyNeed">Any roster need</nb-option>
+                                @for (lane of options.value()?.lanes ?? []; track lane.id) {
+                                    <nb-option [value]="lane.id">
+                                        <span class="gc-select-option">
+                                            <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
+                                            {{ lane.code | gameTerm }}
+                                        </span>
+                                    </nb-option>
+                                }
+                            </nb-select>
+                        } @else {
+                            <nb-select fullWidth size="small" disabled i18n-placeholder="@@lol.search.needPlaceholder" placeholder="Needs lane"></nb-select>
+                        }
                     </nb-form-field>
                 }
 
@@ -227,12 +239,21 @@
                             }
                         }
                     </button>
-                    @if (hasFilters()) {
-                        <button class="search__clear" nbButton ghost size="small" status="basic" type="button" (click)="clearFilters()">
-                            <nb-icon icon="close-outline" />
-                            <span i18n="@@lol.search.clear">Clear</span>
-                        </button>
-                    }
+                    <button
+                        class="search__clear"
+                        [class.search__clear--idle]="!hasFilters()"
+                        nbButton
+                        ghost
+                        size="small"
+                        status="basic"
+                        type="button"
+                        [attr.aria-hidden]="hasFilters() ? null : true"
+                        [tabindex]="hasFilters() ? 0 : -1"
+                        (click)="clearFilters()"
+                    >
+                        <nb-icon icon="close-outline" />
+                        <span i18n="@@lol.search.clear">Clear</span>
+                    </button>
                 </div>
                 </div>
 
@@ -474,7 +495,7 @@
         }
 
         @if (store.hasMore()) {
-            <div class="search__more">
+            <div class="search__loadMore">
                 <button nbButton ghost status="basic" [disabled]="store.loadingMore()" (click)="store.loadMore()">
                     <span i18n="@@lol.search.loadMore">Load more</span>
                 </button>
