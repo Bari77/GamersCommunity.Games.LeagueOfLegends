@@ -26,23 +26,49 @@ public class TeamsService(LeagueOfLegendsDbContext context, ITeamWhispers whispe
     BusServiceTypeEnum IBusService.Type => BusServiceTypeEnum.DATA;
     public string Resource => "Teams";
 
-    public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default) =>
-        message.Action switch
+    public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default)
+    {
+        switch (message.Action?.ToUpperInvariant())
         {
-            "Get" => JsonSafe.Serialize(await GetSheetAsync(message, ct)),
-            "Search" => JsonSafe.Serialize(await SearchAsync(message, ct)),
-            "ListByPlayer" => JsonSafe.Serialize(await ListByPlayerAsync(message, ct)),
-            "ListPostable" => JsonSafe.Serialize(await ListPostableAsync(message, ct)),
-            "Create" => JsonSafe.Serialize(await CreateAsync(message, ct)),
-            "Update" => JsonSafe.Serialize(await UpdateAsync(message, ct)),
-            "SetRank" => JsonSafe.Serialize(await SetRankAsync(message, ct)),
-            "SetRoster" => JsonSafe.Serialize(await SetRosterAsync(message, ct)),
-            "Kick" => JsonSafe.Serialize(await KickAsync(message, ct)),
-            "Leave" => JsonSafe.Serialize(await LeaveAsync(message, ct)),
-            "TransferCaptaincy" => JsonSafe.Serialize(await TransferCaptaincyAsync(message, ct)),
-            "Disband" => JsonSafe.Serialize(await DisbandAsync(message, ct)),
-            _ => throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented"),
-        };
+            case "GET":
+                return JsonSafe.Serialize(await GetSheetAsync(message, ct));
+
+            case "SEARCH":
+                return JsonSafe.Serialize(await SearchAsync(message, ct));
+
+            case "LISTBYPLAYER":
+                return JsonSafe.Serialize(await ListByPlayerAsync(message, ct));
+
+            case "LISTPOSTABLE":
+                return JsonSafe.Serialize(await ListPostableAsync(message, ct));
+
+            case "CREATE":
+                return JsonSafe.Serialize(await CreateAsync(message, ct));
+
+            case "UPDATE":
+                return JsonSafe.Serialize(await UpdateAsync(message, ct));
+
+            case "SETRANK":
+                return JsonSafe.Serialize(await SetRankAsync(message, ct));
+
+            case "SETROSTER":
+                return JsonSafe.Serialize(await SetRosterAsync(message, ct));
+
+            case "KICK":
+                return JsonSafe.Serialize(await KickAsync(message, ct));
+
+            case "LEAVE":
+                return JsonSafe.Serialize(await LeaveAsync(message, ct));
+
+            case "TRANSFERCAPTAINCY":
+                return JsonSafe.Serialize(await TransferCaptaincyAsync(message, ct));
+
+            case "DISBAND":
+                return JsonSafe.Serialize(await DisbandAsync(message, ct));
+        }
+
+        throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented");
+    }
 
     private async Task<TeamSheetDto> GetSheetAsync(BusMessage message, CancellationToken ct)
     {

@@ -1,5 +1,13 @@
 import { PlayerChampion, PlayerRank } from "@features/players/models/player.model";
-import { PlayerTeamDto, TeamMemberDto, TeamSheetDto, TeamSummaryDto } from "@features/teams/dto/team.dto";
+import {
+    TeamDisbandResultDto,
+    TeamLeaveResultDto,
+    PlayerTeamDto,
+    TeamMemberDto,
+    TeamSearchResultDto,
+    TeamSheetDto,
+    TeamSummaryDto,
+} from "@features/teams/dto/team.dto";
 
 const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 
@@ -223,5 +231,38 @@ export class PlayerTeam {
 
     public handleLabel(): string {
         return `${this.entitled}#${this.discriminator}`;
+    }
+}
+
+export class TeamSearchPage {
+    public constructor(
+        public items: TeamSummary[],
+        public hasMore: boolean,
+    ) {}
+
+    public static fromDto(dto: TeamSearchResultDto): TeamSearchPage {
+        return new TeamSearchPage(
+            (dto.items ?? []).map((item) => TeamSummary.fromDto(item)),
+            dto.hasMore ?? false,
+        );
+    }
+}
+
+export class TeamLeaveResult {
+    public constructor(public teamPublicId: string) {}
+
+    public static fromDto(dto: TeamLeaveResultDto): TeamLeaveResult {
+        return new TeamLeaveResult(dto.teamPublicId);
+    }
+}
+
+export class TeamDisbandResult {
+    public constructor(
+        public publicId: string,
+        public handle: string,
+    ) {}
+
+    public static fromDto(dto: TeamDisbandResultDto): TeamDisbandResult {
+        return new TeamDisbandResult(dto.publicId, dto.handle);
     }
 }

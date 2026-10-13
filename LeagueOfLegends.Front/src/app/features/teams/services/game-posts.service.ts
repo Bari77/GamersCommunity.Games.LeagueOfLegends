@@ -3,14 +3,13 @@ import {
     GamePostCreateRequestDto,
     GamePostDto,
     GamePostModerateRequestDto,
-    GamePostPageDto,
     GamePostTargetRequestDto,
     GamePostUpdateRequestDto,
     TeamWallRequestDto,
 } from "@features/teams/dto/game-post.dto";
 import { GamePost, GamePostPage } from "@features/teams/models/game-post.model";
 import { BaseService } from "@shared/services/base.service";
-import { map, Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class GamePostsService extends BaseService {
@@ -19,11 +18,11 @@ export class GamePostsService extends BaseService {
     }
 
     public listTeamWall(request: TeamWallRequestDto): Observable<GamePostPage> {
-        return this.pageAt("actions/ListTeamWall", request);
+        return this.post(GamePostPage, "actions/ListTeamWall", request);
     }
 
     public listPending(request: TeamWallRequestDto): Observable<GamePostPage> {
-        return this.pageAt("actions/ListPending", request);
+        return this.post(GamePostPage, "actions/ListPending", request);
     }
 
     public create(request: GamePostCreateRequestDto): Observable<GamePost> {
@@ -38,13 +37,7 @@ export class GamePostsService extends BaseService {
         return this.post<GamePostDto, GamePost>(GamePost, "actions/Moderate", request);
     }
 
-    public remove(request: GamePostTargetRequestDto): Observable<GamePostTargetRequestDto> {
-        return this.http.post<GamePostTargetRequestDto>(this.getURL("actions/Delete"), request);
-    }
-
-    private pageAt(action: string, payload: TeamWallRequestDto): Observable<GamePostPage> {
-        return this.http
-            .post<GamePostPageDto>(this.getURL(action), payload)
-            .pipe(map((dto) => GamePostPage.fromDto(dto)));
+    public remove(request: GamePostTargetRequestDto): Observable<void> {
+        return this.postVoid("actions/Delete", request);
     }
 }

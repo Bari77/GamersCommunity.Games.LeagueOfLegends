@@ -16,8 +16,8 @@ namespace LeagueOfLegends.Consumer.Services.Data;
 
 public class TeamApplicationsService(
     LeagueOfLegendsDbContext context,
-    ITeamWhispers whispers,
-    IPlatformSanctionsClient sanctions) : IBusService
+    IPlatformSanctionsClient sanctions,
+    ITeamWhispers whispers) : IBusService
 {
     private const int MaxMessageLength = 1000;
     private readonly LeagueOfLegendsDbContext _context = context;
@@ -25,16 +25,28 @@ public class TeamApplicationsService(
     BusServiceTypeEnum IBusService.Type => BusServiceTypeEnum.DATA;
     public string Resource => "TeamApplications";
 
-    public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default) =>
-        message.Action switch
+    public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default)
+    {
+        switch (message.Action?.ToUpperInvariant())
         {
-            "Create" => JsonSafe.Serialize(await CreateAsync(message, ct)),
-            "ListMine" => JsonSafe.Serialize(await ListMineAsync(message, ct)),
-            "List" => JsonSafe.Serialize(await ListForTeamAsync(message, ct)),
-            "Review" => JsonSafe.Serialize(await ReviewAsync(message, ct)),
-            "Withdraw" => JsonSafe.Serialize(await WithdrawAsync(message, ct)),
-            _ => throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented"),
-        };
+            case "CREATE":
+                return JsonSafe.Serialize(await CreateAsync(message, ct));
+
+            case "LISTMINE":
+                return JsonSafe.Serialize(await ListMineAsync(message, ct));
+
+            case "LIST":
+                return JsonSafe.Serialize(await ListForTeamAsync(message, ct));
+
+            case "REVIEW":
+                return JsonSafe.Serialize(await ReviewAsync(message, ct));
+
+            case "WITHDRAW":
+                return JsonSafe.Serialize(await WithdrawAsync(message, ct));
+        }
+
+        throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented");
+    }
 
     private async Task<TeamApplicationDto> CreateAsync(BusMessage message, CancellationToken ct)
     {

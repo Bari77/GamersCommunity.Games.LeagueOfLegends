@@ -1,4 +1,3 @@
-using GamersCommunity.Core.Enums;
 using GamersCommunity.Core.Exceptions;
 using GamersCommunity.Core.Rabbit;
 using GamersCommunity.Core.Serialization;
@@ -12,27 +11,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeagueOfLegends.Consumer.Services.Data;
 
-public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
+/// <summary>
+/// The shortcuts a team pins on its page: Discord, forum, streams. Read by anyone visiting the
+/// sheet, curated by managers (and above) who run the team's settings.
+/// </summary>
+public sealed class TeamLinksService(LeagueOfLegendsDbContext context)
+    : GenericDataService<LeagueOfLegendsDbContext, TeamLink>(context, "TeamLinks")
 {
     private const int MaxUrlLength = 500;
     private const int MaxLabelLength = 50;
     private const int MaxIconLength = 30;
     private const int MaxLinksPerTeam = 50;
-    private readonly LeagueOfLegendsDbContext _context = context;
 
-    BusServiceTypeEnum IBusService.Type => BusServiceTypeEnum.DATA;
-    public string Resource => "TeamLinks";
-
-    public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default) =>
-        message.Action switch
+    public override async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default)
+    {
+        switch (message.Action?.ToUpperInvariant())
         {
-            "List" => JsonSafe.Serialize(await ListAsync(message, ct)),
-            "Create" => JsonSafe.Serialize(await CreateAsync(message, ct)),
-            "Update" => JsonSafe.Serialize(await UpdateAsync(message, ct)),
-            "Reorder" => JsonSafe.Serialize(await ReorderAsync(message, ct)),
-            "Delete" => JsonSafe.Serialize(await DeleteAsync(message, ct)),
-            _ => throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented"),
-        };
+            case "LIST":
+                return JsonSafe.Serialize(await ListAsync(message, ct));
+
+            case "CREATE":
+                return JsonSafe.Serialize(await CreateAsync(message, ct));
+
+            case "UPDATE":
+                return JsonSafe.Serialize(await UpdateAsync(message, ct));
+
+            case "REORDER":
+                return JsonSafe.Serialize(await ReorderAsync(message, ct));
+
+            case "DELETE":
+                return JsonSafe.Serialize(await DeleteAsync(message, ct));
+        }
+
+        return await base.HandleAsync(message, ct);
+    }
 
     private async Task<List<TeamLinkDto>> ListAsync(BusMessage message, CancellationToken ct)
     {
@@ -42,7 +54,7 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
         var request = ConsumerParamParser.ToObject<TeamLinkListRequest>(message.Data);
         var team = await RequireTeamAsync(request.TeamPublicId, ct);
 
-        return await _context.TeamLinks.AsNoTracking()
+        return await Context.TeamLinks.AsNoTracking()
             .Where(link => link.IdTeam == team.Id)
             .OrderBy(link => link.Position)
             .ThenBy(link => link.CreationDate)
@@ -67,7 +79,7 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
         var team = await RequireTeamAsync(request.TeamPublicId, ct);
         await RequireEditorAsync(message, team.Id, ct);
 
-        var owned = await _context.TeamLinks.Where(link => link.IdTeam == team.Id).ToListAsync(ct);
+        var owned = await Context.TeamLinks.Where(link => link.IdTeam == team.Id).ToListAsync(ct);
         if (owned.Count >= MaxLinksPerTeam)
             throw new BadRequestException("TOO_MANY_ITEMS", "This team reached the maximum number of links");
 
@@ -84,8 +96,8 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
             ModificationDate = now,
         };
 
-        await _context.TeamLinks.AddAsync(link, ct);
-        await _context.SaveChangesAsync(ct);
+        Context.TeamLinks.Add(link);
+        await Context.SaveChangesAsync(ct);
         return ToDto(link, team.PublicId);
     }
 
@@ -106,10 +118,14 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
             link.Icon = NormalizeIcon(request.Icon);
 
         link.ModificationDate = DateTime.UtcNow;
-        await _context.SaveChangesAsync(ct);
+        await Context.SaveChangesAsync(ct);
         return ToDto(link, team.PublicId);
     }
 
+    /// <summary>
+    /// Renumbers the team's links from the order sent. Links left out keep their rank after the
+    /// listed ones, so a stale client cannot silently shuffle what it did not know about.
+    /// </summary>
     private async Task<List<TeamLinkDto>> ReorderAsync(BusMessage message, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(message.Data))
@@ -119,7 +135,7 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
         var team = await RequireTeamAsync(request.TeamPublicId, ct);
         await RequireEditorAsync(message, team.Id, ct);
 
-        var links = await _context.TeamLinks.Where(link => link.IdTeam == team.Id).ToListAsync(ct);
+        var links = await Context.TeamLinks.Where(link => link.IdTeam == team.Id).ToListAsync(ct);
         var ranks = request.PublicIds
             .Select((publicId, index) => (publicId, index))
             .ToDictionary(entry => entry.publicId, entry => entry.index);
@@ -130,15 +146,18 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
             link.ModificationDate = DateTime.UtcNow;
         }
 
-        await _context.SaveChangesAsync(ct);
-        return [.. links.OrderBy(link => link.Position).ThenBy(link => link.CreationDate).Select(link => ToDto(link, team.PublicId))];
+        await Context.SaveChangesAsync(ct);
+        return [.. links
+            .OrderBy(link => link.Position)
+            .ThenBy(link => link.CreationDate)
+            .Select(link => ToDto(link, team.PublicId))];
     }
 
     private async Task<TeamLinkDeleteResult> DeleteAsync(BusMessage message, CancellationToken ct)
     {
         var (link, _) = await RequireCuratedAsync(message, ct);
-        _context.TeamLinks.Remove(link);
-        await _context.SaveChangesAsync(ct);
+        Context.TeamLinks.Remove(link);
+        await Context.SaveChangesAsync(ct);
         return new TeamLinkDeleteResult { PublicId = link.PublicId };
     }
 
@@ -147,15 +166,15 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
         if (teamPublicId == Guid.Empty)
             throw new BadRequestException("VALIDATION", "Team public id is required");
 
-        return await _context.Teams.AsNoTracking()
+        return await Context.Teams.AsNoTracking()
             .FirstOrDefaultAsync(t => t.PublicId == teamPublicId, ct)
             ?? throw new NotFoundException("TEAM_NOT_FOUND", "Team not found");
     }
 
     private async Task RequireEditorAsync(BusMessage message, int teamId, CancellationToken ct)
     {
-        var caller = await CallerAuth.RequirePlayerAsync(_context, message, ct);
-        await TeamAuth.RequireStandingAsync(_context, teamId, caller.Id, TeamRankCodes.Manager, ct);
+        var caller = await CallerAuth.RequirePlayerAsync(Context, message, ct);
+        await TeamAuth.RequireStandingAsync(Context, teamId, caller.Id, TeamRankCodes.Manager, ct);
     }
 
     private async Task<(TeamLink Link, Team Team)> RequireCuratedAsync(BusMessage message, CancellationToken ct)
@@ -163,10 +182,10 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
         if (message.PublicId is not Guid publicId)
             throw new BadRequestException("ID_MANDATORY", "Id mandatory");
 
-        var link = await _context.TeamLinks.FirstOrDefaultAsync(l => l.PublicId == publicId, ct)
+        var link = await Context.TeamLinks.FirstOrDefaultAsync(l => l.PublicId == publicId, ct)
             ?? throw new NotFoundException("NOT_FOUND", "Link not found");
 
-        var team = await _context.Teams.AsNoTracking().FirstAsync(t => t.Id == link.IdTeam, ct);
+        var team = await Context.Teams.AsNoTracking().FirstAsync(t => t.Id == link.IdTeam, ct);
         await RequireEditorAsync(message, team.Id, ct);
         return (link, team);
     }
@@ -183,7 +202,7 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
 
     private static string ValidateUrl(string url)
     {
-        var value = url?.Trim() ?? "";
+        var value = url?.Trim() ?? string.Empty;
         if (value.Length == 0)
             throw new BadRequestException("URL_MANDATORY", "A URL is required");
         if (value.Length > MaxUrlLength)
@@ -197,7 +216,7 @@ public class TeamLinksService(LeagueOfLegendsDbContext context) : IBusService
 
     private static string ValidateLabel(string label)
     {
-        var value = label?.Trim() ?? "";
+        var value = label?.Trim() ?? string.Empty;
         if (value.Length == 0)
             throw new BadRequestException("LABEL_MANDATORY", "A label is required");
         if (value.Length > MaxLabelLength)

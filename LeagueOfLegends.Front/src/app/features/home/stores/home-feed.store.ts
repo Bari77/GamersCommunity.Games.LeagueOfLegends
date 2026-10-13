@@ -6,7 +6,7 @@ import { firstValueFrom } from "rxjs";
 @Injectable()
 export class HomeFeedStore {
     public readonly feed = resource({
-        loader: () => firstValueFrom(this.homeFeedService.get()),
+        loader: () => firstValueFrom(this.homeFeedService.load()),
     });
 
     public readonly loading = computed(() => ResourceUtils.isPending(this.feed));

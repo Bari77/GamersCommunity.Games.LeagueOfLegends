@@ -3,11 +3,10 @@ import {
     CreateLfgMessageRequestDto,
     ListLfgBeforeRequestDto,
     LfgMessageDto,
-    PostableTeamDto,
 } from "@features/lfg/dto/lfg-message.dto";
 import { LfgKind, LfgMessage, PostableTeam } from "@features/lfg/models/lfg-message.model";
 import { BaseService } from "@shared/services/base.service";
-import { map, Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 const PAGE_SIZE = 50;
 
@@ -18,9 +17,7 @@ export class LfgChatService extends BaseService {
     }
 
     public listRecent(kind: LfgKind): Observable<LfgMessage[]> {
-        return this.http
-            .post<LfgMessageDto[]>(this.getURL("actions/ListRecent"), { kind })
-            .pipe(map((dtos) => dtos.map((dto) => LfgMessage.fromDto(dto))));
+        return this.postList(LfgMessage, "actions/ListRecent", { kind });
     }
 
     public listBefore(kind: LfgKind, before: LfgMessage): Observable<LfgMessage[]> {
@@ -30,9 +27,7 @@ export class LfgChatService extends BaseService {
             beforePublicId: before.publicId,
             take: PAGE_SIZE,
         };
-        return this.http
-            .post<LfgMessageDto[]>(this.getURL("actions/ListBefore"), payload)
-            .pipe(map((dtos) => dtos.map((dto) => LfgMessage.fromDto(dto))));
+        return this.postList(LfgMessage, "actions/ListBefore", payload);
     }
 
     public send(data: CreateLfgMessageRequestDto): Observable<LfgMessage> {
@@ -48,8 +43,6 @@ export class PostableTeamsService extends BaseService {
 
     /** Teams the current player may post for (captain / coach / manager). */
     public listPostable(): Observable<PostableTeam[]> {
-        return this.http
-            .post<PostableTeamDto[]>(this.getURL("actions/ListPostable"), {})
-            .pipe(map((dtos) => dtos.map((dto) => PostableTeam.fromDto(dto))));
+        return this.postList(PostableTeam, "actions/ListPostable", {});
     }
 }

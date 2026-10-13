@@ -30,18 +30,18 @@ public class LfgAdsService(
 
     public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default)
     {
-        switch (message.Action)
+        switch (message.Action?.ToUpperInvariant())
         {
-            case "ListRecent":
+            case "LISTRECENT":
                 return JsonSafe.Serialize(await ListRecentAsync(message, ct));
 
-            case "ListBefore":
+            case "LISTBEFORE":
                 return JsonSafe.Serialize(await ListBeforeAsync(message, ct));
 
-            case "Search":
+            case "SEARCH":
                 return JsonSafe.Serialize(await SearchAsync(message, ct));
 
-            case "Create":
+            case "CREATE":
                 return JsonSafe.Serialize(await CreateAsync(message, ct));
         }
 

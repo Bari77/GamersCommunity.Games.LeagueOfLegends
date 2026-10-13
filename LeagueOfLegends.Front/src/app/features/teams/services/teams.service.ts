@@ -2,26 +2,23 @@ import { Injectable } from "@angular/core";
 import {
     TeamCreateRequestDto,
     TeamDisbandRequestDto,
-    TeamDisbandResultDto,
-    TeamLeaveResultDto,
     TeamListByPlayerRequestDto,
     TeamMemberTargetRequestDto,
-    PlayerTeamDto,
     TeamSearchRequestDto,
-    TeamSearchResultDto,
     TeamSetRankRequestDto,
     TeamSetRosterRequestDto,
     TeamSheetDto,
     TeamUpdateRequestDto,
 } from "@features/teams/dto/team.dto";
-import { PlayerTeam, TeamSheet, TeamSummary } from "@features/teams/models/team.model";
+import {
+    PlayerTeam,
+    TeamDisbandResult,
+    TeamLeaveResult,
+    TeamSearchPage,
+    TeamSheet,
+} from "@features/teams/models/team.model";
 import { BaseService } from "@shared/services/base.service";
-import { map, Observable } from "rxjs";
-
-export interface TeamSearchPage {
-    items: TeamSummary[];
-    hasMore: boolean;
-}
+import { Observable } from "rxjs";
 
 @Injectable()
 export class TeamsService extends BaseService {
@@ -35,18 +32,11 @@ export class TeamsService extends BaseService {
 
     public listByPlayer(playerPublicId: string): Observable<PlayerTeam[]> {
         const payload: TeamListByPlayerRequestDto = { playerPublicId };
-        return this.http
-            .post<PlayerTeamDto[]>(this.getURL("actions/ListByPlayer"), payload)
-            .pipe(map((dtos) => dtos.map((dto) => PlayerTeam.fromDto(dto))));
+        return this.postList(PlayerTeam, "actions/ListByPlayer", payload);
     }
 
     public search(request: TeamSearchRequestDto): Observable<TeamSearchPage> {
-        return this.http.post<TeamSearchResultDto>(this.getURL("actions/Search"), request).pipe(
-            map((dto) => ({
-                items: (dto.items ?? []).map((item) => TeamSummary.fromDto(item)),
-                hasMore: dto.hasMore ?? false,
-            })),
-        );
+        return this.post(TeamSearchPage, "actions/Search", request);
     }
 
     public create(request: TeamCreateRequestDto): Observable<TeamSheet> {
@@ -73,11 +63,11 @@ export class TeamsService extends BaseService {
         return this.post<TeamSheetDto, TeamSheet>(TeamSheet, "actions/TransferCaptaincy", request);
     }
 
-    public leave(request: TeamMemberTargetRequestDto): Observable<TeamLeaveResultDto> {
-        return this.http.post<TeamLeaveResultDto>(this.getURL("actions/Leave"), request);
+    public leave(request: TeamMemberTargetRequestDto): Observable<TeamLeaveResult> {
+        return this.post(TeamLeaveResult, "actions/Leave", request);
     }
 
-    public disband(request: TeamDisbandRequestDto): Observable<TeamDisbandResultDto> {
-        return this.http.post<TeamDisbandResultDto>(this.getURL("actions/Disband"), request);
+    public disband(request: TeamDisbandRequestDto): Observable<TeamDisbandResult> {
+        return this.post(TeamDisbandResult, "actions/Disband", request);
     }
 }

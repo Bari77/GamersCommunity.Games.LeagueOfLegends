@@ -26,17 +26,31 @@ public class GamePostsService(
     BusServiceTypeEnum IBusService.Type => BusServiceTypeEnum.DATA;
     public string Resource => "GamePosts";
 
-    public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default) =>
-        message.Action switch
+    public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default)
+    {
+        switch (message.Action?.ToUpperInvariant())
         {
-            "ListTeamWall" => JsonSafe.Serialize(await ListTeamWallAsync(message, ct)),
-            "ListPending" => JsonSafe.Serialize(await ListPendingAsync(message, ct)),
-            "Create" => JsonSafe.Serialize(await CreateAsync(message, ct)),
-            "Update" => JsonSafe.Serialize(await UpdateAsync(message, ct)),
-            "Moderate" => JsonSafe.Serialize(await ModerateAsync(message, ct)),
-            "Delete" => JsonSafe.Serialize(await DeleteAsync(message, ct)),
-            _ => throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented"),
-        };
+            case "LISTTEAMWALL":
+                return JsonSafe.Serialize(await ListTeamWallAsync(message, ct));
+
+            case "LISTPENDING":
+                return JsonSafe.Serialize(await ListPendingAsync(message, ct));
+
+            case "CREATE":
+                return JsonSafe.Serialize(await CreateAsync(message, ct));
+
+            case "UPDATE":
+                return JsonSafe.Serialize(await UpdateAsync(message, ct));
+
+            case "MODERATE":
+                return JsonSafe.Serialize(await ModerateAsync(message, ct));
+
+            case "DELETE":
+                return JsonSafe.Serialize(await DeleteAsync(message, ct));
+        }
+
+        throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented");
+    }
 
     private async Task<GamePostPageDto> ListTeamWallAsync(BusMessage message, CancellationToken ct)
     {

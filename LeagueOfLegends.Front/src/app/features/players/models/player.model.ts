@@ -1,3 +1,4 @@
+import { PlayerSummary } from "@features/home/models/home-feed.model";
 import {
     CatalogItemDto,
     PlayerChampionDto,
@@ -5,6 +6,7 @@ import {
     PlayerOptionsDto,
     PlayerRankDto,
     PlayerResolveResultDto,
+    PlayerSearchResultDto,
     PlayerSheetDto,
 } from "@features/players/dto/player.dto";
 
@@ -175,6 +177,20 @@ export function sortChampionsByLanePriority(
 
         return left.code.localeCompare(right.code);
     });
+}
+
+export class PlayerSearchPage {
+    public constructor(
+        public items: PlayerSummary[],
+        public hasMore: boolean,
+    ) {}
+
+    public static fromDto(dto: PlayerSearchResultDto): PlayerSearchPage {
+        return new PlayerSearchPage(
+            (dto.items ?? []).map((item) => PlayerSummary.fromDto(item)),
+            dto.hasMore ?? false,
+        );
+    }
 }
 
 export class PlayerResolveResult {

@@ -39,16 +39,28 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
 
     public async Task<string> HandleAsync(BusMessage message, CancellationToken ct = default)
     {
-        return message.Action switch
+        switch (message.Action?.ToUpperInvariant())
         {
-            "Load" => JsonSafe.Serialize(await LoadAsync(message, ct)),
-            "Resolve" => JsonSafe.Serialize(await ResolveByPlatformUserAsync(message, ct)),
-            "Get" => JsonSafe.Serialize(await GetSheetAsync(message, ct)),
-            "Search" => JsonSafe.Serialize(await SearchAsync(message, ct)),
-            "Options" => JsonSafe.Serialize(await OptionsAsync(ct)),
-            "Update" => JsonSafe.Serialize(await UpdateSheetAsync(message, ct)),
-            _ => throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented"),
-        };
+            case "LOAD":
+                return JsonSafe.Serialize(await LoadAsync(message, ct));
+
+            case "RESOLVE":
+                return JsonSafe.Serialize(await ResolveByPlatformUserAsync(message, ct));
+
+            case "GET":
+                return JsonSafe.Serialize(await GetSheetAsync(message, ct));
+
+            case "SEARCH":
+                return JsonSafe.Serialize(await SearchAsync(message, ct));
+
+            case "OPTIONS":
+                return JsonSafe.Serialize(await OptionsAsync(ct));
+
+            case "UPDATE":
+                return JsonSafe.Serialize(await UpdateSheetAsync(message, ct));
+        }
+
+        throw new InternalServerErrorException("ACTION_NOT_IMPLEMENTED", $"Action {message.Action} not implemented");
     }
 
     private const int MaxSearchTake = 50;

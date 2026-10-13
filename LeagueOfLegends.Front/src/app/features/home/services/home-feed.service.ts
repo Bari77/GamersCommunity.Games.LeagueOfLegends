@@ -10,7 +10,7 @@ export class HomeFeedService extends BaseService {
         super("/leagueoflegends/HomeFeed");
     }
 
-    public get(): Observable<HomeFeed> {
+    public load(): Observable<HomeFeed> {
         return this.post<HomeFeedDto, HomeFeed>(HomeFeed, "actions/Get", {});
     }
 }
