@@ -5,12 +5,9 @@ import { ActivatedRoute, ParamMap, Router, RouterLink } from "@angular/router";
 import { SkeletonComponent, SkeletonTextComponent, stripRichHtmlPlainText } from "@bari77/gc-ui";
 import { LOL_GAME_URL } from "@core/constants/game.constants";
 import { PlayersService } from "@features/players/services/players.service";
-import {
-    GlobalSearchStore,
-    SearchCriteria,
-    SearchHit,
-    SearchScope,
-} from "@features/search/stores/global-search.store";
+import { GlobalSearchStore, SearchScope } from "@features/search/stores/global-search.store";
+import { SearchHit } from "@features/search/models/search-hit.model";
+import { SearchCriteria } from "@features/search/models/search-criteria.model";
 import { NbButtonModule, NbCardModule, NbInputModule, NbSelectModule } from "@nebular/theme";
 import { GameTermPipe } from "@shared/pipes/game-term.pipe";
 import { ResourceUtils } from "@shared/utils/resource.utils";
@@ -107,6 +104,10 @@ export class GlobalSearchComponent implements OnInit {
         return [`${LOL_GAME_URL}/players`, publicId];
     }
 
+    protected plainText(value: string | null | undefined): string {
+        return stripRichHtmlPlainText(value ?? "");
+    }
+
     private async runSearch(criteria: SearchCriteria): Promise<void> {
         await this.store.search(criteria);
 
@@ -126,10 +127,6 @@ export class GlobalSearchComponent implements OnInit {
             scope: readScope(params.get("type")),
             idRegion: readNumber(params.get("region")),
         };
-    }
-
-    protected plainText(value: string | null | undefined): string {
-        return stripRichHtmlPlainText(value ?? "");
     }
 
     private patchCriteria(patch: Record<string, string | number | null>): void {

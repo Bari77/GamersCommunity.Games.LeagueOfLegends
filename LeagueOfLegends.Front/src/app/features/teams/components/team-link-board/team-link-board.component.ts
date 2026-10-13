@@ -6,7 +6,8 @@ import { TeamLinkStore } from "@features/teams/stores/team-link.store";
     standalone: true,
     selector: "lol-team-link-board",
     imports: [LinkListComponent],
-    template: `<gc-link-list [links]="cards()" [emptyLabel]="emptyLabel" />`,
+    templateUrl: "./team-link-board.component.html",
+    styleUrl: "./team-link-board.component.scss",
 })
 export class TeamLinkBoardComponent {
     public readonly teamPublicId = input.required<string>();

@@ -1,4 +1,5 @@
-import { PlayerOptions, PlayerSheet } from "@features/players/models/player.model";
+import { PlayerSheet } from "@features/players/models/player-sheet.model";
+import { PlayerOptions } from "@features/players/models/player-options.model";
 import { mockPlayerOptions } from "../../../../mocks/catalog/options";
 import { mockPlayerSheet } from "../../../../mocks/catalog/players";
 

@@ -1,5 +1,4 @@
-import { LfgMessageDto, PostableTeamDto } from "@features/lfg/dto/lfg-message.dto";
-
+import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
 const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 
 export type LfgKind = "player" | "team";
@@ -78,22 +77,5 @@ export class LfgMessage {
             return true;
         }
         return !!sessionPublicId && this.hasPlatformProfile() && this.platformUserPublicId === sessionPublicId;
-    }
-}
-
-export class PostableTeam {
-    public constructor(
-        public publicId: string,
-        public entitled: string,
-        public discriminator: string,
-        public rank: string,
-    ) {}
-
-    public static fromDto(dto: PostableTeamDto): PostableTeam {
-        return new PostableTeam(dto.publicId, dto.entitled, dto.discriminator, dto.rank);
-    }
-
-    public handleLabel(): string {
-        return `${this.entitled}#${this.discriminator}`;
     }
 }

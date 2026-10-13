@@ -32,7 +32,7 @@
                     type="search"
                     [placeholder]="searchPlaceholder"
                     [ngModel]="store.query()"
-                    (ngModelChange)="store.query.set($event)"
+                    (ngModelChange)="store.setQuery($event)"
                     [ngModelOptions]="{ standalone: true }"
                 />
 
@@ -41,7 +41,7 @@
                     placeholder="—"
                     [disabled]="loadingOptions()"
                     [ngModel]="store.idRegion()"
-                    (ngModelChange)="store.idRegion.set($event); onFilterChange()"
+                    (ngModelChange)="store.setIdRegion($event); onFilterChange()"
                     [ngModelOptions]="{ standalone: true }"
                 >
                     <nb-option [value]="null" i18n="@@lol.team.directory.allRegions">All regions</nb-option>

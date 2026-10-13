@@ -1,12 +1,13 @@
 import { Component, input } from "@angular/core";
 import { PlayerMediaKind } from "@bari77/gc-sdk";
-import { PlayerMediaAdminComponent, type PlayerMediaAdminLabels } from "@bari77/gc-widgets";
+import { PlayerMediaAdminComponent, PlayerMediaAdminLabels } from "@bari77/gc-widgets";
 
 @Component({
     standalone: true,
     selector: "lol-media-admin",
     imports: [PlayerMediaAdminComponent],
-    template: `<gc-player-media-admin [playerPublicId]="playerPublicId()" [kind]="kind()" [labels]="labels" />`,
+    templateUrl: "./media-admin.component.html",
+    styleUrl: "./media-admin.component.scss",
 })
 export class MediaAdminComponent {
     public readonly playerPublicId = input.required<string>();

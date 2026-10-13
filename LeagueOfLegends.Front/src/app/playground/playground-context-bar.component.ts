@@ -6,17 +6,8 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterLink, RouterLinkAc
 import { BreadcrumbComponent } from "@bari77/gc-ui";
 import { LOL_GAME_URL } from "@core/constants/game.constants";
 import { NbFormFieldModule, NbIconModule, NbInputModule } from "@nebular/theme";
-
-interface GameLink {
-    path: string;
-    label: string;
-}
-
-interface ContextBarState {
-    hasTrail: boolean;
-    nav: GameLink[];
-    search: GameLink | null;
-}
+import { GameLink } from "./game-link.model";
+import { ContextBarState } from "./context-bar-state.model";
 
 function isGameLink(value: unknown): value is GameLink {
     return (
@@ -48,135 +39,8 @@ function isGameLinkList(value: unknown): value is GameLink[] {
         NbIconModule,
         NbInputModule,
     ],
-    template: `
-        <gc-breadcrumb [rootLabel]="homeLabel" [rootLink]="homeLink" />
-
-        <div class="context-bar__game">
-            @if (gameNav().length > 0) {
-                <nav class="context-bar__nav" [attr.aria-label]="navLabel">
-                    @for (link of gameNav(); track link.path) {
-                        <a
-                            class="context-bar__link"
-                            [routerLink]="link.path"
-                            routerLinkActive="context-bar__link--active"
-                        >
-                            {{ link.label }}
-                        </a>
-                    }
-                </nav>
-            }
-
-            @if (gameSearch(); as search) {
-                <form class="context-bar__search" (ngSubmit)="submit()">
-                    <nb-form-field>
-                        <nb-icon nbPrefix icon="search-outline"></nb-icon>
-                        <input
-                            nbInput
-                            fieldSize="small"
-                            type="search"
-                            [placeholder]="search.label"
-                            [attr.aria-label]="search.label"
-                            [ngModel]="term()"
-                            (ngModelChange)="term.set($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                        />
-                    </nb-form-field>
-                </form>
-            }
-        </div>
-    `,
-    styles: `
-        :host {
-            --context-bar-gutter: 2.25rem;
-            --gc-breadcrumb-padding: 0;
-
-            position: sticky;
-            top: 4.75rem;
-            z-index: 1030;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            margin: calc(-1 * var(--context-bar-gutter)) calc(-1 * var(--context-bar-gutter)) 1.25rem;
-            padding: 0.5rem var(--context-bar-gutter);
-            background: var(--gc-surface-1, #0e1524);
-            border-bottom: 1px solid rgb(255 255 255 / 6%);
-        }
-
-        :host(.context-bar--empty) {
-            display: none;
-        }
-
-        .context-bar__game {
-            display: flex;
-            flex: 1 1 auto;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 1rem;
-            min-width: 0;
-        }
-
-        .context-bar__nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.25rem;
-        }
-
-        .context-bar__link {
-            padding: 0.3rem 0.7rem;
-            border-radius: 999px;
-            color: var(--text-hint-color);
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-        .context-bar__link:hover,
-        .context-bar__link:focus-visible {
-            background: rgb(255 255 255 / 6%);
-            color: var(--text-basic-color);
-        }
-
-        .context-bar__link--active {
-            background: color-mix(in srgb, var(--gc-accent) 18%, transparent);
-            color: var(--gc-accent);
-        }
-
-        .context-bar__search {
-            flex: 0 1 22rem;
-            min-width: 0;
-        }
-
-        .context-bar__search nb-form-field,
-        .context-bar__search input {
-            width: 100%;
-        }
-
-        @media (max-width: 991px) {
-            :host {
-                --context-bar-gutter: 1.5rem;
-            }
-        }
-
-        @media (max-width: 767px) {
-            :host {
-                --context-bar-gutter: 1rem;
-
-                flex-wrap: wrap;
-            }
-
-            .context-bar__game {
-                flex-wrap: wrap;
-                justify-content: flex-start;
-                gap: 0.5rem;
-            }
-
-            .context-bar__search {
-                flex-basis: 100%;
-            }
-        }
-    `,
+    templateUrl: "./playground-context-bar.component.html",
+    styleUrl: "./playground-context-bar.component.scss",
     host: {
         "[class.context-bar--empty]": "!hasTrail() && !gameSearch() && gameNav().length === 0",
     },
@@ -187,12 +51,12 @@ export class PlaygroundContextBarComponent {
     protected readonly navLabel = $localize`:@@lol.playground.nav.sections:Game sections`;
     protected readonly term = signal("");
 
-    private readonly router = inject(Router);
-    private readonly state = signal<ContextBarState>(this.read());
-
     protected readonly hasTrail = computed(() => this.state().hasTrail);
     protected readonly gameNav = computed(() => this.state().nav);
     protected readonly gameSearch = computed(() => this.state().search);
+
+    private readonly router = inject(Router);
+    private readonly state = signal<ContextBarState>(this.read());
 
     public constructor() {
         const subscription = this.router.events.subscribe((event) => {

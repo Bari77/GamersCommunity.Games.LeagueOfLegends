@@ -3,7 +3,8 @@ import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
 import { DecisionPromptComponent, SkeletonComponent } from "@bari77/gc-ui";
 import { LOL_GAME_URL } from "@core/constants/game.constants";
-import { CatalogItem, PlayerRank } from "@features/players/models/player.model";
+import { CatalogItem } from "@features/players/models/player.model";
+import { PlayerRank } from "@features/players/models/player-rank.model";
 import {
     isPlayerSlotRank,
     ROSTER_KIND_MAIN,
@@ -20,30 +21,13 @@ import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.compon
 import { RankEmblemComponent } from "@shared/components/rank-emblem/rank-emblem.component";
 import { gameTerm, GameTermPipe } from "@shared/pipes/game-term.pipe";
 import { championSquareUrl } from "@shared/utils/lol-art";
-
-export interface TeamRankChange {
-    playerPublicId: string;
-    rank: string;
-}
-
-export interface TeamRosterChange {
-    playerPublicId: string;
-    idLane: number;
-    rosterKind: string;
-}
+import { TeamRankChange } from "./team-rank-change.model";
+import { TeamRosterChange } from "./team-roster-change.model";
+import { RankOption } from "./rank-option.model";
+import { PendingAction } from "./pending-action.model";
 
 const ACTION_REMOVE = "__remove__";
 const ACTION_LEAVE = "__leave__";
-
-type RankOption = { value: string; label: string };
-
-type PendingAction = {
-    playerPublicId: string;
-    value: string;
-    heading: string;
-    message: string;
-    primaryLabel: string;
-};
 
 @Component({
     standalone: true,

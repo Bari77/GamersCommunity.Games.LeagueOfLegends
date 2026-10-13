@@ -1,5 +1,5 @@
 import { Component, computed, input, output } from "@angular/core";
-import { PlayerChampion } from "@features/players/models/player.model";
+import { PlayerChampion } from "@features/players/models/player-champion.model";
 import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
 import { championSplashUrl } from "@shared/utils/champion-art";
 import { GameTermPipe } from "@shared/pipes/game-term.pipe";

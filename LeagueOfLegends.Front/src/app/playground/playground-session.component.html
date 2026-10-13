@@ -1,0 +1,31 @@
+<section class="playground-session gc-enter">
+    <nb-card>
+        <nb-card-header i18n="@@lol.playground.session.title">Playground session</nb-card-header>
+        <nb-card-body>
+            <p i18n="@@lol.playground.session.body">
+                Choose which mock persona Authentik signs you in as. The page reloads so MSW handlers pick up the new
+                session.
+            </p>
+            <label class="playground-session__label" i18n="@@lol.playground.session.persona">Active persona</label>
+            <nb-select
+                class="playground-session__select"
+                [selected]="selectedId"
+                (selectedChange)="onPersonaChange($event)"
+            >
+                @for (persona of personas; track persona.id) {
+                    <nb-option [value]="persona.id">
+                        <span class="playground-session__option">
+                            <img [src]="portraitUrl(persona)" [alt]="persona.nickname" />
+                            {{ persona.nickname }}#{{ persona.discriminator }}
+                        </span>
+                    </nb-option>
+                }
+            </nb-select>
+        </nb-card-body>
+        <nb-card-footer>
+            <a nbButton status="primary" [routerLink]="gameUrl">
+                <span i18n="@@lol.playground.session.back">Back to the game</span>
+            </a>
+        </nb-card-footer>
+    </nb-card>
+</section>

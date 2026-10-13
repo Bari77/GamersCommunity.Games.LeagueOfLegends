@@ -4,7 +4,6 @@ using GamersCommunity.Core.Serialization;
 using GamersCommunity.Core.Services;
 using LeagueOfLegends.Consumer.Models;
 using LeagueOfLegends.Consumer.Security;
-using LeagueOfLegends.Consumer.Services;
 using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Models;
 using Microsoft.EntityFrameworkCore;
@@ -209,7 +208,9 @@ public sealed class TeamLinksService(LeagueOfLegendsDbContext context)
             throw new BadRequestException("URL_TOO_LONG", $"URL cannot exceed {MaxUrlLength} characters");
         if (!Uri.TryCreate(value, UriKind.Absolute, out var uri)
             || (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
+        {
             throw new BadRequestException("URL_INVALID", "URL must be an absolute http(s) address");
+        }
 
         return value;
     }

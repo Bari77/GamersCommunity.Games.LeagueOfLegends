@@ -1,6 +1,8 @@
 import { pickRosterChampions } from "@features/players/models/player.model";
 import { TeamApplicationDto } from "@features/teams/dto/team-application.dto";
-import { TeamMemberDto, TeamSheetDto, TeamSummaryDto } from "@features/teams/dto/team.dto";
+import { TeamSummaryDto } from "@features/teams/dto/team-summary.dto";
+import { TeamSheetDto } from "@features/teams/dto/team-sheet.dto";
+import { TeamMemberDto } from "@features/teams/dto/team-member.dto";
 import { mockUuid } from "./ids";
 import { mockPlayerOptions } from "./options";
 import { mockPlayerSheet, sheetByNickname } from "./players";
@@ -19,14 +21,14 @@ const LANE_IDS = Object.fromEntries(mockPlayerOptions.lanes.map((lane) => [lane.
 
 const MAIN_LANES = ["top", "jungle", "mid", "bottom", "support"] as const;
 
-type MemberSeed = {
+interface MemberSeed {
     who: string;
     rank: string;
     joinedAt: string;
     /** Required for captain/player seats; omitted for coach/manager. */
     lane?: (typeof MAIN_LANES)[number];
     rosterKind?: "main" | "sub";
-};
+}
 
 function isPlayerSlot(rank: string): boolean {
     return rank === "captain" || rank === "player";
@@ -58,9 +60,7 @@ function memberFromSheet(seed: MemberSeed, current = mockPlayerSheet): TeamMembe
 }
 
 function assertCompleteMainRoster(teamName: string, members: TeamMemberDto[]): void {
-    const mains = members.filter(
-        (member) => isPlayerSlot(member.rank) && member.rosterKind === "main",
-    );
+    const mains = members.filter((member) => isPlayerSlot(member.rank) && member.rosterKind === "main");
     for (const lane of MAIN_LANES) {
         const count = mains.filter((member) => member.laneCode === lane).length;
         if (count !== 1) {

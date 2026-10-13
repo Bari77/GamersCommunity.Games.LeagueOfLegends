@@ -9,24 +9,24 @@ import { routes } from "./app.routes";
 import { providePlaygroundUi } from "./playground/provide-playground-ui";
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(),
-    provideGameRemoteKernel({
-      environment: {
-        apiUrl: environment.apiUrl,
-        assetsBaseUrl: environment.assetsBaseUrl,
-      },
-      membership: {
-        gameId: LOL_GAME_ID,
-        gameUrl: LOL_GAME_URL,
-        apiSegment: "leagueoflegends",
-      },
-      playerSheetApi: PlayersService,
-    }),
-    // Required next to the kernel: GAME_PLAYER_SHEET_API is useExisting → PlayersService.
-    PlayersService,
-    providePlaygroundUi("cosmic"),
-  ],
+    providers: [
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes, withComponentInputBinding()),
+        provideHttpClient(),
+        provideGameRemoteKernel({
+            environment: {
+                apiUrl: environment.apiUrl,
+                assetsBaseUrl: environment.assetsBaseUrl,
+            },
+            membership: {
+                gameId: LOL_GAME_ID,
+                gameUrl: LOL_GAME_URL,
+                apiSegment: "leagueoflegends",
+            },
+            playerSheetApi: PlayersService,
+        }),
+        // Required next to the kernel: GAME_PLAYER_SHEET_API is useExisting → PlayersService.
+        PlayersService,
+        providePlaygroundUi("cosmic"),
+    ],
 };

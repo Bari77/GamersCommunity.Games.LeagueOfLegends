@@ -1,11 +1,11 @@
 using GamersCommunity.Core.Events;
 using GamersCommunity.Core.Rabbit;
+using LeagueOfLegends.Database.Context;
+using LeagueOfLegends.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Serilog;
-using LeagueOfLegends.Database.Context;
-using LeagueOfLegends.Database.Models;
 
 namespace LeagueOfLegends.Consumer.Integration;
 

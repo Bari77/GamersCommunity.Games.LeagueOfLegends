@@ -1,9 +1,10 @@
+import { Route } from "@angular/router";
 import { leagueOfLegendsRoutes } from "./league-of-legends.routes";
 
 describe("leagueOfLegendsRoutes", () => {
     const children = leagueOfLegendsRoutes[0]?.children ?? [];
 
-    function child(path: string) {
+    function child(path: string): Route | undefined {
         return children.find((entry) => entry.path === path);
     }
 

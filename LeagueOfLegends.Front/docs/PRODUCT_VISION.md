@@ -12,21 +12,21 @@ The site identity, profile wall, friends, DMs, site events and notifications liv
 
 ## Content
 
-| Content | Owner |
-|---------|-------|
-| Hub / team wall + LFG | This remote |
-| In-game events + player signup | This remote |
-| Profile wall, friends, DMs, site events, notifications | Shell |
+| Content                                                | Owner       |
+| ------------------------------------------------------ | ----------- |
+| Hub / team wall + LFG                                  | This remote |
+| In-game events + player signup                         | This remote |
+| Profile wall, friends, DMs, site events, notifications | Shell       |
 
 `UserGroupRole.IdGroup` references a `Team.Id`. Teams are not duplicated on the shell. A player may hold several team badges.
 
 ## Specs
 
-| Spec | Focus |
-|------|--------|
-| Player sheet | Shell / Gateway wiring, lanes, champions, media, hub |
-| Teams | 5 + coach + manager, several per player, moderated wall, LFG, mute RPC |
-| Events | In-game events, notifications, shell badges, substitutes |
+| Spec         | Focus                                                                  |
+| ------------ | ---------------------------------------------------------------------- |
+| Player sheet | Shell / Gateway wiring, lanes, champions, media, hub                   |
+| Teams        | 5 + coach + manager, several per player, moderated wall, LFG, mute RPC |
+| Events       | In-game events, notifications, shell badges, substitutes               |
 
 ## Display vs technical keys
 

@@ -1,10 +1,8 @@
 import { Injectable } from "@angular/core";
-import {
-    TeamLinkCreateRequestDto,
-    TeamLinkListRequestDto,
-    TeamLinkReorderRequestDto,
-    TeamLinkUpdateRequestDto,
-} from "@features/teams/dto/team-link.dto";
+import { TeamLinkUpdateRequestDto } from "@features/teams/dto/team-link.dto";
+import { TeamLinkReorderRequestDto } from "@features/teams/dto/team-link-reorder-request.dto";
+import { TeamLinkListRequestDto } from "@features/teams/dto/team-link-list-request.dto";
+import { TeamLinkCreateRequestDto } from "@features/teams/dto/team-link-create-request.dto";
 import { TeamLink } from "@features/teams/models/team-link.model";
 import { BaseService } from "@shared/services/base.service";
 import { Observable } from "rxjs";

@@ -1,15 +1,15 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./out-tsc/spec",
-    "types": ["jasmine", "@angular/localize"]
-  },
-  "include": [
-    "src/**/*.d.ts",
-    "src/**/*.ts",
-    "node_modules/@bari77/gc-sdk/src/**/*.ts",
-    "node_modules/@bari77/gc-msw/src/**/*.ts",
-    "node_modules/@bari77/gc-playground/src/**/*.ts",
-    "node_modules/@bari77/gc-widgets/src/**/*.ts"
-  ]
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./out-tsc/spec",
+        "types": ["jasmine", "@angular/localize"]
+    },
+    "include": [
+        "src/**/*.d.ts",
+        "src/**/*.ts",
+        "node_modules/@bari77/gc-sdk/src/**/*.ts",
+        "node_modules/@bari77/gc-msw/src/**/*.ts",
+        "node_modules/@bari77/gc-playground/src/**/*.ts",
+        "node_modules/@bari77/gc-widgets/src/**/*.ts"
+    ]
 }

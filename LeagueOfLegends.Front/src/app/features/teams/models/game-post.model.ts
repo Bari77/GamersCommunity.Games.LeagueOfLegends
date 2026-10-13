@@ -1,5 +1,4 @@
-import { GamePostDto, GamePostPageDto } from "@features/teams/dto/game-post.dto";
-
+import { GamePostDto } from "@features/teams/dto/game-post.dto";
 const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 
 export const POST_PENDING = "pending";
@@ -38,9 +37,7 @@ export class GamePost {
     }
 
     public authorHandleLabel(): string {
-        return this.authorDiscriminator
-            ? `${this.authorNickname}#${this.authorDiscriminator}`
-            : this.authorNickname;
+        return this.authorDiscriminator ? `${this.authorNickname}#${this.authorDiscriminator}` : this.authorNickname;
     }
 
     public isContactable(): boolean {
@@ -53,16 +50,5 @@ export class GamePost {
 
     public isMine(playerPublicId: string | null | undefined): boolean {
         return !!playerPublicId && this.authorPlayerPublicId === playerPublicId;
-    }
-}
-
-export class GamePostPage {
-    public constructor(
-        public items: GamePost[],
-        public hasMore: boolean,
-    ) {}
-
-    public static fromDto(dto: GamePostPageDto): GamePostPage {
-        return new GamePostPage((dto.items ?? []).map((item) => GamePost.fromDto(item)), dto.hasMore ?? false);
     }
 }

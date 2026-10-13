@@ -7,23 +7,8 @@ import { GameMembershipStore } from "@core/stores/game-membership.store";
     selector: "lol-create-sheet-wall",
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CreateWallComponent],
-    template: `
-        <gc-create-wall
-            [variant]="variant()"
-            [heading]="heading()"
-            [message]="message()"
-            [actionLabel]="actionLabel"
-            [busy]="membership.creating()"
-            (action)="create()"
-        />
-    `,
-    styles: [
-        `
-            :host {
-                display: block;
-            }
-        `,
-    ],
+    templateUrl: "./create-sheet-wall.component.html",
+    styleUrl: "./create-sheet-wall.component.scss",
 })
 export class CreateSheetWallComponent {
     public readonly variant = input<"block" | "inline">("block");

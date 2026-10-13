@@ -49,7 +49,7 @@
                     aria-controls="team-settings"
                     (click)="settingsOpen.set(!settingsOpen())"
                 >
-                    <nb-icon [icon]="settingsOpen() ? 'close-outline' : 'edit-2-outline'"></nb-icon>
+                    <nb-icon [icon]="settingsOpen() ? 'close-outline' : 'edit-2-outline'" />
                     @if (settingsOpen()) {
                         <span i18n="@@lol.team.hero.close">Close</span>
                     } @else {

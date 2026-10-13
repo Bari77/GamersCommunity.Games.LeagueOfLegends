@@ -1,7 +1,11 @@
 import { Component, effect, input, output, signal, untracked } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
-import { PlayerOptions, PlayerRank, PlayerSheet } from "@features/players/models/player.model";
+import { PlayerRankUpdateDto } from "@features/players/dto/player-rank-update.dto";
+import { PlayerUpdateRequestDto } from "@features/players/dto/player-update-request.dto";
+import { CatalogItem } from "@features/players/models/player.model";
+import { PlayerSheet } from "@features/players/models/player-sheet.model";
+import { PlayerRank } from "@features/players/models/player-rank.model";
+import { PlayerOptions } from "@features/players/models/player-options.model";
 import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
 import { RankEmblemComponent } from "@shared/components/rank-emblem/rank-emblem.component";
 import { gameTerm, GameTermPipe } from "@shared/pipes/game-term.pipe";
@@ -12,7 +16,15 @@ const APEX_TIERS = new Set(["master", "grandmaster", "challenger"]);
 @Component({
     standalone: true,
     selector: "lol-player-stats",
-    imports: [FormsModule, GameTermPipe, LaneIconComponent, RankEmblemComponent, NbButtonModule, NbInputModule, NbSelectModule],
+    imports: [
+        FormsModule,
+        GameTermPipe,
+        LaneIconComponent,
+        RankEmblemComponent,
+        NbButtonModule,
+        NbInputModule,
+        NbSelectModule,
+    ],
     templateUrl: "./player-stats.component.html",
     styleUrl: "./player-stats.component.scss",
 })
@@ -24,8 +36,6 @@ export class PlayerStatsComponent {
 
     public readonly save = output<PlayerUpdateRequestDto>();
     public readonly cancel = output<void>();
-
-    protected readonly unrankedLabel = $localize`:@@lol.player.stats.unranked:Unranked`;
 
     public readonly gameName = signal("");
     public readonly tagLine = signal("");
@@ -39,6 +49,8 @@ export class PlayerStatsComponent {
     public readonly flexDivision = signal<string | null>(null);
     public readonly flexLp = signal<number | null>(null);
 
+    protected readonly unrankedLabel = $localize`:@@lol.player.stats.unranked:Unranked`;
+
     public constructor() {
         effect(() => {
             const editing = this.editing();
@@ -50,7 +62,7 @@ export class PlayerStatsComponent {
         });
     }
 
-    public secondaryChoices() {
+    public secondaryChoices(): CatalogItem[] {
         return this.options().lanes.filter((lane) => lane.id !== this.idPrimaryLane());
     }
 
@@ -128,7 +140,7 @@ export class PlayerStatsComponent {
         this.flexLp.set(sheet.flex?.lp ?? null);
     }
 
-    private toRank(tier: string | null, division: string | null, lp: number | null) {
+    private toRank(tier: string | null, division: string | null, lp: number | null): PlayerRankUpdateDto | null {
         if (!tier) {
             return null;
         }

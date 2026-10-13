@@ -75,9 +75,7 @@
     } @else if (needsSheet()) {
         <lol-create-sheet-wall [message]="sheetWallMessage" />
     } @else if (view().isMember()) {
-        <p class="widget-host__empty" i18n="@@lol.team.widget.recruitment.member">
-            You already belong to this team.
-        </p>
+        <p class="widget-host__empty" i18n="@@lol.team.widget.recruitment.member">You already belong to this team.</p>
     } @else {
         <lol-team-apply-form
             [lanes]="lanes()"

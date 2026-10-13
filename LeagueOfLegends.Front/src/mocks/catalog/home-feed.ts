@@ -1,7 +1,8 @@
 import { mockUuid } from "./ids";
-import { HomeFeedDto, PlayerSummaryDto } from "@features/home/dto/home-feed.dto";
+import { HomeFeedDto } from "@features/home/dto/home-feed.dto";
+import { PlayerSummaryDto } from "@features/home/dto/player-summary.dto";
 import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
-import { TeamSummaryDto } from "@features/teams/dto/team.dto";
+import { TeamSummaryDto } from "@features/teams/dto/team-summary.dto";
 import { allPlayerSheets, lfgSenderFields, toPlayerSummary } from "./players";
 import {
     mockDawnbreakSheet,
@@ -13,8 +14,8 @@ import {
     mockTeamSummaries,
 } from "./orgs";
 
-const hoursAgo = (hours: number) => new Date(Date.now() - hours * 3600000).toISOString();
-const tomorrow = () => new Date(Date.now() + 86400000).toISOString();
+const hoursAgo = (hours: number): string => new Date(Date.now() - hours * 3600000).toISOString();
+const tomorrow = (): string => new Date(Date.now() + 86400000).toISOString();
 const FEED_TAKE = 5;
 
 function playerAd(opts: {

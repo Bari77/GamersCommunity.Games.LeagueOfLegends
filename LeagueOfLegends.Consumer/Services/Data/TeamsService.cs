@@ -8,7 +8,6 @@ using GamersCommunity.Core.Services;
 using LeagueOfLegends.Consumer.Integration;
 using LeagueOfLegends.Consumer.Models;
 using LeagueOfLegends.Consumer.Security;
-using LeagueOfLegends.Consumer.Services;
 using LeagueOfLegends.Consumer.Workspace;
 using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Models;

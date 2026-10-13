@@ -1,4 +1,4 @@
-import { PlayerOptionsDto } from "@features/players/dto/player.dto";
+import { PlayerOptionsDto } from "@features/players/dto/player-options.dto";
 
 /** Keep ids/codes aligned with `LeagueOfLegends.Database/Seed/ChampionsSeed.cs`. */
 const CHAMPIONS: { id: number; code: string }[] = [

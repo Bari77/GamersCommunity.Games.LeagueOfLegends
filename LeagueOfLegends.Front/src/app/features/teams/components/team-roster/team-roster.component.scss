@@ -123,8 +123,7 @@
     border: 1px solid color-mix(in srgb, var(--rank-solid) 38%, transparent);
     background:
         linear-gradient(115deg, color-mix(in srgb, var(--rank-solid) 16%, transparent), transparent 58%),
-        radial-gradient(120% 160% at 8% 50%, var(--rank-glow), transparent 68%),
-        rgba(0, 0, 0, 0.32);
+        radial-gradient(120% 160% at 8% 50%, var(--rank-glow), transparent 68%), rgba(0, 0, 0, 0.32);
     box-shadow:
         0 0 22px -10px var(--rank-solid),
         inset 0 1px 0 rgb(255 255 255 / 8%);
@@ -218,12 +217,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(
-        105deg,
-        transparent 35%,
-        rgb(255 255 255 / 10%) 48%,
-        transparent 62%
-    );
+    background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 10%) 48%, transparent 62%);
     transform: translateX(-60%);
     animation: member-ladder-scan 4.8s ease-in-out infinite;
 }

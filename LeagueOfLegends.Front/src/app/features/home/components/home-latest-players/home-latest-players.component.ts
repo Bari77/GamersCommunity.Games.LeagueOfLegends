@@ -1,7 +1,7 @@
 import { Component, input } from "@angular/core";
 import { EntityRowComponent } from "@bari77/gc-ui";
-import { PlayerSummary } from "@features/home/models/home-feed.model";
-import { PlayerRank } from "@features/players/models/player.model";
+import { PlayerSummary } from "@features/home/models/player-summary.model";
+import { PlayerRank } from "@features/players/models/player-rank.model";
 import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
 import { RankEmblemComponent } from "@shared/components/rank-emblem/rank-emblem.component";
 import { gameTerm, GameTermPipe } from "@shared/pipes/game-term.pipe";

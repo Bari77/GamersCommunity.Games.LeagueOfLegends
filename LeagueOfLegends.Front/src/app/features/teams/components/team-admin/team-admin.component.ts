@@ -1,8 +1,8 @@
 import { Component, computed, effect, input, output, signal, untracked } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { isRichHtmlBlank, RichEditorComponent } from "@bari77/gc-ui";
-import { TeamUpdateRequestDto } from "@features/teams/dto/team.dto";
-import { TeamSheet } from "@features/teams/models/team.model";
+import { TeamUpdateRequestDto } from "@features/teams/dto/team-update-request.dto";
+import { TeamSheet } from "@features/teams/models/team-sheet.model";
 import { NbButtonModule, NbCardModule, NbInputModule } from "@nebular/theme";
 
 @Component({

@@ -1,5 +1,6 @@
-import { PlayerSummaryDto } from "@features/home/dto/home-feed.dto";
-import { PlayerSheetDto } from "@features/players/dto/player.dto";
+import { PlayerSummaryDto } from "@features/home/dto/player-summary.dto";
+import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
+import { PlayerSheetDto } from "@features/players/dto/player-sheet.dto";
 import { MOCK_PERSONAS, mockPortraitUrl, persona } from "./personas";
 import { getSessionPersona } from "./session";
 
@@ -8,7 +9,7 @@ const self = getSessionPersona();
 export const PLATFORM_USER_PUBLIC_ID = self.platformUserPublicId;
 export const PLAYER_PUBLIC_ID = self.playerPublicId;
 
-type SheetSeed = {
+interface SheetSeed {
     who: string;
     presentationIrl: string;
     presentationIg: string;
@@ -19,7 +20,7 @@ type SheetSeed = {
     flex: NonNullable<PlayerSheetDto["flex"]>;
     champions: NonNullable<PlayerSheetDto["champions"]>;
     creationDate: string;
-};
+}
 
 function sheet(opts: SheetSeed): PlayerSheetDto {
     const who = persona(opts.who);
@@ -733,7 +734,19 @@ export function sheetByNickname(nickname: string, current: PlayerSheetDto = mock
     return found;
 }
 
-export function lfgSenderFields(nickname: string, current: PlayerSheetDto = mockPlayerSheet) {
+export function lfgSenderFields(
+    nickname: string,
+    current: PlayerSheetDto = mockPlayerSheet,
+): Pick<
+    LfgMessageDto,
+    | "senderNickname"
+    | "senderDiscriminator"
+    | "playerPublicId"
+    | "platformUserPublicId"
+    | "senderAvatarUrl"
+    | "regionCode"
+    | "laneCode"
+> {
     const sheetDto = sheetByNickname(nickname, current);
     return {
         senderNickname: sheetDto.nickname,

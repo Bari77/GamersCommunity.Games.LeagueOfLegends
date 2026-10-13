@@ -16,23 +16,3 @@ export interface LfgMessageDto {
     teamDiscriminator?: string | null;
     teamTag?: string | null;
 }
-
-export interface ListLfgBeforeRequestDto {
-    kind: string;
-    beforeCreationDate: string;
-    beforePublicId: string;
-    take?: number;
-}
-
-export interface CreateLfgMessageRequestDto {
-    body: string;
-    teamPublicId?: string;
-    idLane?: number;
-}
-
-export interface PostableTeamDto {
-    publicId: string;
-    entitled: string;
-    discriminator: string;
-    rank: string;
-}

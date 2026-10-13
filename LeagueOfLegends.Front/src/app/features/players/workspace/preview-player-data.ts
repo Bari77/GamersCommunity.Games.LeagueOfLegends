@@ -1,10 +1,6 @@
-import type { GcGalleryItem, GcLink } from "@bari77/gc-widgets";
-import { PlayerTeam } from "@features/teams/models/team.model";
-import {
-    mockPlayerPictures,
-    mockPlayerStreams,
-    mockPlayerVideos,
-} from "../../../../mocks/catalog/media";
+import { GcGalleryItem, GcLink } from "@bari77/gc-widgets";
+import { PlayerTeam } from "@features/teams/models/player-team.model";
+import { mockPlayerPictures, mockPlayerStreams, mockPlayerVideos } from "../../../../mocks/catalog/media";
 import { mockTeamSheet, TEAM_PUBLIC_ID } from "../../../../mocks/catalog/orgs";
 import { PLAYER_PUBLIC_ID } from "../../../../mocks/catalog/players";
 

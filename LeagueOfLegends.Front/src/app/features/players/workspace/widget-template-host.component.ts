@@ -8,8 +8,10 @@ import { ChampionBoardComponent } from "@features/players/components/champion-bo
 import { PlayerPresentationComponent } from "@features/players/components/player-presentation/player-presentation.component";
 import { PlayerStatsComponent } from "@features/players/components/player-stats/player-stats.component";
 import { PlayerTeamsComponent } from "@features/players/components/player-teams/player-teams.component";
-import { PlayerChampionUpdateDto, PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
-import { PlayerOptions, PlayerSheet } from "@features/players/models/player.model";
+import { PlayerUpdateRequestDto } from "@features/players/dto/player-update-request.dto";
+import { PlayerChampionUpdateDto } from "@features/players/dto/player-champion-update.dto";
+import { PlayerSheet } from "@features/players/models/player-sheet.model";
+import { PlayerOptions } from "@features/players/models/player-options.model";
 import { WORKSPACE_PREVIEW_OPTIONS, WORKSPACE_PREVIEW_PLAYER } from "@features/players/workspace/preview-player";
 import {
     WORKSPACE_PREVIEW_PHOTOS,

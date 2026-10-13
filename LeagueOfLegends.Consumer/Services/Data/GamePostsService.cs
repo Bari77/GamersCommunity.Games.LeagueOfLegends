@@ -5,7 +5,6 @@ using GamersCommunity.Core.Platform;
 using GamersCommunity.Core.Rabbit;
 using GamersCommunity.Core.Serialization;
 using GamersCommunity.Core.Services;
-using LeagueOfLegends.Consumer.Integration;
 using LeagueOfLegends.Consumer.Models;
 using LeagueOfLegends.Consumer.Security;
 using LeagueOfLegends.Database.Context;

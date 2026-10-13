@@ -1,9 +1,9 @@
 import {
     resolveActivePersona,
     setActivePersonaId as storeActivePersonaId,
-    type PlaygroundPersona,
+    PlaygroundPersona,
 } from "@bari77/gc-playground";
-import { DEFAULT_PERSONA_ID, MOCK_PERSONAS, type MockPersona } from "./personas";
+import { DEFAULT_PERSONA_ID, MOCK_PERSONAS, MockPersona } from "./personas";
 
 /** Gateway API segment / playground session key for this front. */
 export const LOL_MOCK_GAME_KEY = "leagueoflegends";

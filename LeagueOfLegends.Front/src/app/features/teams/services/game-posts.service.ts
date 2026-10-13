@@ -1,13 +1,12 @@
 import { Injectable } from "@angular/core";
-import {
-    GamePostCreateRequestDto,
-    GamePostDto,
-    GamePostModerateRequestDto,
-    GamePostTargetRequestDto,
-    GamePostUpdateRequestDto,
-    TeamWallRequestDto,
-} from "@features/teams/dto/game-post.dto";
-import { GamePost, GamePostPage } from "@features/teams/models/game-post.model";
+import { GamePostDto } from "@features/teams/dto/game-post.dto";
+import { TeamWallRequestDto } from "@features/teams/dto/team-wall-request.dto";
+import { GamePostUpdateRequestDto } from "@features/teams/dto/game-post-update-request.dto";
+import { GamePostTargetRequestDto } from "@features/teams/dto/game-post-target-request.dto";
+import { GamePostModerateRequestDto } from "@features/teams/dto/game-post-moderate-request.dto";
+import { GamePostCreateRequestDto } from "@features/teams/dto/game-post-create-request.dto";
+import { GamePost } from "@features/teams/models/game-post.model";
+import { GamePostPage } from "@features/teams/models/game-post-page.model";
 import { BaseService } from "@shared/services/base.service";
 import { Observable } from "rxjs";
 

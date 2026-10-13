@@ -1,7 +1,7 @@
 import { Component, computed, input, output, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { isRichHtmlBlank, RichEditorComponent } from "@bari77/gc-ui";
-import { TeamCreateRequestDto } from "@features/teams/dto/team.dto";
+import { TeamCreateRequestDto } from "@features/teams/dto/team-create-request.dto";
 import { NbButtonModule, NbInputModule } from "@nebular/theme";
 
 @Component({
@@ -27,7 +27,12 @@ export class TeamCreateFormComponent {
     protected readonly canSave = computed(() => {
         const name = this.entitled().trim();
         const tag = this.tag().trim();
-        return !this.saving() && name.length >= 3 && name.length <= 50 && (tag.length === 0 || /^[A-Za-z0-9]{2,5}$/.test(tag));
+        return (
+            !this.saving() &&
+            name.length >= 3 &&
+            name.length <= 50 &&
+            (tag.length === 0 || /^[A-Za-z0-9]{2,5}$/.test(tag))
+        );
     });
 
     protected submit(): void {

@@ -1,6 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Component, input } from "@angular/core";
-import { TeamSheet } from "@features/teams/models/team.model";
+import { TeamSheet } from "@features/teams/models/team-sheet.model";
 import { GameTermPipe } from "@shared/pipes/game-term.pipe";
 
 @Component({

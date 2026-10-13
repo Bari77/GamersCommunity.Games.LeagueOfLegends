@@ -1,6 +1,5 @@
-using GamersCommunity.Core.Database.Seed;
-using Microsoft.Extensions.Logging;
 using LeagueOfLegends.Database.Context;
+using Microsoft.Extensions.Logging;
 
 namespace LeagueOfLegends.Database.Seed;
 

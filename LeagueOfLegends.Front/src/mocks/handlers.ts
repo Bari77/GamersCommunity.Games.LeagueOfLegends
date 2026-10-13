@@ -1,32 +1,28 @@
 import { gatewayUrl } from "@bari77/gc-msw";
-import {
-    PlayerMediaCreateRequestDto,
-    PlayerMediaDto,
-    PlayerMediaListRequestDto,
-} from "@bari77/gc-sdk";
-import { PlayerLoadRequestDto, PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
-import {
-    TeamApplicationCreateRequestDto,
-    TeamApplicationListRequestDto,
-    TeamApplicationReviewRequestDto,
-    TeamApplicationTargetRequestDto,
-} from "@features/teams/dto/team-application.dto";
-import {
-    PlayerTeamDto,
-    TeamCreateRequestDto,
-    TeamDisbandRequestDto,
-    TeamListByPlayerRequestDto,
-    TeamMemberTargetRequestDto,
-    TeamSearchRequestDto,
-    TeamSetRankRequestDto,
-    TeamSetRosterRequestDto,
-    TeamSheetDto,
-    TeamUpdateRequestDto,
-} from "@features/teams/dto/team.dto";
+import { PlayerMediaCreateRequestDto, PlayerMediaDto, PlayerMediaListRequestDto } from "@bari77/gc-sdk";
+import { PlayerUpdateRequestDto } from "@features/players/dto/player-update-request.dto";
+import { PlayerLoadRequestDto } from "@features/players/dto/player-load-request.dto";
+import { TeamApplicationTargetRequestDto } from "@features/teams/dto/team-application-target-request.dto";
+import { TeamApplicationReviewRequestDto } from "@features/teams/dto/team-application-review-request.dto";
+import { TeamApplicationListRequestDto } from "@features/teams/dto/team-application-list-request.dto";
+import { TeamApplicationCreateRequestDto } from "@features/teams/dto/team-application-create-request.dto";
+import { TeamUpdateRequestDto } from "@features/teams/dto/team-update-request.dto";
+import { TeamSheetDto } from "@features/teams/dto/team-sheet.dto";
+import { TeamSummaryDto } from "@features/teams/dto/team-summary.dto";
+import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
+import { PlayerChampionDto } from "@features/players/dto/player-champion.dto";
+import { TeamSetRosterRequestDto } from "@features/teams/dto/team-set-roster-request.dto";
+import { TeamSetRankRequestDto } from "@features/teams/dto/team-set-rank-request.dto";
+import { TeamSearchRequestDto } from "@features/teams/dto/team-search-request.dto";
+import { TeamMemberTargetRequestDto } from "@features/teams/dto/team-member-target-request.dto";
+import { TeamListByPlayerRequestDto } from "@features/teams/dto/team-list-by-player-request.dto";
+import { TeamDisbandRequestDto } from "@features/teams/dto/team-disband-request.dto";
+import { TeamCreateRequestDto } from "@features/teams/dto/team-create-request.dto";
+import { PlayerTeamDto } from "@features/teams/dto/player-team.dto";
 import { http, HttpResponse } from "msw";
 import { environment } from "../environments/environment";
 import { mockPlayerPictures, mockPlayerStreams, mockPlayerVideos } from "./catalog/media";
-import { CreateLfgMessageRequestDto } from "@features/lfg/dto/lfg-message.dto";
+import { CreateLfgMessageRequestDto } from "@features/lfg/dto/create-lfg-message-request.dto";
 import { mockHomeFeed, mockLfgMessages } from "./catalog/home-feed";
 import { pickRosterChampions } from "@features/players/models/player.model";
 import { mockPlayerOptions } from "./catalog/options";
@@ -48,19 +44,15 @@ import {
     teamSheetByPublicId,
 } from "./catalog/orgs";
 import { mockTeamLinks, mockTeamPosts } from "./catalog/team-wall";
-import {
-    GamePostCreateRequestDto,
-    GamePostModerateRequestDto,
-    GamePostTargetRequestDto,
-    GamePostUpdateRequestDto,
-    TeamWallRequestDto,
-} from "@features/teams/dto/game-post.dto";
-import {
-    TeamLinkCreateRequestDto,
-    TeamLinkListRequestDto,
-    TeamLinkReorderRequestDto,
-    TeamLinkUpdateRequestDto,
-} from "@features/teams/dto/team-link.dto";
+import { TeamWallRequestDto } from "@features/teams/dto/team-wall-request.dto";
+import { GamePostUpdateRequestDto } from "@features/teams/dto/game-post-update-request.dto";
+import { GamePostTargetRequestDto } from "@features/teams/dto/game-post-target-request.dto";
+import { GamePostModerateRequestDto } from "@features/teams/dto/game-post-moderate-request.dto";
+import { GamePostCreateRequestDto } from "@features/teams/dto/game-post-create-request.dto";
+import { TeamLinkUpdateRequestDto } from "@features/teams/dto/team-link.dto";
+import { TeamLinkReorderRequestDto } from "@features/teams/dto/team-link-reorder-request.dto";
+import { TeamLinkListRequestDto } from "@features/teams/dto/team-link-list-request.dto";
+import { TeamLinkCreateRequestDto } from "@features/teams/dto/team-link-create-request.dto";
 
 const playersUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "Players");
 const teamsUrl = gatewayUrl(environment.apiUrl, "leagueoflegends", "Teams");
@@ -80,7 +72,7 @@ let teamApplications = [...mockTeamApplications];
 let teamPosts = [...mockTeamPosts];
 let teamLinks = [...mockTeamLinks];
 
-function filterLfgByKind(kind: string | undefined) {
+function filterLfgByKind(kind: string | undefined): LfgMessageDto[] {
     const resolved = kind?.trim().toLowerCase() || "player";
     return lfgMessages.filter((item) => item.kind === resolved);
 }
@@ -92,11 +84,11 @@ function laneCodeForId(idLane: number | null | undefined): string | null {
     return mockPlayerOptions.lanes.find((lane) => lane.id === idLane)?.code ?? null;
 }
 
-function rosterChampions(laneCode: string | null | undefined) {
+function rosterChampions(laneCode: string | null | undefined): PlayerChampionDto[] {
     return pickRosterChampions(player.champions ?? [], laneCode);
 }
 
-function teamSummary(team: TeamSheetDto) {
+function teamSummary(team: TeamSheetDto): TeamSummaryDto {
     return {
         publicId: team.publicId,
         entitled: team.entitled,
@@ -170,7 +162,10 @@ const mediaHandlers = Object.keys(mediaStore).flatMap((resource) => {
     ];
 });
 
-function catalogItem(items: { id: number; code: string }[], id: number | null | undefined) {
+function catalogItem(
+    items: { id: number; code: string }[],
+    id: number | null | undefined,
+): { id: number; code: string } | null {
     return id == null ? null : (items.find((item) => item.id === id) ?? null);
 }
 
@@ -179,15 +174,14 @@ export const handlers = [
     http.post(`${teamsUrl}/actions/Search`, async ({ request }) => {
         const body = ((await request.json()) as TeamSearchRequestDto) ?? {};
         const query = (body.query ?? "").trim().toLowerCase();
-        const region = body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
+        const region =
+            body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
         const items = [
             ...teams.map(teamSummary),
             ...mockTeamSummaries.filter((item) => !teams.some((team) => team.publicId === item.publicId)),
         ].filter((team) => {
             const matchesQuery =
-                !query ||
-                team.entitled.toLowerCase().includes(query) ||
-                (team.tag ?? "").toLowerCase().includes(query);
+                !query || team.entitled.toLowerCase().includes(query) || (team.tag ?? "").toLowerCase().includes(query);
             const matchesRegion = !region || team.regionCode === region.code;
             return matchesQuery && matchesRegion;
         });
@@ -453,16 +447,12 @@ export const handlers = [
     }),
     http.post(`${gamePostsUrl}/actions/ListTeamWall`, async ({ request }) => {
         const body = ((await request.json()) as TeamWallRequestDto) ?? { teamPublicId: "" };
-        const items = teamPosts.filter(
-            (item) => item.teamPublicId === body.teamPublicId && item.status === "approved",
-        );
+        const items = teamPosts.filter((item) => item.teamPublicId === body.teamPublicId && item.status === "approved");
         return HttpResponse.json({ items, hasMore: false });
     }),
     http.post(`${gamePostsUrl}/actions/ListPending`, async ({ request }) => {
         const body = ((await request.json()) as TeamWallRequestDto) ?? { teamPublicId: "" };
-        const items = teamPosts.filter(
-            (item) => item.teamPublicId === body.teamPublicId && item.status === "pending",
-        );
+        const items = teamPosts.filter((item) => item.teamPublicId === body.teamPublicId && item.status === "pending");
         return HttpResponse.json({ items, hasMore: false });
     }),
     http.post(`${gamePostsUrl}/actions/Create`, async ({ request }) => {
@@ -486,9 +476,7 @@ export const handlers = [
     }),
     http.post(`${gamePostsUrl}/actions/Update`, async ({ request }) => {
         const body = (await request.json()) as GamePostUpdateRequestDto;
-        teamPosts = teamPosts.map((item) =>
-            item.publicId === body.publicId ? { ...item, body: body.body } : item,
-        );
+        teamPosts = teamPosts.map((item) => (item.publicId === body.publicId ? { ...item, body: body.body } : item));
         return HttpResponse.json(teamPosts.find((item) => item.publicId === body.publicId));
     }),
     http.post(`${gamePostsUrl}/actions/Moderate`, async ({ request }) => {
@@ -580,8 +568,8 @@ export const handlers = [
         const body = (await request.json()) as CreateLfgMessageRequestDto;
         const team =
             body.teamPublicId != null
-                ? teams.find((item) => item.publicId === body.teamPublicId) ??
-                  (body.teamPublicId === TEAM_PUBLIC_ID ? mockTeamSheet : null)
+                ? (teams.find((item) => item.publicId === body.teamPublicId) ??
+                  (body.teamPublicId === TEAM_PUBLIC_ID ? mockTeamSheet : null))
                 : null;
         const created = {
             publicId: crypto.randomUUID(),
@@ -629,13 +617,13 @@ export const handlers = [
     http.post(`${playersUrl}/actions/Search`, async ({ request }) => {
         const body = ((await request.json()) as { query?: string; idRegion?: number; take?: number }) ?? {};
         const query = (body.query ?? "").trim().toLowerCase();
-        const region = body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
+        const region =
+            body.idRegion != null ? mockPlayerOptions.regions.find((item) => item.id === body.idRegion) : null;
         const items = allPlayerSheets(player)
             .map(toPlayerSummary)
             .filter((item) => {
                 const handle = `${item.nickname}#${item.discriminator}`.toLowerCase();
-                const riot =
-                    item.gameName && item.tagLine ? `${item.gameName}#${item.tagLine}`.toLowerCase() : "";
+                const riot = item.gameName && item.tagLine ? `${item.gameName}#${item.tagLine}`.toLowerCase() : "";
                 const matchesQuery =
                     !query ||
                     handle.includes(query) ||

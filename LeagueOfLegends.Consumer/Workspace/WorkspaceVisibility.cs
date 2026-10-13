@@ -29,7 +29,9 @@ public static class WorkspaceVisibility
             if (root.ValueKind != JsonValueKind.Object
                 || !root.TryGetProperty(PagesProperty, out var pages)
                 || pages.ValueKind != JsonValueKind.Array)
+            {
                 return layoutJson;
+            }
 
             var kept = pages.EnumerateArray().Where(page => allows(VisibilityOf(page))).ToList();
             if (kept.Count == pages.GetArrayLength())

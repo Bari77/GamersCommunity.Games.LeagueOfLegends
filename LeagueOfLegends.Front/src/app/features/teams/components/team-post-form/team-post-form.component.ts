@@ -1,7 +1,7 @@
 import { Component, effect, input, output, signal, untracked } from "@angular/core";
 import { isRichHtmlBlank, RichEditorComponent } from "@bari77/gc-ui";
 import { GamePost } from "@features/teams/models/game-post.model";
-import { GamePostDraft } from "@features/teams/stores/team-wall.store";
+import { GamePostDraft } from "@features/teams/models/game-post-draft.model";
 import { NbButtonModule } from "@nebular/theme";
 
 @Component({

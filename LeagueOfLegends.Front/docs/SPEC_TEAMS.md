@@ -7,12 +7,12 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, LFG live sur l’accuei
 - **Clé publique team** : `Team.PublicId` (GUID). Handle = `Entitled#Discriminator`. Tag court optionnel (2–5 chars).
 - **Rangs** : `TeamMember.IdTeamRank` est la seule source de vérité.
 
-  | Code | Rôle | Roster |
-  |------|------|--------|
-  | `captain` | Leader, aussi un joueur | joueur (lane + main/sub) |
-  | `player` | Joueur | joueur (lane + main/sub) |
-  | `coach` | Staff sportif | hors roster joueur |
-  | `manager` | Staff orga | hors roster joueur |
+    | Code      | Rôle                    | Roster                   |
+    | --------- | ----------------------- | ------------------------ |
+    | `captain` | Leader, aussi un joueur | joueur (lane + main/sub) |
+    | `player`  | Joueur                  | joueur (lane + main/sub) |
+    | `coach`   | Staff sportif           | hors roster joueur       |
+    | `manager` | Staff orga              | hors roster joueur       |
 
 - **Plafonds** : au plus 1 captain, 1 coach, 1 manager. Pas de plafond sur le nombre de joueurs.
 - **Siège joueur** : `TeamMember.IdLane` + `RosterKind` `main` / `sub`. Un seul `main` par lane (en nommer un autre main fait passer le précédent en sub). Les remplaçants sont des `player` `sub`, pas un rang.
@@ -59,29 +59,29 @@ Gouvernance d’équipe MOBA, mur modéré par le staff, LFG live sur l’accuei
 
 ## Gateway
 
-| Resource | Public | Private (auth) |
-|----------|--------|----------------|
-| Teams | Get, Search, ListByPlayer | ListPostable, Create, Update, SetRank, SetRoster, Kick, Leave, TransferCaptaincy, Disband |
-| TeamApplications | — | Create, ListMine, Withdraw, List, Review |
-| GamePosts | ListTeamWall | Create, ListPending, Update, Moderate, Delete |
-| TeamLinks | List | Create, Update, Reorder, Delete |
-| LfgAds | ListRecent, ListBefore, Search | Create |
+| Resource         | Public                         | Private (auth)                                                                            |
+| ---------------- | ------------------------------ | ----------------------------------------------------------------------------------------- |
+| Teams            | Get, Search, ListByPlayer      | ListPostable, Create, Update, SetRank, SetRoster, Kick, Leave, TransferCaptaincy, Disband |
+| TeamApplications | —                              | Create, ListMine, Withdraw, List, Review                                                  |
+| GamePosts        | ListTeamWall                   | Create, ListPending, Update, Moderate, Delete                                             |
+| TeamLinks        | List                           | Create, Update, Reorder, Delete                                                           |
+| LfgAds           | ListRecent, ListBefore, Search | Create                                                                                    |
 
 `Users.Sanctions` reste hors table de routage.
 
 ## Matrice de permissions
 
-| Action | Visiteur | Player | Coach | Manager | Captain |
-|--------|----------|--------|-------|---------|---------|
-| Voir la fiche et le mur | oui | oui | oui | oui | oui |
-| Candidater | oui (connecté) | — | — | — | — |
-| Publier sur le mur | non | oui (`pending`) | oui (`approved`) | oui (`approved`) | oui (`approved`) |
-| Modérer le mur | non | non | oui | oui | oui |
-| Traiter les candidatures | non | non | oui | oui | oui |
-| Exclure un membre | non | non | oui (player) | oui (player) | oui |
-| Éditer la fiche | non | non | non | oui | oui |
-| Changer les rangs / main-sub | non | non | non | non | oui |
-| Transférer / dissoudre | non | non | non | non | oui |
+| Action                       | Visiteur       | Player          | Coach            | Manager          | Captain          |
+| ---------------------------- | -------------- | --------------- | ---------------- | ---------------- | ---------------- |
+| Voir la fiche et le mur      | oui            | oui             | oui              | oui              | oui              |
+| Candidater                   | oui (connecté) | —               | —                | —                | —                |
+| Publier sur le mur           | non            | oui (`pending`) | oui (`approved`) | oui (`approved`) | oui (`approved`) |
+| Modérer le mur               | non            | non             | oui              | oui              | oui              |
+| Traiter les candidatures     | non            | non             | oui              | oui              | oui              |
+| Exclure un membre            | non            | non             | oui (player)     | oui (player)     | oui              |
+| Éditer la fiche              | non            | non             | non              | oui              | oui              |
+| Changer les rangs / main-sub | non            | non             | non              | non              | oui              |
+| Transférer / dissoudre       | non            | non             | non              | non              | oui              |
 
 ## Hors scope
 

@@ -1,121 +1,121 @@
 {
-  "version": 2,
-  "pages": [
-    {
-      "id": "home",
-      "title": "Home",
-      "locked": true,
-      "widgets": [
+    "version": 2,
+    "pages": [
         {
-          "id": "w-stats",
-          "type": "stats",
-          "x": 0,
-          "y": 0,
-          "cols": 12,
-          "rows": 5,
-          "settings": {}
+            "id": "home",
+            "title": "Home",
+            "locked": true,
+            "widgets": [
+                {
+                    "id": "w-stats",
+                    "type": "stats",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 12,
+                    "rows": 5,
+                    "settings": {}
+                },
+                {
+                    "id": "w-irl",
+                    "type": "presentation-irl",
+                    "x": 0,
+                    "y": 5,
+                    "cols": 6,
+                    "rows": 5,
+                    "settings": {
+                        "title": "IRL presentation"
+                    }
+                },
+                {
+                    "id": "w-ig",
+                    "type": "presentation-ig",
+                    "x": 6,
+                    "y": 5,
+                    "cols": 6,
+                    "rows": 5,
+                    "settings": {
+                        "title": "In-game presentation"
+                    }
+                }
+            ]
         },
         {
-          "id": "w-irl",
-          "type": "presentation-irl",
-          "x": 0,
-          "y": 5,
-          "cols": 6,
-          "rows": 5,
-          "settings": {
-            "title": "IRL presentation"
-          }
+            "id": "champions",
+            "title": "Champions",
+            "widgets": [
+                {
+                    "id": "w-champions",
+                    "type": "champions",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 12,
+                    "rows": 8,
+                    "settings": {}
+                }
+            ]
         },
         {
-          "id": "w-ig",
-          "type": "presentation-ig",
-          "x": 6,
-          "y": 5,
-          "cols": 6,
-          "rows": 5,
-          "settings": {
-            "title": "In-game presentation"
-          }
-        }
-      ]
-    },
-    {
-      "id": "champions",
-      "title": "Champions",
-      "widgets": [
+            "id": "teams",
+            "title": "Teams",
+            "widgets": [
+                {
+                    "id": "w-teams",
+                    "type": "teams",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 12,
+                    "rows": 6,
+                    "settings": {}
+                }
+            ]
+        },
         {
-          "id": "w-champions",
-          "type": "champions",
-          "x": 0,
-          "y": 0,
-          "cols": 12,
-          "rows": 8,
-          "settings": {}
-        }
-      ]
-    },
-    {
-      "id": "teams",
-      "title": "Teams",
-      "widgets": [
+            "id": "videos",
+            "title": "Videos",
+            "widgets": [
+                {
+                    "id": "w-videos",
+                    "type": "videos",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 12,
+                    "rows": 9,
+                    "settings": {}
+                }
+            ],
+            "visibility": "friends"
+        },
         {
-          "id": "w-teams",
-          "type": "teams",
-          "x": 0,
-          "y": 0,
-          "cols": 12,
-          "rows": 6,
-          "settings": {}
-        }
-      ]
-    },
-    {
-      "id": "videos",
-      "title": "Videos",
-      "widgets": [
+            "id": "photos",
+            "title": "Photos",
+            "widgets": [
+                {
+                    "id": "w-photos",
+                    "type": "photos",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 12,
+                    "rows": 9,
+                    "settings": {}
+                }
+            ],
+            "visibility": "friends"
+        },
         {
-          "id": "w-videos",
-          "type": "videos",
-          "x": 0,
-          "y": 0,
-          "cols": 12,
-          "rows": 9,
-          "settings": {}
+            "id": "links",
+            "title": "Links",
+            "widgets": [
+                {
+                    "id": "w-links",
+                    "type": "gc-links",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 12,
+                    "rows": 9,
+                    "settings": {}
+                }
+            ],
+            "visibility": "friends"
         }
-      ],
-      "visibility": "friends"
-    },
-    {
-      "id": "photos",
-      "title": "Photos",
-      "widgets": [
-        {
-          "id": "w-photos",
-          "type": "photos",
-          "x": 0,
-          "y": 0,
-          "cols": 12,
-          "rows": 9,
-          "settings": {}
-        }
-      ],
-      "visibility": "friends"
-    },
-    {
-      "id": "links",
-      "title": "Links",
-      "widgets": [
-        {
-          "id": "w-links",
-          "type": "gc-links",
-          "x": 0,
-          "y": 0,
-          "cols": 12,
-          "rows": 9,
-          "settings": {}
-        }
-      ],
-      "visibility": "friends"
-    }
-  ]
+    ]
 }

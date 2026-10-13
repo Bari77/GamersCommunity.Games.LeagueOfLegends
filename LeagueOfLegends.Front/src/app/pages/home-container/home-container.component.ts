@@ -39,9 +39,10 @@ export class HomeContainerComponent {
     public readonly promptOptOutLabel = $localize`:@@lol.sheet.prompt.optOut:Don't ask again`;
     public readonly promptBusyLabel = $localize`:@@lol.sheet.prompt.creating:Creating…`;
     public readonly wallHomeMessage = $localize`:@@lol.sheet.wall.homeMessage:Create your player profile to take part in the game community.`;
-    protected readonly rowPlaceholders = [0, 1, 2];
 
     public readonly optOut = signal(false);
+
+    protected readonly rowPlaceholders = [0, 1, 2];
 
     private readonly promptAnswered = signal(false);
 

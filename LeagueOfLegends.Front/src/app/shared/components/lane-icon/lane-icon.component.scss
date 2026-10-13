@@ -1,0 +1,16 @@
+:host {
+    display: inline-flex;
+    flex: none;
+}
+
+.lane-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    object-fit: contain;
+    filter: brightness(1.15);
+}
+
+:host-context(.lane-icon--lg) .lane-icon {
+    width: 1.55rem;
+    height: 1.55rem;
+}

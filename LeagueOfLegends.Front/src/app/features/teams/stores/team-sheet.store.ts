@@ -1,38 +1,43 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { TeamUpdateRequestDto } from "@features/teams/dto/team.dto";
-import { TeamSheet } from "@features/teams/models/team.model";
+import { TeamUpdateRequestDto } from "@features/teams/dto/team-update-request.dto";
+import { TeamSheet } from "@features/teams/models/team-sheet.model";
 import { TeamApplicationsService } from "@features/teams/services/team-applications.service";
 import { TeamsService } from "@features/teams/services/teams.service";
 import { firstValueFrom, Observable } from "rxjs";
 
 @Injectable()
 export class TeamSheetStore {
-    public readonly sheet = signal<TeamSheet | null>(null);
-    public readonly loading = signal(true);
-    public readonly notFound = signal(false);
-    public readonly saving = signal(false);
-    public readonly errorCode = signal<string | null>(null);
+    public readonly sheet = computed(() => this.$sheet());
+    public readonly loading = computed(() => this.$loading());
+    public readonly notFound = computed(() => this.$notFound());
+    public readonly saving = computed(() => this.$saving());
+    public readonly errorCode = computed(() => this.$errorCode());
 
-    public readonly canModerate = computed(() => this.sheet()?.canModerate() ?? false);
-    public readonly canEditSheet = computed(() => this.sheet()?.canEditSheet() ?? false);
-    public readonly isCaptain = computed(() => this.sheet()?.isCaptain() ?? false);
-    public readonly isMember = computed(() => this.sheet()?.isMember() ?? false);
+    public readonly canModerate = computed(() => this.$sheet()?.canModerate() ?? false);
+    public readonly canEditSheet = computed(() => this.$sheet()?.canEditSheet() ?? false);
+    public readonly isCaptain = computed(() => this.$sheet()?.isCaptain() ?? false);
+    public readonly isMember = computed(() => this.$sheet()?.isMember() ?? false);
 
     private readonly teams = inject(TeamsService);
     private readonly applications = inject(TeamApplicationsService);
     private publicId: string | null = null;
+    private readonly $sheet = signal<TeamSheet | null>(null);
+    private readonly $loading = signal(true);
+    private readonly $notFound = signal(false);
+    private readonly $saving = signal(false);
+    private readonly $errorCode = signal<string | null>(null);
 
     public async load(publicId: string): Promise<void> {
         this.publicId = publicId;
-        this.loading.set(true);
-        this.notFound.set(false);
+        this.$loading.set(true);
+        this.$notFound.set(false);
         try {
-            this.sheet.set(await firstValueFrom(this.teams.getByPublicId(publicId)));
+            this.$sheet.set(await firstValueFrom(this.teams.getByPublicId(publicId)));
         } catch {
-            this.sheet.set(null);
-            this.notFound.set(true);
+            this.$sheet.set(null);
+            this.$notFound.set(true);
         } finally {
-            this.loading.set(false);
+            this.$loading.set(false);
         }
     }
 
@@ -42,7 +47,7 @@ export class TeamSheetStore {
             return;
         }
         try {
-            this.sheet.set(await firstValueFrom(this.teams.getByPublicId(this.publicId)));
+            this.$sheet.set(await firstValueFrom(this.teams.getByPublicId(this.publicId)));
         } catch {
             // The displayed sheet stays valid; only the counters are one action behind.
         }
@@ -57,7 +62,9 @@ export class TeamSheetStore {
     }
 
     public setRoster(playerPublicId: string, idLane: number, rosterKind: string): Promise<boolean> {
-        return this.mutate((teamPublicId) => this.teams.setRoster({ teamPublicId, playerPublicId, idLane, rosterKind }));
+        return this.mutate((teamPublicId) =>
+            this.teams.setRoster({ teamPublicId, playerPublicId, idLane, rosterKind }),
+        );
     }
 
     public kick(playerPublicId: string): Promise<boolean> {
@@ -109,7 +116,7 @@ export class TeamSheetStore {
     }
 
     public async withdrawApplication(): Promise<boolean> {
-        const publicId = this.sheet()?.viewerApplicationPublicId;
+        const publicId = this.$sheet()?.viewerApplicationPublicId;
         if (!publicId) {
             return false;
         }
@@ -127,21 +134,21 @@ export class TeamSheetStore {
         }
 
         return this.run(async () => {
-            this.sheet.set(await firstValueFrom(action(teamPublicId)));
+            this.$sheet.set(await firstValueFrom(action(teamPublicId)));
         });
     }
 
     private async run(action: () => Promise<unknown>): Promise<boolean> {
-        this.saving.set(true);
-        this.errorCode.set(null);
+        this.$saving.set(true);
+        this.$errorCode.set(null);
         try {
             await action();
             return true;
         } catch (err: unknown) {
-            this.errorCode.set((err as { error?: { Code?: string } })?.error?.Code ?? "UNKNOWN");
+            this.$errorCode.set((err as { error?: { Code?: string } })?.error?.Code ?? "UNKNOWN");
             return false;
         } finally {
-            this.saving.set(false);
+            this.$saving.set(false);
         }
     }
 }

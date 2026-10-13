@@ -3,10 +3,10 @@ import {
     TEAM_RANK_COACH,
     TEAM_RANK_MANAGER,
     TEAM_RANK_PLAYER,
-    TeamSheet,
     isPlayerSlotRank,
     teamRankWeight,
 } from "./team.model";
+import { TeamSheet } from "./team-sheet.model";
 
 describe("team ranks", () => {
     it("orders captain > manager > coach > player", () => {

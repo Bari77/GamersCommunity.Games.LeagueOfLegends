@@ -1,6 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Component, input, model } from "@angular/core";
-import { TeamSheet } from "@features/teams/models/team.model";
+import { TeamSheet } from "@features/teams/models/team-sheet.model";
 import { NbButtonModule, NbIconModule } from "@nebular/theme";
 import { GameTermPipe } from "@shared/pipes/game-term.pipe";
 

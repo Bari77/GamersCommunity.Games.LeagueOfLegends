@@ -39,10 +39,10 @@ Scrims et tournois, inscription par joueur, badges team dans le shell, notificat
 
 ## Gateway
 
-| Resource | Public | Private (auth) |
-|----------|--------|----------------|
-| Events | Search, Get | Create, Update, Delete |
-| EventParticipants | List | Join, Leave |
+| Resource          | Public      | Private (auth)         |
+| ----------------- | ----------- | ---------------------- |
+| Events            | Search, Get | Create, Update, Delete |
+| EventParticipants | List        | Join, Leave            |
 
 ## Hors scope
 

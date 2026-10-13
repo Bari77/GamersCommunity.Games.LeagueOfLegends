@@ -3,10 +3,10 @@ import {
     LfgChatComponent as GcLfgChatComponent,
     LfgChatNeedsSheetDirective,
     LfgChatPublishErrorDirective,
-    type LfgChatComposerState,
-    type LfgChatLabels,
-    type LfgChatMessage as GcLfgChatMessage,
-    type LfgChatPosterOption,
+    LfgChatComposerState,
+    LfgChatLabels,
+    LfgChatMessage as GcLfgChatMessage,
+    LfgChatPosterOption,
 } from "@bari77/gc-widgets";
 import { LFG_KIND_TEAM, LfgKind, LfgMessage } from "@features/lfg/models/lfg-message.model";
 import { LfgChatStore } from "@features/lfg/stores/lfg-chat.store";
@@ -20,6 +20,7 @@ import { gameTerm } from "@shared/pipes/game-term.pipe";
     imports: [GcLfgChatComponent, LfgChatNeedsSheetDirective, LfgChatPublishErrorDirective, CreateSheetWallComponent],
     providers: [LfgChatStore],
     templateUrl: "./lfg-chat.component.html",
+    styleUrl: "./lfg-chat.component.scss",
 })
 export class LfgChatComponent implements OnInit, OnDestroy {
     public readonly kind = input<LfgKind>("player");

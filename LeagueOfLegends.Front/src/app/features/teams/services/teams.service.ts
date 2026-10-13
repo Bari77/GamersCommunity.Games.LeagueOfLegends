@@ -1,22 +1,18 @@
 import { Injectable } from "@angular/core";
-import {
-    TeamCreateRequestDto,
-    TeamDisbandRequestDto,
-    TeamListByPlayerRequestDto,
-    TeamMemberTargetRequestDto,
-    TeamSearchRequestDto,
-    TeamSetRankRequestDto,
-    TeamSetRosterRequestDto,
-    TeamSheetDto,
-    TeamUpdateRequestDto,
-} from "@features/teams/dto/team.dto";
-import {
-    PlayerTeam,
-    TeamDisbandResult,
-    TeamLeaveResult,
-    TeamSearchPage,
-    TeamSheet,
-} from "@features/teams/models/team.model";
+import { TeamUpdateRequestDto } from "@features/teams/dto/team-update-request.dto";
+import { TeamSheetDto } from "@features/teams/dto/team-sheet.dto";
+import { TeamSetRosterRequestDto } from "@features/teams/dto/team-set-roster-request.dto";
+import { TeamSetRankRequestDto } from "@features/teams/dto/team-set-rank-request.dto";
+import { TeamSearchRequestDto } from "@features/teams/dto/team-search-request.dto";
+import { TeamMemberTargetRequestDto } from "@features/teams/dto/team-member-target-request.dto";
+import { TeamListByPlayerRequestDto } from "@features/teams/dto/team-list-by-player-request.dto";
+import { TeamDisbandRequestDto } from "@features/teams/dto/team-disband-request.dto";
+import { TeamCreateRequestDto } from "@features/teams/dto/team-create-request.dto";
+import { TeamSheet } from "@features/teams/models/team-sheet.model";
+import { TeamSearchPage } from "@features/teams/models/team-search-page.model";
+import { TeamLeaveResult } from "@features/teams/models/team-leave-result.model";
+import { TeamDisbandResult } from "@features/teams/models/team-disband-result.model";
+import { PlayerTeam } from "@features/teams/models/player-team.model";
 import { BaseService } from "@shared/services/base.service";
 import { Observable } from "rxjs";
 

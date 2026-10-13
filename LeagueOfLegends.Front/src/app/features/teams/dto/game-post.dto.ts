@@ -12,35 +12,3 @@ export interface GamePostDto {
     moderationReason?: string | null;
     moderatedAt?: string | null;
 }
-
-export interface GamePostPageDto {
-    items?: GamePostDto[];
-    hasMore?: boolean;
-}
-
-export interface TeamWallRequestDto {
-    teamPublicId: string;
-    beforeCreationDate?: string;
-    beforePublicId?: string;
-    take?: number;
-}
-
-export interface GamePostCreateRequestDto {
-    teamPublicId: string;
-    body: string;
-}
-
-export interface GamePostUpdateRequestDto {
-    publicId: string;
-    body: string;
-}
-
-export interface GamePostModerateRequestDto {
-    publicId: string;
-    approve: boolean;
-    reason?: string | null;
-}
-
-export interface GamePostTargetRequestDto {
-    publicId: string;
-}

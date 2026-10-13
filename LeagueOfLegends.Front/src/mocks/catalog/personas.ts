@@ -1,4 +1,4 @@
-import { mockPortraitUrl as portraitFromAssets, type PlaygroundPersona } from "@bari77/gc-playground";
+import { mockPortraitUrl as portraitFromAssets, PlaygroundPersona } from "@bari77/gc-playground";
 import { environment } from "../../environments/environment";
 import { mockUuid } from "./ids";
 

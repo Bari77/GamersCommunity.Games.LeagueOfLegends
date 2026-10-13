@@ -62,14 +62,14 @@ Pont identité shell ↔ microservice, fiche joueur publique (le joueur **est** 
 
 ## Gateway
 
-| Resource | Public | Private (auth) |
-|----------|--------|----------------|
-| Players | Get, Resolve, Options | Load, Update |
-| HomeFeed | Get | — |
-| LfgAds | ListRecent, ListBefore | Create |
-| PlayerPictures | List | Create, Update, Delete |
-| PlayerVideos | List | Create, Update, Delete |
-| PlayerStreams | List | Create, Update, Delete |
+| Resource       | Public                 | Private (auth)         |
+| -------------- | ---------------------- | ---------------------- |
+| Players        | Get, Resolve, Options  | Load, Update           |
+| HomeFeed       | Get                    | —                      |
+| LfgAds         | ListRecent, ListBefore | Create                 |
+| PlayerPictures | List                   | Create, Update, Delete |
+| PlayerVideos   | List                   | Create, Update, Delete |
+| PlayerStreams  | List                   | Create, Update, Delete |
 
 La resource Gateway `Summoners` posée en B0 se retire dans cette spec.
 
@@ -83,8 +83,8 @@ La resource Gateway `Summoners` posée en B0 se retire dans cette spec.
 
 ## Matrice d’accès
 
-| Visiteur | Profil public | Fiche joueur |
-|----------|---------------|--------------|
-| Anonyme | identité publique | fiche publique si existe |
-| Connecté | + amis / DM / report | + lien depuis le profil |
-| Propriétaire | édition profil | `Load` + `Update` fiche + layout |
+| Visiteur     | Profil public        | Fiche joueur                     |
+| ------------ | -------------------- | -------------------------------- |
+| Anonyme      | identité publique    | fiche publique si existe         |
+| Connecté     | + amis / DM / report | + lien depuis le profil          |
+| Propriétaire | édition profil       | `Load` + `Update` fiche + layout |

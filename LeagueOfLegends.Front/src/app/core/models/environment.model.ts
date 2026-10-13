@@ -1,7 +1,7 @@
 export interface Environment {
-  production: boolean;
-  apiUrl: string;
-  useMocks?: boolean;
-  assetsBaseUrl: string;
-  hubUrl?: string;
+    production: boolean;
+    apiUrl: string;
+    useMocks?: boolean;
+    assetsBaseUrl: string;
+    hubUrl?: string;
 }

@@ -1,7 +1,9 @@
 import { Component, computed, HostListener, input, output, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { PlayerChampionUpdateDto } from "@features/players/dto/player.dto";
-import { PlayerChampion, PlayerOptions, sortChampionsByLanePriority } from "@features/players/models/player.model";
+import { PlayerChampionUpdateDto } from "@features/players/dto/player-champion-update.dto";
+import { sortChampionsByLanePriority } from "@features/players/models/player.model";
+import { PlayerOptions } from "@features/players/models/player-options.model";
+import { PlayerChampion } from "@features/players/models/player-champion.model";
 import { ChampionCardComponent } from "@features/players/components/champion-card/champion-card.component";
 import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
 import { gameTerm, GameTermPipe } from "@shared/pipes/game-term.pipe";
@@ -36,7 +38,6 @@ export class ChampionBoardComponent {
     public readonly searchOpen = signal(false);
     public readonly draftKind = signal("pool");
     public readonly draftLaneId = signal<number | null>(null);
-    protected readonly championPlaceholder = $localize`:@@lol.player.champions.search:Search a champion`;
 
     public readonly sortedChampions = computed(() => {
         const [primary, ...secondaries] = this.lanePriority();
@@ -63,6 +64,16 @@ export class ChampionBoardComponent {
             .sort((left, right) => gameTerm(left.code).localeCompare(gameTerm(right.code)));
     });
 
+    protected readonly championPlaceholder = $localize`:@@lol.player.champions.search:Search a champion`;
+
+    @HostListener("document:mousedown", ["$event"])
+    public onDocumentMouseDown(event: MouseEvent): void {
+        const host = event.target as HTMLElement | null;
+        if (!host?.closest(".champion-board__search")) {
+            this.searchOpen.set(false);
+        }
+    }
+
     public openSearch(): void {
         this.searchOpen.set(true);
     }
@@ -81,14 +92,6 @@ export class ChampionBoardComponent {
         this.draftChampionId.set(id);
         this.championQuery.set(champion ? gameTerm(champion.code) : "");
         this.searchOpen.set(false);
-    }
-
-    @HostListener("document:mousedown", ["$event"])
-    public onDocumentMouseDown(event: MouseEvent): void {
-        const host = event.target as HTMLElement | null;
-        if (!host?.closest(".champion-board__search")) {
-            this.searchOpen.set(false);
-        }
     }
 
     public add(): void {
@@ -120,5 +123,8 @@ export class ChampionBoardComponent {
 }
 
 function normalizeChampionQuery(value: string): string {
-    return value.trim().toLowerCase().replace(/['’\s\-_.]/g, "");
+    return value
+        .trim()
+        .toLowerCase()
+        .replace(/['’\s\-_.]/g, "");
 }

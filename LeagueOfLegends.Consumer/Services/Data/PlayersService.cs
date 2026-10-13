@@ -558,14 +558,18 @@ public class PlayersService(LeagueOfLegendsDbContext context) : IBusService
     private async Task<Player> ResolvePlayerAsync(BusMessage message, CancellationToken ct)
     {
         if (message.PublicId is Guid publicId)
+        {
             return await context.Players.AsNoTracking()
                        .FirstOrDefaultAsync(p => p.PublicId == publicId, ct)
                    ?? throw new NotFoundException("NOT_FOUND", "Cannot find ressource");
+        }
 
         if (message.Id is int id)
+        {
             return await context.Players.AsNoTracking()
                        .FirstOrDefaultAsync(p => p.Id == id, ct)
                    ?? throw new NotFoundException("NOT_FOUND", "Cannot find ressource");
+        }
 
         throw new BadRequestException("ID_MANDATORY", "Id mandatory");
     }

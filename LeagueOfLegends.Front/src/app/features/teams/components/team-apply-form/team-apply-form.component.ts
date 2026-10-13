@@ -6,12 +6,7 @@ import { APPLICATION_PENDING } from "@features/teams/models/team-application.mod
 import { TEAM_RANK_COACH, TEAM_RANK_MANAGER, TEAM_RANK_PLAYER } from "@features/teams/models/team.model";
 import { NbButtonModule, NbCardModule, NbSelectModule } from "@nebular/theme";
 import { GameTermPipe } from "@shared/pipes/game-term.pipe";
-
-export interface TeamApplicationDraft {
-    message: string;
-    soughtRank: string;
-    idLane: number | null;
-}
+import { TeamApplicationDraft } from "./team-application-draft.model";
 
 @Component({
     standalone: true,
@@ -42,11 +37,7 @@ export class TeamApplyFormComponent {
 
     protected readonly canApply = computed(() => {
         const needsLane = this.soughtRank() === TEAM_RANK_PLAYER;
-        return (
-            !this.saving() &&
-            !isRichHtmlBlank(this.message()) &&
-            (!needsLane || this.idLane() !== null)
-        );
+        return !this.saving() && !isRichHtmlBlank(this.message()) && (!needsLane || this.idLane() !== null);
     });
 
     protected submit(): void {

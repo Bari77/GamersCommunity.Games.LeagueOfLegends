@@ -1,4 +1,4 @@
-import type { WidgetCatalog, WidgetPageVisibilityOption } from "@bari77/gc-widgets";
+import { WidgetCatalog, WidgetPageVisibilityOption } from "@bari77/gc-widgets";
 import {
     TEAM_RANK_CAPTAIN,
     TEAM_RANK_COACH,

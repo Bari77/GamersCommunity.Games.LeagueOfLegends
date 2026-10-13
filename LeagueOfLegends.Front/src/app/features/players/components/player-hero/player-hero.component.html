@@ -17,7 +17,14 @@
                 >
                     <span class="player-hero__game-name">{{ currentGame()?.title ?? gameNameFallback }}</span>
                     <svg class="player-hero__chevron" viewBox="0 0 12 8" aria-hidden="true">
-                        <path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M1 1.5 6 6.5 11 1.5"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
                     </svg>
                 </button>
                 @if (menuOpen()) {
@@ -25,7 +32,11 @@
                         @for (game of otherGames(); track game.id) {
                             <li>
                                 @if (game.available) {
-                                    <a class="player-hero__menu-item" [routerLink]="gameLink(game)" (click)="closeMenu()">
+                                    <a
+                                        class="player-hero__menu-item"
+                                        [routerLink]="gameLink(game)"
+                                        (click)="closeMenu()"
+                                    >
                                         <img [src]="game.iconUrl" alt="" />
                                         <span>{{ game.title }}</span>
                                     </a>

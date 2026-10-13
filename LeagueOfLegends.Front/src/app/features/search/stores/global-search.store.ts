@@ -1,24 +1,15 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { PlayerSummary } from "@features/home/models/home-feed.model";
+import { PlayerSummary } from "@features/home/models/player-summary.model";
+import { PlayerSearchRequestDto } from "@features/players/dto/player-search-request.dto";
 import { PlayersService } from "@features/players/services/players.service";
-import { TeamSummary } from "@features/teams/models/team.model";
+import { TeamSearchRequestDto } from "@features/teams/dto/team-search-request.dto";
+import { TeamSummary } from "@features/teams/models/team-summary.model";
 import { TeamsService } from "@features/teams/services/teams.service";
 import { firstValueFrom } from "rxjs";
+import { SearchCriteria } from "../models/search-criteria.model";
+import { SearchHit } from "../models/search-hit.model";
 
 export type SearchScope = "all" | "teams" | "players";
-
-export interface SearchCriteria {
-    query: string;
-    scope: SearchScope;
-    idRegion: number | null;
-}
-
-/** A result the page can jump to directly when typing a full handle. */
-export interface SearchHit {
-    kind: "team" | "player";
-    publicId: string;
-}
-
 export const EMPTY_CRITERIA: SearchCriteria = {
     query: "",
     scope: "all",
@@ -37,31 +28,31 @@ const PAGE_SIZE = 20;
  */
 @Injectable()
 export class GlobalSearchStore {
-    public readonly teams = signal<TeamSummary[]>([]);
-    public readonly players = signal<PlayerSummary[]>([]);
+    public readonly teams = computed(() => this.$teams());
+    public readonly players = computed(() => this.$players());
 
-    public readonly loading = signal(true);
-    public readonly loadingMore = signal(false);
+    public readonly loading = computed(() => this.$loading());
+    public readonly loadingMore = computed(() => this.$loadingMore());
 
     /** Only meaningful on a single-type scope; the overview offers "see all" links instead. */
-    public readonly hasMore = signal(false);
+    public readonly hasMore = computed(() => this.$hasMore());
 
-    public readonly criteria = signal<SearchCriteria>(EMPTY_CRITERIA);
+    public readonly criteria = computed(() => this.$criteria());
 
-    public readonly isEmpty = computed(() => this.teams().length === 0 && this.players().length === 0);
+    public readonly isEmpty = computed(() => this.$teams().length === 0 && this.$players().length === 0);
 
     /**
      * The single team or player answering a handle search, which is what typing `Name#1234` asks
      * for.
      */
     public readonly handleMatch = computed<SearchHit | null>(() => {
-        const criteria = this.criteria();
+        const criteria = this.$criteria();
         if (criteria.scope !== "all" || !criteria.query.includes("#")) {
             return null;
         }
 
-        const teams = this.teams();
-        const players = this.players();
+        const teams = this.$teams();
+        const players = this.$players();
         if (teams.length + players.length !== 1) {
             return null;
         }
@@ -79,11 +70,17 @@ export class GlobalSearchStore {
      * late answer obsolete, and applying it would show results for a term no longer on screen.
      */
     private token = 0;
+    private readonly $teams = signal<TeamSummary[]>([]);
+    private readonly $players = signal<PlayerSummary[]>([]);
+    private readonly $loading = signal(true);
+    private readonly $loadingMore = signal(false);
+    private readonly $hasMore = signal(false);
+    private readonly $criteria = signal<SearchCriteria>(EMPTY_CRITERIA);
 
     public async search(criteria: SearchCriteria): Promise<void> {
         const current = ++this.token;
-        this.criteria.set(criteria);
-        this.loading.set(true);
+        this.$criteria.set(criteria);
+        this.$loading.set(true);
 
         const take = criteria.scope === "all" ? OVERVIEW_TAKE : PAGE_SIZE;
 
@@ -101,24 +98,24 @@ export class GlobalSearchStore {
                 return;
             }
 
-            this.teams.set(teams?.items ?? []);
-            this.players.set(players?.items ?? []);
-            this.hasMore.set(criteria.scope === "all" ? false : (teams ?? players)?.hasMore === true);
+            this.$teams.set(teams?.items ?? []);
+            this.$players.set(players?.items ?? []);
+            this.$hasMore.set(criteria.scope === "all" ? false : (teams ?? players)?.hasMore === true);
         } finally {
             if (current === this.token) {
-                this.loading.set(false);
+                this.$loading.set(false);
             }
         }
     }
 
     public async loadMore(): Promise<void> {
-        const criteria = this.criteria();
-        if (criteria.scope === "all" || !this.hasMore() || this.loadingMore()) {
+        const criteria = this.$criteria();
+        if (criteria.scope === "all" || !this.$hasMore() || this.$loadingMore()) {
             return;
         }
 
         const token = this.token;
-        this.loadingMore.set(true);
+        this.$loadingMore.set(true);
 
         try {
             if (criteria.scope === "teams") {
@@ -127,12 +124,12 @@ export class GlobalSearchStore {
                 await this.appendPlayers(criteria, token);
             }
         } finally {
-            this.loadingMore.set(false);
+            this.$loadingMore.set(false);
         }
     }
 
     private async appendTeams(criteria: SearchCriteria, token: number): Promise<void> {
-        const current = this.teams();
+        const current = this.$teams();
         const last = current.at(-1);
         if (!last) {
             return;
@@ -152,12 +149,12 @@ export class GlobalSearchStore {
         }
 
         const known = new Set(current.map((item) => item.publicId));
-        this.teams.set([...current, ...page.items.filter((item) => !known.has(item.publicId))]);
-        this.hasMore.set(page.hasMore);
+        this.$teams.set([...current, ...page.items.filter((item) => !known.has(item.publicId))]);
+        this.$hasMore.set(page.hasMore);
     }
 
     private async appendPlayers(criteria: SearchCriteria, token: number): Promise<void> {
-        const current = this.players();
+        const current = this.$players();
         const last = current.at(-1);
         if (!last) {
             return;
@@ -177,15 +174,15 @@ export class GlobalSearchStore {
         }
 
         const known = new Set(current.map((item) => item.publicId));
-        this.players.set([...current, ...page.items.filter((item) => !known.has(item.publicId))]);
-        this.hasMore.set(page.hasMore);
+        this.$players.set([...current, ...page.items.filter((item) => !known.has(item.publicId))]);
+        this.$hasMore.set(page.hasMore);
     }
 
     private wants(criteria: SearchCriteria, type: Exclude<SearchScope, "all">): boolean {
         return criteria.scope === "all" || criteria.scope === type;
     }
 
-    private teamRequest(criteria: SearchCriteria) {
+    private teamRequest(criteria: SearchCriteria): TeamSearchRequestDto {
         const query = criteria.query.trim();
         return {
             ...(query ? { query } : {}),
@@ -193,7 +190,7 @@ export class GlobalSearchStore {
         };
     }
 
-    private playerRequest(criteria: SearchCriteria) {
+    private playerRequest(criteria: SearchCriteria): PlayerSearchRequestDto {
         const query = criteria.query.trim();
         return {
             ...(query ? { query } : {}),

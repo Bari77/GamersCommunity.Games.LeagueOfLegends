@@ -11,13 +11,14 @@ import {
 import defaultLayout from "../../../../../../config/team/workspace.default.json";
 import { LOL_GAME_URL } from "@core/constants/game.constants";
 import { GameMembershipStore } from "@core/stores/game-membership.store";
-import { PlayerOptions } from "@features/players/models/player.model";
+import { PlayerOptions } from "@features/players/models/player-options.model";
 import { PlayersService } from "@features/players/services/players.service";
 import { TeamAdminComponent } from "@features/teams/components/team-admin/team-admin.component";
-import { TeamApplicationDraft } from "@features/teams/components/team-apply-form/team-apply-form.component";
+import { TeamApplicationDraft } from "@features/teams/components/team-apply-form/team-application-draft.model";
 import { TeamHeroComponent } from "@features/teams/components/team-hero/team-hero.component";
-import { TeamRankChange, TeamRosterChange } from "@features/teams/components/team-roster/team-roster.component";
-import { TeamUpdateRequestDto } from "@features/teams/dto/team.dto";
+import { TeamRosterChange } from "@features/teams/components/team-roster/team-roster-change.model";
+import { TeamRankChange } from "@features/teams/components/team-roster/team-rank-change.model";
+import { TeamUpdateRequestDto } from "@features/teams/dto/team-update-request.dto";
 import { TeamLinkStore } from "@features/teams/stores/team-link.store";
 import { TeamSheetStore } from "@features/teams/stores/team-sheet.store";
 import {

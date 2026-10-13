@@ -3,23 +3,20 @@ import {
     EntityWallComponent,
     EntityWallComposerDirective,
     EntityWallEditDirective,
-    type EntityWallLabels,
+    EntityWallLabels,
 } from "@bari77/gc-widgets";
 import { TeamPostFormComponent } from "@features/teams/components/team-post-form/team-post-form.component";
 import { GamePost } from "@features/teams/models/game-post.model";
-import { GamePostDraft, TeamWallStore } from "@features/teams/stores/team-wall.store";
+import { TeamWallStore } from "@features/teams/stores/team-wall.store";
+import { GamePostDraft } from "@features/teams/models/game-post-draft.model";
 
 @Component({
     standalone: true,
     selector: "lol-team-wall",
-    imports: [
-        EntityWallComponent,
-        EntityWallComposerDirective,
-        EntityWallEditDirective,
-        TeamPostFormComponent,
-    ],
+    imports: [EntityWallComponent, EntityWallComposerDirective, EntityWallEditDirective, TeamPostFormComponent],
     providers: [TeamWallStore],
     templateUrl: "./team-wall.component.html",
+    styleUrl: "./team-wall.component.scss",
 })
 export class TeamWallComponent implements OnInit {
     public readonly teamPublicId = input.required<string>();
@@ -75,7 +72,7 @@ export class TeamWallComponent implements OnInit {
     }
 
     protected onEditStart(): void {
-        this.store.errorCode.set(null);
+        this.store.clearError();
         this.queuedNotice.set(false);
     }
 

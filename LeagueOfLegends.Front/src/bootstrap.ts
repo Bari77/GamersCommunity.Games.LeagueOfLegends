@@ -1,7 +1,7 @@
 import { bootstrapApplication } from "@angular/platform-browser";
 import { bootstrapMocks, shouldUseMocks } from "@bari77/gc-playground";
 import { appConfig } from "./app/app.config";
-import { App } from "./app/app";
+import { AppComponent } from "./app/app.component";
 import { environment } from "./environments/environment";
 
 function removeBootstrapSplash(): void {
@@ -19,7 +19,7 @@ async function main(): Promise<void> {
         const { worker } = await import("./mocks/browser");
         await worker.start({ onUnhandledRequest: "bypass" });
     });
-    await bootstrapApplication(App, appConfig);
+    await bootstrapApplication(AppComponent, appConfig);
     removeBootstrapSplash();
 }
 

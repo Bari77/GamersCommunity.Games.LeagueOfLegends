@@ -36,7 +36,10 @@
                         <div class="team-application__main">
                             <div class="team-application__head">
                                 @if (application.hasPlayerSheet()) {
-                                    <a class="team-application__player" [routerLink]="playerLink(application.playerPublicId)">
+                                    <a
+                                        class="team-application__player"
+                                        [routerLink]="playerLink(application.playerPublicId)"
+                                    >
                                         {{ application.playerHandleLabel() }}
                                     </a>
                                 } @else {
@@ -97,9 +100,7 @@
                         </span>
                     }
                     @case ("STAFF_SLOT_TAKEN") {
-                        <span i18n="@@lol.team.applications.error.staffTaken">
-                            That staff seat is already taken.
-                        </span>
+                        <span i18n="@@lol.team.applications.error.staffTaken">That staff seat is already taken.</span>
                     }
                     @case ("ALREADY_MEMBER") {
                         <span i18n="@@lol.team.applications.error.alreadyMember">

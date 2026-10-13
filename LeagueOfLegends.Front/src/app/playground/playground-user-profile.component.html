@@ -1,0 +1,22 @@
+<section class="playground-user gc-enter">
+    <nb-card>
+        <nb-card-header i18n="@@lol.playground.user.title">Community profile</nb-card-header>
+        <nb-card-body class="playground-user__body">
+            <img class="playground-user__avatar" [src]="avatarUrl()" [alt]="handle()" />
+            <div>
+                <h1 class="playground-user__handle gc-display">{{ handle() }}</h1>
+                <p class="playground-user__hint" i18n="@@lol.playground.user.hint">
+                    In production this page lives on the Platform. The playground only stubs it so game links keep
+                    working.
+                </p>
+            </div>
+        </nb-card-body>
+        @if (playerPublicId(); as playerId) {
+            <nb-card-footer>
+                <a nbButton status="primary" [routerLink]="[gameUrl, 'players', playerId]">
+                    <span i18n="@@lol.playground.user.sheet">Open the game sheet</span>
+                </a>
+            </nb-card-footer>
+        }
+    </nb-card>
+</section>

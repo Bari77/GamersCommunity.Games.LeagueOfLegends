@@ -1,0 +1,5 @@
+@if (src(); as url) {
+    @if (!broken()) {
+        <img class="lane-icon" [src]="url" [alt]="alt()" (error)="broken.set(true)" />
+    }
+}

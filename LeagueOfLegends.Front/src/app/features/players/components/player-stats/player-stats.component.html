@@ -209,7 +209,10 @@
                     @if (player.secondaryLanes.length) {
                         @for (lane of player.secondaryLanes; track lane.id; let last = $last) {
                             <lol-lane-icon [code]="lane.code" [alt]="lane.code | gameTerm" />
-                            {{ lane.code | gameTerm }}@if (!last) {<span>·</span>}
+                            {{ lane.code | gameTerm }}
+                            @if (!last) {
+                                <span>·</span>
+                            }
                         }
                     } @else {
                         —

@@ -171,7 +171,9 @@ public abstract class PlayerMediaService<TEntity>(LeagueOfLegendsDbContext conte
             throw new BadRequestException("URL_TOO_LONG", $"URL cannot exceed {MaxUrlLength} characters");
         if (!Uri.TryCreate(value, UriKind.Absolute, out var uri)
             || (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
+        {
             throw new BadRequestException("URL_INVALID", "URL must be an absolute http(s) address");
+        }
 
         return value;
     }

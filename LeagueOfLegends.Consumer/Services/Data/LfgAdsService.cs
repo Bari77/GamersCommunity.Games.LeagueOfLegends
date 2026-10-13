@@ -1,13 +1,12 @@
-using GamersCommunity.Core.Realtime;
 using GamersCommunity.Core.Enums;
 using GamersCommunity.Core.Exceptions;
 using GamersCommunity.Core.Platform;
 using GamersCommunity.Core.Rabbit;
+using GamersCommunity.Core.Realtime;
 using GamersCommunity.Core.Serialization;
 using GamersCommunity.Core.Services;
 using LeagueOfLegends.Consumer.Models;
 using LeagueOfLegends.Consumer.Realtime;
-using LeagueOfLegends.Consumer.Integration;
 using LeagueOfLegends.Consumer.Security;
 using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Models;
@@ -198,7 +197,7 @@ public class LfgAdsService(
         var kind = team is null ? LfgAdKinds.Player : LfgAdKinds.Team;
         await EnsureNotInCooldownAsync(player.Id, team?.Id, kind, postedAt, ct);
 
-        int? idLane = request.IdLane;
+        var idLane = request.IdLane;
         if (idLane is { } laneId)
         {
             var laneExists = await _context.Lanes.AsNoTracking().AnyAsync(l => l.Id == laneId, ct);

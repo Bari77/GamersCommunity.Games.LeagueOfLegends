@@ -1,11 +1,9 @@
 import { Injectable } from "@angular/core";
-import {
-    TeamApplicationCreateRequestDto,
-    TeamApplicationDto,
-    TeamApplicationListRequestDto,
-    TeamApplicationReviewRequestDto,
-    TeamApplicationTargetRequestDto,
-} from "@features/teams/dto/team-application.dto";
+import { TeamApplicationDto } from "@features/teams/dto/team-application.dto";
+import { TeamApplicationTargetRequestDto } from "@features/teams/dto/team-application-target-request.dto";
+import { TeamApplicationReviewRequestDto } from "@features/teams/dto/team-application-review-request.dto";
+import { TeamApplicationListRequestDto } from "@features/teams/dto/team-application-list-request.dto";
+import { TeamApplicationCreateRequestDto } from "@features/teams/dto/team-application-create-request.dto";
 import { TeamApplication } from "@features/teams/models/team-application.model";
 import { BaseService } from "@shared/services/base.service";
 import { Observable } from "rxjs";

@@ -1,0 +1,11 @@
+@if (!broken()) {
+    <span
+        class="rank-emblem"
+        [class.rank-emblem--crest]="size() === 'crest'"
+        [class.rank-emblem--hero]="size() === 'hero'"
+        [class.rank-emblem--emblem]="size() === 'emblem'"
+        [class.rank-emblem--crop]="crop()"
+    >
+        <img [src]="src()" [alt]="alt()" (error)="broken.set(true)" />
+    </span>
+}

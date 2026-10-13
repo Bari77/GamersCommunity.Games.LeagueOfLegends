@@ -15,24 +15,3 @@ export interface TeamApplicationDto {
     discriminator: string;
     avatarUrl: string;
 }
-
-export interface TeamApplicationCreateRequestDto {
-    teamPublicId: string;
-    message: string;
-    soughtRank: string;
-    idLane?: number | null;
-}
-
-export interface TeamApplicationListRequestDto {
-    teamPublicId: string;
-    status?: string;
-}
-
-export interface TeamApplicationReviewRequestDto {
-    publicId: string;
-    accept: boolean;
-}
-
-export interface TeamApplicationTargetRequestDto {
-    publicId: string;
-}

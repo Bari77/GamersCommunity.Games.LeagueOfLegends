@@ -1,4 +1,4 @@
-import type { WidgetCatalog, WidgetPageVisibilityOption } from "@bari77/gc-widgets";
+import { WidgetCatalog, WidgetPageVisibilityOption } from "@bari77/gc-widgets";
 
 export const PAGE_VISIBILITY_PUBLIC = "public";
 export const PAGE_VISIBILITY_FRIENDS = "friends";

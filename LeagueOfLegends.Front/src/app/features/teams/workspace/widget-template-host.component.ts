@@ -8,19 +8,18 @@ import {
 } from "@bari77/gc-widgets";
 import { CatalogItem } from "@features/players/models/player.model";
 import { PlayerPresentationComponent } from "@features/players/components/player-presentation/player-presentation.component";
-import {
-    TeamApplicationDraft,
-    TeamApplyFormComponent,
-} from "@features/teams/components/team-apply-form/team-apply-form.component";
+import { TeamApplyFormComponent } from "@features/teams/components/team-apply-form/team-apply-form.component";
+import { TeamApplicationDraft } from "@features/teams/components/team-apply-form/team-application-draft.model";
 import { TeamApplicationsComponent } from "@features/teams/components/team-applications/team-applications.component";
 import { TeamLinkAdminComponent } from "@features/teams/components/team-link-admin/team-link-admin.component";
 import { TeamLinkBoardComponent } from "@features/teams/components/team-link-board/team-link-board.component";
-import { TeamRankChange, TeamRosterChange } from "@features/teams/components/team-roster/team-roster.component";
+import { TeamRosterChange } from "@features/teams/components/team-roster/team-roster-change.model";
+import { TeamRankChange } from "@features/teams/components/team-roster/team-rank-change.model";
 import { TeamRosterComponent } from "@features/teams/components/team-roster/team-roster.component";
 import { TeamStatsComponent } from "@features/teams/components/team-stats/team-stats.component";
 import { TeamWallComponent } from "@features/teams/components/team-wall/team-wall.component";
-import { TeamUpdateRequestDto } from "@features/teams/dto/team.dto";
-import { TeamSheet } from "@features/teams/models/team.model";
+import { TeamUpdateRequestDto } from "@features/teams/dto/team-update-request.dto";
+import { TeamSheet } from "@features/teams/models/team-sheet.model";
 import {
     WORKSPACE_PREVIEW_TEAM,
     WORKSPACE_PREVIEW_TEAM_LINKS,
@@ -91,9 +90,7 @@ export class LolTeamWidgetTemplateHostComponent {
     protected readonly previewVideos = WORKSPACE_PREVIEW_TEAM_VIDEOS;
 
     /** Managers and the captain edit widget data; rearranging the page is a mode of its own. */
-    protected readonly canEditFields = computed(
-        () => !this.editing() && !this.preview() && this.view().canEditSheet(),
-    );
+    protected readonly canEditFields = computed(() => !this.editing() && !this.preview() && this.view().canEditSheet());
 
     protected galleryItems(settings: WidgetSettings): GcGalleryItem[] {
         return this.readGallery(settings, this.previewPhotos);

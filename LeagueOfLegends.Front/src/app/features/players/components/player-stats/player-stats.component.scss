@@ -49,8 +49,7 @@
     border: 1px solid rgb(255 255 255 / 8%);
     border-radius: 0.9rem;
     background:
-        radial-gradient(80% 90% at 50% 15%, var(--rank-glow, rgb(200 170 110 / 16%)), transparent 62%),
-        rgb(0 0 0 / 22%);
+        radial-gradient(80% 90% at 50% 15%, var(--rank-glow, rgb(200 170 110 / 16%)), transparent 62%), rgb(0 0 0 / 22%);
     text-align: center;
 
     strong {
@@ -58,16 +57,36 @@
         font-weight: 650;
     }
 
-    &[data-tier="iron"] { --rank-glow: rgb(140 140 140 / 22%); }
-    &[data-tier="bronze"] { --rank-glow: rgb(176 138 90 / 28%); }
-    &[data-tier="silver"] { --rank-glow: rgb(176 192 204 / 26%); }
-    &[data-tier="gold"] { --rank-glow: rgb(212 175 55 / 30%); }
-    &[data-tier="platinum"] { --rank-glow: rgb(94 200 200 / 28%); }
-    &[data-tier="emerald"] { --rank-glow: rgb(61 191 122 / 28%); }
-    &[data-tier="diamond"] { --rank-glow: rgb(90 168 255 / 30%); }
-    &[data-tier="master"] { --rank-glow: rgb(155 89 208 / 30%); }
-    &[data-tier="grandmaster"] { --rank-glow: rgb(192 57 43 / 32%); }
-    &[data-tier="challenger"] { --rank-glow: rgb(241 196 15 / 34%); }
+    &[data-tier="iron"] {
+        --rank-glow: rgb(140 140 140 / 22%);
+    }
+    &[data-tier="bronze"] {
+        --rank-glow: rgb(176 138 90 / 28%);
+    }
+    &[data-tier="silver"] {
+        --rank-glow: rgb(176 192 204 / 26%);
+    }
+    &[data-tier="gold"] {
+        --rank-glow: rgb(212 175 55 / 30%);
+    }
+    &[data-tier="platinum"] {
+        --rank-glow: rgb(94 200 200 / 28%);
+    }
+    &[data-tier="emerald"] {
+        --rank-glow: rgb(61 191 122 / 28%);
+    }
+    &[data-tier="diamond"] {
+        --rank-glow: rgb(90 168 255 / 30%);
+    }
+    &[data-tier="master"] {
+        --rank-glow: rgb(155 89 208 / 30%);
+    }
+    &[data-tier="grandmaster"] {
+        --rank-glow: rgb(192 57 43 / 32%);
+    }
+    &[data-tier="challenger"] {
+        --rank-glow: rgb(241 196 15 / 34%);
+    }
 }
 
 .stats__queue {

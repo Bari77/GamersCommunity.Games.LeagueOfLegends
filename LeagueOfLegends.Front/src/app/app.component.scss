@@ -1,0 +1,46 @@
+.playground-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.playground-banner {
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.playground-session {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.playground-session--loading {
+    pointer-events: none;
+}
+
+.playground-session__handle {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.playground-session__avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgb(255 255 255 / 16%);
+}
+
+.playground-session__avatar--fallback {
+    display: grid;
+    place-items: center;
+    background: rgb(255 255 255 / 10%);
+    font-size: 0.85rem;
+    font-weight: 700;
+}

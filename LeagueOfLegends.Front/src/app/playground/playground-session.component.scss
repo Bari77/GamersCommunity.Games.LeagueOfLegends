@@ -1,0 +1,30 @@
+.playground-session {
+    width: 100%;
+    max-width: 36rem;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+}
+
+.playground-session__label {
+    display: block;
+    margin: 1rem 0 0.35rem;
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.playground-session__select {
+    width: 100%;
+}
+
+.playground-session__option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.playground-session__option img {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    object-fit: cover;
+}

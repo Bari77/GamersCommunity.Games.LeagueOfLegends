@@ -27,7 +27,9 @@
                             </button>
                         </li>
                     } @empty {
-                        <li class="champion-board__no-match" i18n="@@lol.player.champions.noMatch">No champion matches.</li>
+                        <li class="champion-board__no-match" i18n="@@lol.player.champions.noMatch">
+                            No champion matches.
+                        </li>
                     }
                 </ul>
             }
@@ -57,7 +59,14 @@
                 </nb-option>
             }
         </nb-select>
-        <button nbButton size="small" status="primary" type="button" [disabled]="draftChampionId() == null || saving()" (click)="add()">
+        <button
+            nbButton
+            size="small"
+            status="primary"
+            type="button"
+            [disabled]="draftChampionId() === null || saving()"
+            (click)="add()"
+        >
             <span i18n="@@lol.player.champions.add">Add</span>
         </button>
     </div>
@@ -66,15 +75,9 @@
 @if (sortedChampions().length) {
     <div class="champion-board__grid">
         @for (champion of sortedChampions(); track champion.id) {
-            <lol-champion-card
-                [champion]="champion"
-                [editable]="editable()"
-                (remove)="remove(champion.id)"
-            />
+            <lol-champion-card [champion]="champion" [editable]="editable()" (remove)="remove(champion.id)" />
         }
     </div>
 } @else {
-    <p class="champion-board__empty" i18n="@@lol.player.champions.empty">
-        No champion in the pool yet.
-    </p>
+    <p class="champion-board__empty" i18n="@@lol.player.champions.empty">No champion in the pool yet.</p>
 }

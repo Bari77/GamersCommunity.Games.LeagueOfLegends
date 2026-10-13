@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using LeagueOfLegends.Database.Context;
 using LeagueOfLegends.Database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeagueOfLegends.Database.Seed;
 

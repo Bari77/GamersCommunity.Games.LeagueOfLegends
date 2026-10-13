@@ -1,5 +1,5 @@
-import type { GcGalleryItem, GcLink } from "@bari77/gc-widgets";
-import { TeamSheet } from "@features/teams/models/team.model";
+import { GcGalleryItem, GcLink } from "@bari77/gc-widgets";
+import { TeamSheet } from "@features/teams/models/team-sheet.model";
 import { mockTeamSheet, TEAM_PUBLIC_ID } from "../../../../mocks/catalog/orgs";
 import { mockTeamLinks } from "../../../../mocks/catalog/team-wall";
 

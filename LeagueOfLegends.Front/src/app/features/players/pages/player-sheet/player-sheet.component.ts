@@ -11,8 +11,9 @@ import defaultLayout from "../../../../../../config/player/workspace.default.jso
 import { GameMembershipStore } from "@core/stores/game-membership.store";
 import { PlayerMediaStores } from "@features/media/stores/player-media-stores";
 import { PlayerHeroComponent } from "@features/players/components/player-hero/player-hero.component";
-import { PlayerUpdateRequestDto } from "@features/players/dto/player.dto";
-import { PlayerOptions, PlayerSheet } from "@features/players/models/player.model";
+import { PlayerUpdateRequestDto } from "@features/players/dto/player-update-request.dto";
+import { PlayerSheet } from "@features/players/models/player-sheet.model";
+import { PlayerOptions } from "@features/players/models/player-options.model";
 import { PlayersService } from "@features/players/services/players.service";
 import {
     PLAYER_PAGE_VISIBILITY_OPTIONS,
@@ -40,9 +41,7 @@ export class PlayerSheetComponent {
     public readonly rowHeight = PLAYER_WORKSPACE_ROW_HEIGHT;
     public readonly pageVisibilityOptions = PLAYER_PAGE_VISIBILITY_OPTIONS;
 
-    public readonly sheetId = computed(
-        () => this.publicId() || this.route.snapshot.paramMap.get("publicId") || "",
-    );
+    public readonly sheetId = computed(() => this.publicId() || this.route.snapshot.paramMap.get("publicId") || "");
 
     public readonly sheet = resource({
         params: () => this.sheetId(),
@@ -124,9 +123,7 @@ export class PlayerSheetComponent {
         this.saving.set(true);
         this.saveFailed.set(false);
         try {
-            await firstValueFrom(
-                this.players.update(sheet.publicId, { layoutJson: serializeWorkspace(workspace) }),
-            );
+            await firstValueFrom(this.players.update(sheet.publicId, { layoutJson: serializeWorkspace(workspace) }));
             this.savedWorkspace.set(workspace);
             this.editing.set(false);
         } catch {
