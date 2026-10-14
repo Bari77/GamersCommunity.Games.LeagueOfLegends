@@ -55,6 +55,8 @@ export default withNativeFederation({
         // Ship raw .ts: the Angular compiler must see them, the federation bundler cannot.
         "@bari77/gc-sdk",
         "@bari77/gc-widgets",
+        "@bari77/gc-playground",
+        /^@bari77\/gc-playground\//,
         "rxjs/ajax",
         "rxjs/fetch",
         "rxjs/testing",

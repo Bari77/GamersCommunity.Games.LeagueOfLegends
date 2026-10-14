@@ -1,30 +1,11 @@
 <nb-layout>
     <nb-layout-header fixed>
-        <div class="playground-header">
-            @if (showBanner) {
-                <span class="playground-banner gc-display">{{ banner }}</span>
-            } @else {
-                <span class="playground-banner gc-display" i18n="@@lol.playground.banner">League of Legends</span>
-            }
-
-            @if (membership.loading() && !membership.session()) {
-                <div class="playground-session playground-session--loading" aria-busy="true">
-                    <gc-skeleton width="7.5rem" height="1.15rem" />
-                    <gc-skeleton width="2.5rem" height="2.5rem" shape="circle" />
-                </div>
-            } @else if (membership.session(); as session) {
-                <a class="playground-session" [routerLink]="['/users', session.publicId]">
-                    <span class="playground-session__handle">{{ session.nickname }}#{{ session.discriminator }}</span>
-                    @if (session.avatarUrl) {
-                        <img class="playground-session__avatar" [src]="session.avatarUrl" [alt]="session.nickname" />
-                    } @else {
-                        <span class="playground-session__avatar playground-session__avatar--fallback">
-                            {{ session.nickname.charAt(0) }}
-                        </span>
-                    }
-                </a>
-            }
-        </div>
+        <gc-playground-header
+            [homeLink]="gameUrl"
+            [mark]="mark"
+            [session]="membership.session()"
+            [loading]="membership.loading()"
+        />
     </nb-layout-header>
     <nb-layout-column>
         <lol-playground-context-bar />

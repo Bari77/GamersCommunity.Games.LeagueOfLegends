@@ -4,12 +4,13 @@ import { LOL_GAME_URL } from "@core/constants/game.constants";
 import { NbButtonModule, NbCardModule } from "@nebular/theme";
 import { mockPortraitUrl, personaByPlatformId } from "../../mocks/catalog/personas";
 import { mockPlayerSheet, PLAYER_PUBLIC_ID, PLATFORM_USER_PUBLIC_ID } from "../../mocks/catalog/players";
+import { PlaygroundSessionComponent } from "./playground-session.component";
 
 /** Stand-in for the Platform community profile while the game runs on its own playground. */
 @Component({
     standalone: true,
     selector: "lol-playground-user-profile",
-    imports: [RouterLink, NbButtonModule, NbCardModule],
+    imports: [RouterLink, NbButtonModule, NbCardModule, PlaygroundSessionComponent],
     templateUrl: "./playground-user-profile.component.html",
     styleUrl: "./playground-user-profile.component.scss",
 })

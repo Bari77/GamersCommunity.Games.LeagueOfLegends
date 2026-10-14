@@ -49,14 +49,7 @@ function isGameLinkActive(link: GameLink, url: string): boolean {
     standalone: true,
     selector: "lol-playground-context-bar",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        FormsModule,
-        RouterLink,
-        BreadcrumbComponent,
-        NbFormFieldModule,
-        NbIconModule,
-        NbInputModule,
-    ],
+    imports: [FormsModule, RouterLink, BreadcrumbComponent, NbFormFieldModule, NbIconModule, NbInputModule],
     templateUrl: "./playground-context-bar.component.html",
     styleUrl: "./playground-context-bar.component.scss",
     host: {
