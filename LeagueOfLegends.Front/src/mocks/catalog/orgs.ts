@@ -3,9 +3,12 @@ import { TeamApplicationDto } from "@features/teams/dto/team-application.dto";
 import { TeamSummaryDto } from "@features/teams/dto/team-summary.dto";
 import { TeamSheetDto } from "@features/teams/dto/team-sheet.dto";
 import { TeamMemberDto } from "@features/teams/dto/team-member.dto";
+import { FILL_TEAMS } from "./fill-cast";
 import { mockUuid } from "./ids";
 import { mockPlayerOptions } from "./options";
-import { allPlayerSheets, mockPlayerSheet, sheetByNickname } from "./players";
+import { mockPlayerSheet, sheetByNickname } from "./players";
+import { skillScore } from "./rank-ladder";
+import { MAIN_LANES, TeamMemberSeed } from "./team-member-seed";
 
 export const TEAM_PUBLIC_ID = mockUuid("lol:team:Nightveil");
 export const IRON_CIRCUIT_TEAM_PUBLIC_ID = mockUuid("lol:team:Iron Circuit");
@@ -19,22 +22,14 @@ const LANE_IDS = Object.fromEntries(mockPlayerOptions.lanes.map((lane) => [lane.
     number
 >;
 
-const MAIN_LANES = ["top", "jungle", "mid", "bottom", "support"] as const;
-
-interface MemberSeed {
-    who: string;
-    rank: string;
-    joinedAt: string;
-    /** Required for captain/player seats; omitted for coach/manager. */
-    lane?: (typeof MAIN_LANES)[number];
-    rosterKind?: "main" | "sub";
-}
+/** Divisions between the weakest and strongest player seat (staff excluded). */
+const MAX_ROSTER_SKILL_SPREAD = 5;
 
 function isPlayerSlot(rank: string): boolean {
     return rank === "captain" || rank === "player";
 }
 
-function memberFromSheet(seed: MemberSeed, current = mockPlayerSheet): TeamMemberDto {
+function memberFromSheet(seed: TeamMemberSeed, current = mockPlayerSheet): TeamMemberDto {
     const sheet = sheetByNickname(seed.who, current);
     const playerSlot = isPlayerSlot(seed.rank);
     const laneCode = playerSlot ? (seed.lane ?? sheet.primaryLane?.code ?? "mid") : null;
@@ -59,13 +54,25 @@ function memberFromSheet(seed: MemberSeed, current = mockPlayerSheet): TeamMembe
     };
 }
 
-function assertCompleteMainRoster(teamName: string, members: TeamMemberDto[]): void {
-    const mains = members.filter((member) => isPlayerSlot(member.rank) && member.rosterKind === "main");
+/**
+ * Rosters may still be recruiting, but never field two mains on one lane, and the players must be
+ * close enough on the ladder to queue together. Coaches and managers are exempt.
+ */
+function assertCoherentRoster(teamName: string, members: TeamMemberDto[]): void {
+    const players = members.filter((member) => isPlayerSlot(member.rank));
+    if (!players.some((member) => member.rank === "captain")) {
+        throw new Error(`${teamName}: a roster needs a captain`);
+    }
     for (const lane of MAIN_LANES) {
-        const count = mains.filter((member) => member.laneCode === lane).length;
-        if (count !== 1) {
-            throw new Error(`${teamName}: expected exactly one main ${lane}, got ${count}`);
+        const count = players.filter((member) => member.rosterKind === "main" && member.laneCode === lane).length;
+        if (count > 1) {
+            throw new Error(`${teamName}: expected at most one main ${lane}, got ${count}`);
         }
+    }
+    const scores = players.map((member) => skillScore(member.solo));
+    const spread = Math.max(...scores) - Math.min(...scores);
+    if (spread > MAX_ROSTER_SKILL_SPREAD) {
+        throw new Error(`${teamName}: players span ${spread} divisions — keep a roster within one tier or so.`);
     }
 }
 
@@ -91,12 +98,12 @@ function buildTeam(opts: {
     sentence: string;
     regionCode: string;
     creationDate: string;
-    members: MemberSeed[];
+    members: TeamMemberSeed[];
     viewerRank?: string | null;
     pendingApplicationCount?: number;
 }): TeamSheetDto {
     const members = opts.members.map((seed) => memberFromSheet(seed));
-    assertCompleteMainRoster(opts.entitled, members);
+    assertCoherentRoster(opts.entitled, members);
     return {
         publicId: opts.publicId,
         entitled: opts.entitled,
@@ -245,27 +252,6 @@ export const mockTeamSummaries: TeamSummaryDto[] = mockTeamSheets.map(toSummary)
 /** Real players juggle scrims for one roster, two or three at most — mocks must not exceed that. */
 const MAX_TEAMS_PER_PLAYER = 3;
 const MAX_MAIN_SEATS_PER_PLAYER = 2;
-const FILL_TEAM_REGIONS = ["euw", "eune", "na", "kr"];
-/** Enough extra rosters for the Teams search tab to need a second page. */
-const FILL_TEAM_NAMES = [
-    "Ash Choir",
-    "Blue Wardens",
-    "Cinder Draft",
-    "Driftline",
-    "Echo Five",
-    "Farstride",
-    "Gold Lantern",
-    "Hollow Ace",
-    "Ivory Tempo",
-    "Jade Barrage",
-    "Kite Theory",
-    "Low Economy",
-    "Mirror Call",
-    "North Gate",
-    "Open Nexus",
-    "Pale Engage",
-];
-
 type TeamLoad = Record<"teams" | "mains", number>;
 
 function teamLoads(teams: TeamSheetDto[]): Map<string, TeamLoad> {
@@ -283,33 +269,6 @@ function teamLoads(teams: TeamSheetDto[]): Map<string, TeamLoad> {
     return loads;
 }
 
-/** Least-committed persona who plays `lane` (primary first, then secondary), so fill rosters stay realistic. */
-function pickFillPlayer(lane: string, loads: Map<string, TeamLoad>, roster: Set<string>, teamName: string): string {
-    const candidates = allPlayerSheets()
-        .filter((sheet) => !roster.has(sheet.nickname))
-        .map((sheet) => ({
-            nickname: sheet.nickname,
-            fit:
-                sheet.primaryLane?.code === lane ? 0 : sheet.secondaryLanes?.some((item) => item.code === lane) ? 1 : 2,
-            load: loads.get(sheet.nickname) ?? { teams: 0, mains: 0 },
-        }))
-        .filter(
-            ({ fit, load }) => fit < 2 && load.teams < MAX_TEAMS_PER_PLAYER && load.mains < MAX_MAIN_SEATS_PER_PLAYER,
-        )
-        .sort(
-            (left, right) =>
-                left.load.teams - right.load.teams ||
-                left.fit - right.fit ||
-                left.load.mains - right.load.mains ||
-                left.nickname.localeCompare(right.nickname),
-        );
-    const pick = candidates[0];
-    if (!pick) {
-        throw new Error(`${teamName}: no ${lane} persona left under the team cap — add personas instead of reusing.`);
-    }
-    return pick.nickname;
-}
-
 function assertRealisticMemberships(teams: TeamSheetDto[]): void {
     for (const [nickname, load] of teamLoads(teams)) {
         if (load.teams > MAX_TEAMS_PER_PLAYER || load.mains > MAX_MAIN_SEATS_PER_PLAYER) {
@@ -320,35 +279,8 @@ function assertRealisticMemberships(teams: TeamSheetDto[]): void {
     }
 }
 
-const fillLoads = teamLoads(mockTeamSheets);
-for (const [index, entitled] of FILL_TEAM_NAMES.entries()) {
-    const roster = new Set<string>();
-    const members: MemberSeed[] = MAIN_LANES.map((lane, laneIndex) => {
-        const who = pickFillPlayer(lane, fillLoads, roster, entitled);
-        roster.add(who);
-        const load = fillLoads.get(who) ?? { teams: 0, mains: 0 };
-        fillLoads.set(who, { teams: load.teams + 1, mains: load.mains + 1 });
-        return {
-            who,
-            rank: laneIndex === index % MAIN_LANES.length ? "captain" : "player",
-            lane,
-            rosterKind: "main",
-            joinedAt: new Date(Date.UTC(2024, index % 12, 3 + laneIndex, 19, 0, 0)).toISOString(),
-        };
-    });
-    const sheet = buildTeam({
-        publicId: mockUuid(`lol:team:${entitled}`),
-        entitled,
-        discriminator: String(1100 + index).padStart(4, "0"),
-        tag: entitled
-            .replace(/[^A-Za-z]/g, "")
-            .slice(0, 2)
-            .toUpperCase(),
-        sentence: "Scrim block, two nights a week.",
-        regionCode: FILL_TEAM_REGIONS[index % FILL_TEAM_REGIONS.length],
-        creationDate: new Date(Date.UTC(2023, index % 12, 1 + (index % 27), 18, 0, 0)).toISOString(),
-        members,
-    });
+for (const fill of FILL_TEAMS) {
+    const sheet = buildTeam({ publicId: mockUuid(`lol:team:${fill.entitled}`), ...fill });
     mockTeamSheets.push(sheet);
     mockTeamSummaries.push(toSummary(sheet));
 }

@@ -1,26 +1,15 @@
 import { PlayerSummaryDto } from "@features/home/dto/player-summary.dto";
 import { LfgMessageDto } from "@features/lfg/dto/lfg-message.dto";
 import { PlayerSheetDto } from "@features/players/dto/player-sheet.dto";
+import { FILL_PLAYERS } from "./fill-cast";
 import { MOCK_PERSONAS, mockPortraitUrl, persona } from "./personas";
+import { SheetSeed } from "./sheet-seed";
 import { getSessionPersona } from "./session";
 
 const self = getSessionPersona();
 
 export const PLATFORM_USER_PUBLIC_ID = self.platformUserPublicId;
 export const PLAYER_PUBLIC_ID = self.playerPublicId;
-
-interface SheetSeed {
-    who: string;
-    presentationIrl: string;
-    presentationIg: string;
-    region: { id: number; code: string };
-    primaryLane: { id: number; code: string };
-    secondaryLanes: { id: number; code: string }[];
-    solo: NonNullable<PlayerSheetDto["solo"]>;
-    flex: NonNullable<PlayerSheetDto["flex"]>;
-    champions: NonNullable<PlayerSheetDto["champions"]>;
-    creationDate: string;
-}
 
 function sheet(opts: SheetSeed): PlayerSheetDto {
     const who = persona(opts.who);
@@ -56,7 +45,7 @@ const SEEDS: SheetSeed[] = [
             { id: 2, code: "jungle" },
             { id: 5, code: "support" },
         ],
-        solo: { tier: "challenger", division: null, lp: 1247 },
+        solo: { tier: "master", division: null, lp: 310 },
         flex: { tier: "diamond", division: "1", lp: 42 },
         champions: [
             { id: 2, code: "ahri", kind: "main", lane: "mid" },
@@ -75,8 +64,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 4, code: "kr" },
         primaryLane: { id: 2, code: "jungle" },
         secondaryLanes: [{ id: 3, code: "mid" }],
-        solo: { tier: "grandmaster", division: null, lp: 312 },
-        flex: { tier: "emerald", division: "1", lp: 68 },
+        solo: { tier: "master", division: null, lp: 182 },
+        flex: { tier: "diamond", division: "2", lp: 30 },
         champions: [
             { id: 45, code: "leesin", kind: "main", lane: "jungle" },
             { id: 27, code: "graves", kind: "pool", lane: "jungle" },
@@ -94,8 +83,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 5, code: "support" },
         secondaryLanes: [{ id: 4, code: "bottom" }],
-        solo: { tier: "master", division: null, lp: 88 },
-        flex: { tier: "diamond", division: "2", lp: 21 },
+        solo: { tier: "diamond", division: "4", lp: 61 },
+        flex: { tier: "emerald", division: "1", lp: 35 },
         champions: [
             { id: 71, code: "thresh", kind: "main", lane: "support" },
             { id: 55, code: "nautilus", kind: "pool", lane: "support" },
@@ -113,8 +102,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 1, code: "top" },
         secondaryLanes: [{ id: 2, code: "jungle" }],
-        solo: { tier: "diamond", division: "1", lp: 56 },
-        flex: { tier: "platinum", division: "2", lp: 40 },
+        solo: { tier: "emerald", division: "1", lp: 56 },
+        flex: { tier: "emerald", division: "3", lp: 40 },
         champions: [
             { id: 58, code: "ornn", kind: "main", lane: "top" },
             { id: 109, code: "ksante", kind: "pool", lane: "top" },
@@ -170,7 +159,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 4, code: "kr" },
         primaryLane: { id: 3, code: "mid" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "diamond", division: "3", lp: 18 },
+        solo: { tier: "diamond", division: "2", lp: 18 },
         flex: { tier: "diamond", division: "4", lp: 5 },
         champions: [
             { id: 44, code: "leblanc", kind: "main", lane: "mid" },
@@ -189,7 +178,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 1, code: "top" },
         secondaryLanes: [{ id: 3, code: "mid" }],
-        solo: { tier: "platinum", division: "2", lp: 61 },
+        solo: { tier: "platinum", division: "1", lp: 61 },
         flex: { tier: "platinum", division: "3", lp: 14 },
         champions: [
             { id: 82, code: "yasuo", kind: "main", lane: "top" },
@@ -208,8 +197,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 3, code: "na" },
         primaryLane: { id: 3, code: "mid" },
         secondaryLanes: [{ id: 2, code: "jungle" }],
-        solo: { tier: "diamond", division: "2", lp: 27 },
-        flex: { tier: "emerald", division: "3", lp: 80 },
+        solo: { tier: "emerald", division: "4", lp: 27 },
+        flex: { tier: "platinum", division: "1", lp: 80 },
         champions: [
             { id: 85, code: "zed", kind: "main", lane: "mid" },
             { id: 44, code: "leblanc", kind: "pool", lane: "mid" },
@@ -227,8 +216,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 2, code: "eune" },
         primaryLane: { id: 5, code: "support" },
         secondaryLanes: [{ id: 4, code: "bottom" }],
-        solo: { tier: "gold", division: "1", lp: 44 },
-        flex: { tier: "gold", division: "2", lp: 9 },
+        solo: { tier: "gold", division: "2", lp: 44 },
+        flex: { tier: "gold", division: "3", lp: 9 },
         champions: [
             { id: 71, code: "thresh", kind: "main", lane: "support" },
             { id: 53, code: "nami", kind: "pool", lane: "support" },
@@ -246,7 +235,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 2, code: "jungle" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "emerald", division: "1", lp: 3 },
+        solo: { tier: "emerald", division: "4", lp: 3 },
         flex: { tier: "platinum", division: "1", lp: 70 },
         champions: [
             { id: 45, code: "leesin", kind: "main", lane: "jungle" },
@@ -265,8 +254,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 4, code: "kr" },
         primaryLane: { id: 4, code: "bottom" },
         secondaryLanes: [{ id: 3, code: "mid" }],
-        solo: { tier: "master", division: null, lp: 210 },
-        flex: { tier: "diamond", division: "1", lp: 11 },
+        solo: { tier: "grandmaster", division: null, lp: 412 },
+        flex: { tier: "master", division: null, lp: 60 },
         champions: [
             { id: 36, code: "kaisa", kind: "main", lane: "bottom" },
             { id: 8, code: "aphelios", kind: "pool", lane: "bottom" },
@@ -284,7 +273,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 3, code: "na" },
         primaryLane: { id: 1, code: "top" },
         secondaryLanes: [{ id: 3, code: "mid" }],
-        solo: { tier: "emerald", division: "4", lp: 52 },
+        solo: { tier: "platinum", division: "3", lp: 52 },
         flex: { tier: "platinum", division: "4", lp: 0 },
         champions: [
             { id: 82, code: "yasuo", kind: "main", lane: "top" },
@@ -303,7 +292,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 3, code: "mid" },
         secondaryLanes: [{ id: 4, code: "bottom" }],
-        solo: { tier: "diamond", division: "4", lp: 91 },
+        solo: { tier: "diamond", division: "3", lp: 91 },
         flex: { tier: "diamond", division: "4", lp: 40 },
         champions: [
             { id: 57, code: "orianna", kind: "main", lane: "mid" },
@@ -322,8 +311,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 2, code: "eune" },
         primaryLane: { id: 5, code: "support" },
         secondaryLanes: [{ id: 2, code: "jungle" }],
-        solo: { tier: "silver", division: "1", lp: 67 },
-        flex: { tier: "gold", division: "4", lp: 22 },
+        solo: { tier: "silver", division: "2", lp: 67 },
+        flex: { tier: "silver", division: "1", lp: 22 },
         champions: [
             { id: 71, code: "thresh", kind: "main", lane: "support" },
             { id: 46, code: "leona", kind: "pool", lane: "support" },
@@ -341,7 +330,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 4, code: "kr" },
         primaryLane: { id: 2, code: "jungle" },
         secondaryLanes: [{ id: 1, code: "top" }],
-        solo: { tier: "grandmaster", division: null, lp: 88 },
+        solo: { tier: "grandmaster", division: null, lp: 388 },
         flex: { tier: "master", division: null, lp: 12 },
         champions: [
             { id: 45, code: "leesin", kind: "main", lane: "jungle" },
@@ -360,8 +349,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 3, code: "na" },
         primaryLane: { id: 4, code: "bottom" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "platinum", division: "3", lp: 19 },
-        flex: { tier: "emerald", division: "4", lp: 55 },
+        solo: { tier: "platinum", division: "2", lp: 19 },
+        flex: { tier: "platinum", division: "1", lp: 55 },
         champions: [
             { id: 36, code: "kaisa", kind: "main", lane: "bottom" },
             { id: 15, code: "caitlyn", kind: "pool", lane: "bottom" },
@@ -379,8 +368,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 1, code: "top" },
         secondaryLanes: [{ id: 2, code: "jungle" }],
-        solo: { tier: "master", division: null, lp: 45 },
-        flex: { tier: "diamond", division: "2", lp: 8 },
+        solo: { tier: "platinum", division: "2", lp: 45 },
+        flex: { tier: "platinum", division: "3", lp: 8 },
         champions: [
             { id: 82, code: "yasuo", kind: "main", lane: "top" },
             { id: 83, code: "yone", kind: "pool", lane: "top" },
@@ -417,7 +406,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 4, code: "kr" },
         primaryLane: { id: 5, code: "support" },
         secondaryLanes: [{ id: 4, code: "bottom" }],
-        solo: { tier: "master", division: null, lp: 34 },
+        solo: { tier: "diamond", division: "1", lp: 34 },
         flex: { tier: "diamond", division: "2", lp: 55 },
         champions: [
             { id: 71, code: "thresh", kind: "main", lane: "support" },
@@ -436,7 +425,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 2, code: "jungle" },
         secondaryLanes: [{ id: 1, code: "top" }],
-        solo: { tier: "diamond", division: "2", lp: 41 },
+        solo: { tier: "diamond", division: "4", lp: 41 },
         flex: { tier: "emerald", division: "1", lp: 88 },
         champions: [
             { id: 77, code: "viego", kind: "main", lane: "jungle" },
@@ -455,8 +444,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 3, code: "na" },
         primaryLane: { id: 5, code: "support" },
         secondaryLanes: [{ id: 4, code: "bottom" }],
-        solo: { tier: "emerald", division: "2", lp: 29 },
-        flex: { tier: "platinum", division: "1", lp: 63 },
+        solo: { tier: "platinum", division: "1", lp: 29 },
+        flex: { tier: "platinum", division: "2", lp: 63 },
         champions: [
             { id: 47, code: "lulu", kind: "main", lane: "support" },
             { id: 53, code: "nami", kind: "pool", lane: "support" },
@@ -474,8 +463,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 3, code: "mid" },
         secondaryLanes: [{ id: 4, code: "bottom" }],
-        solo: { tier: "emerald", division: "1", lp: 51 },
-        flex: { tier: "diamond", division: "4", lp: 7 },
+        solo: { tier: "emerald", division: "3", lp: 51 },
+        flex: { tier: "emerald", division: "4", lp: 7 },
         champions: [
             { id: 70, code: "syndra", kind: "main", lane: "mid" },
             { id: 57, code: "orianna", kind: "pool", lane: "mid" },
@@ -493,8 +482,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 4, code: "bottom" },
         secondaryLanes: [{ id: 3, code: "mid" }],
-        solo: { tier: "diamond", division: "3", lp: 12 },
-        flex: { tier: "emerald", division: "2", lp: 44 },
+        solo: { tier: "emerald", division: "4", lp: 12 },
+        flex: { tier: "platinum", division: "1", lp: 44 },
         champions: [
             { id: 118, code: "lucian", kind: "main", lane: "bottom" },
             { id: 36, code: "kaisa", kind: "pool", lane: "bottom" },
@@ -512,7 +501,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 1, code: "euw" },
         primaryLane: { id: 5, code: "support" },
         secondaryLanes: [{ id: 2, code: "jungle" }],
-        solo: { tier: "platinum", division: "1", lp: 81 },
+        solo: { tier: "emerald", division: "3", lp: 81 },
         flex: { tier: "emerald", division: "4", lp: 19 },
         champions: [
             { id: 46, code: "leona", kind: "main", lane: "support" },
@@ -531,7 +520,7 @@ const SEEDS: SheetSeed[] = [
         region: { id: 4, code: "kr" },
         primaryLane: { id: 1, code: "top" },
         secondaryLanes: [{ id: 3, code: "mid" }],
-        solo: { tier: "grandmaster", division: null, lp: 61 },
+        solo: { tier: "grandmaster", division: null, lp: 301 },
         flex: { tier: "master", division: null, lp: 22 },
         champions: [
             { id: 1, code: "aatrox", kind: "main", lane: "top" },
@@ -569,8 +558,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 4, code: "kr" },
         primaryLane: { id: 5, code: "support" },
         secondaryLanes: [{ id: 3, code: "mid" }],
-        solo: { tier: "diamond", division: "2", lp: 66 },
-        flex: { tier: "diamond", division: "4", lp: 31 },
+        solo: { tier: "master", division: null, lp: 66 },
+        flex: { tier: "diamond", division: "1", lp: 31 },
         champions: [
             { id: 11, code: "bard", kind: "main", lane: "support" },
             { id: 71, code: "thresh", kind: "pool", lane: "support" },
@@ -588,8 +577,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 2, code: "eune" },
         primaryLane: { id: 1, code: "top" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "grandmaster", division: null, lp: 278 },
-        flex: { tier: "master", division: null, lp: 40 },
+        solo: { tier: "gold", division: "4", lp: 78 },
+        flex: { tier: "gold", division: "3", lp: 40 },
         champions: [
             { id: 49, code: "malphite", kind: "main", lane: "top" },
             { id: 58, code: "ornn", kind: "pool", lane: "top" },
@@ -607,8 +596,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 2, code: "eune" },
         primaryLane: { id: 2, code: "jungle" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "master", division: null, lp: 156 },
-        flex: { tier: "diamond", division: "1", lp: 22 },
+        solo: { tier: "gold", division: "1", lp: 56 },
+        flex: { tier: "gold", division: "2", lp: 22 },
         champions: [
             { id: 79, code: "warwick", kind: "main", lane: "jungle" },
             { id: 5, code: "amumu", kind: "pool", lane: "jungle" },
@@ -626,8 +615,8 @@ const SEEDS: SheetSeed[] = [
         region: { id: 2, code: "eune" },
         primaryLane: { id: 3, code: "mid" },
         secondaryLanes: [{ id: 5, code: "support" }],
-        solo: { tier: "diamond", division: "2", lp: 64 },
-        flex: { tier: "emerald", division: "1", lp: 18 },
+        solo: { tier: "gold", division: "3", lp: 64 },
+        flex: { tier: "gold", division: "4", lp: 18 },
         champions: [
             { id: 7, code: "annie", kind: "main", lane: "mid" },
             { id: 48, code: "lux", kind: "pool", lane: "mid" },
@@ -646,7 +635,7 @@ const SEEDS: SheetSeed[] = [
         primaryLane: { id: 4, code: "bottom" },
         secondaryLanes: [{ id: 5, code: "support" }],
         solo: { tier: "silver", division: "1", lp: 83 },
-        flex: { tier: "gold", division: "3", lp: 15 },
+        flex: { tier: "silver", division: "2", lp: 15 },
         champions: [
             { id: 9, code: "ashe", kind: "main", lane: "bottom" },
             { id: 35, code: "jinx", kind: "pool", lane: "bottom" },
@@ -678,80 +667,7 @@ const SEEDS: SheetSeed[] = [
     },
 ];
 
-const FILL_LANES: { id: number; code: string; champions: SheetSeed["champions"] }[] = [
-    {
-        id: 1,
-        code: "top",
-        champions: [
-            { id: 1, code: "aatrox", kind: "main", lane: "top" },
-            { id: 16, code: "camille", kind: "pool", lane: "top" },
-        ],
-    },
-    {
-        id: 2,
-        code: "jungle",
-        champions: [
-            { id: 45, code: "leesin", kind: "main", lane: "jungle" },
-            { id: 27, code: "graves", kind: "pool", lane: "jungle" },
-        ],
-    },
-    {
-        id: 3,
-        code: "mid",
-        champions: [
-            { id: 2, code: "ahri", kind: "main", lane: "mid" },
-            { id: 70, code: "syndra", kind: "pool", lane: "mid" },
-        ],
-    },
-    {
-        id: 4,
-        code: "bottom",
-        champions: [
-            { id: 9, code: "ashe", kind: "main", lane: "bottom" },
-            { id: 35, code: "jinx", kind: "pool", lane: "bottom" },
-        ],
-    },
-    {
-        id: 5,
-        code: "support",
-        champions: [
-            { id: 71, code: "thresh", kind: "main", lane: "support" },
-            { id: 46, code: "leona", kind: "pool", lane: "support" },
-        ],
-    },
-];
-
-const FILL_REGIONS = [
-    { id: 1, code: "euw" },
-    { id: 2, code: "eune" },
-    { id: 3, code: "na" },
-    { id: 4, code: "kr" },
-];
-
-const FILL_TIERS = ["silver", "gold", "platinum", "emerald", "diamond", "bronze"] as const;
-
-const seeded = new Set(SEEDS.map((seed) => seed.who));
-let fillIndex = 0;
-for (const who of MOCK_PERSONAS) {
-    if (seeded.has(who.nickname)) {
-        continue;
-    }
-    const lane = FILL_LANES[fillIndex % FILL_LANES.length];
-    const tier = FILL_TIERS[fillIndex % FILL_TIERS.length];
-    SEEDS.push({
-        who: who.nickname,
-        presentationIrl: "Ranked after work, voice when the lobby is calm.",
-        presentationIg: `${lane.code} main, still filling the pool.`,
-        region: FILL_REGIONS[fillIndex % FILL_REGIONS.length],
-        primaryLane: { id: lane.id, code: lane.code },
-        secondaryLanes: [],
-        solo: { tier, division: "2", lp: 15 + fillIndex },
-        flex: { tier: "gold", division: "4", lp: 8 },
-        champions: lane.champions,
-        creationDate: new Date(Date.UTC(2023, fillIndex % 12, 2 + fillIndex, 12, 0, 0)).toISOString(),
-    });
-    fillIndex++;
-}
+SEEDS.push(...FILL_PLAYERS);
 
 if (SEEDS.length !== MOCK_PERSONAS.length) {
     throw new Error(`LoL mock sheet seeds (${SEEDS.length}) must match personas (${MOCK_PERSONAS.length}).`);

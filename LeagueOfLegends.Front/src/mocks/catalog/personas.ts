@@ -1,5 +1,6 @@
 import { mockPortraitUrl as portraitFromAssets, PlaygroundPersona } from "@bari77/gc-playground";
 import { environment } from "../../environments/environment";
+import { FILL_PLAYERS } from "./fill-cast";
 import { mockUuid } from "./ids";
 
 /** Same catalog as Platform: `…/Avatars/{1-12}.png`, stable per seed so faces do not flicker. */
@@ -316,49 +317,19 @@ export const MOCK_PERSONAS: MockPersona[] = [
     },
 ];
 
-/**
- * Older cast so a dedicated search tab has a second page, and enough laners that fill rosters
- * never stack one player into many teams (see `orgs.ts`).
- */
-const SEARCH_FILL = [
-    ["Arden", "EUW"],
-    ["Blythe", "NA1"],
-    ["Cassian", "KR1"],
-    ["Diora", "EUNE"],
-    ["Elowen", "EUW"],
-    ["Faris", "NA1"],
-    ["Gwyn", "KR1"],
-    ["Hester", "EUNE"],
-    ["Idris", "EUW"],
-    ["Jorah", "NA1"],
-    ["Keira", "KR1"],
-    ["Lumen", "EUNE"],
-    ["Merin", "EUW"],
-    ["Nalia", "NA1"],
-    ["Oskar", "KR1"],
-    ["Perrin", "EUNE"],
-    ["Quenna", "EUW"],
-    ["Rhosyn", "NA1"],
-    ["Sable", "KR1"],
-    ["Tamsin", "EUNE"],
-    ["Ulric", "EUW"],
-    ["Veda", "NA1"],
-    ["Wynn", "KR1"],
-    ["Xara", "EUNE"],
-    ["Yorick", "EUW"],
-    ["Zephyr", "NA1"],
-    ["Auden", "KR1"],
-] as const;
-
-for (const [index, [nickname, tagLine]] of SEARCH_FILL.entries()) {
+/** Generated ladder cast (fill rosters + free agents), see `fill-cast.ts`. */
+for (const fill of FILL_PLAYERS) {
+    if (MOCK_PERSONAS.some((item) => item.nickname.toLowerCase() === fill.who.toLowerCase())) {
+        throw new Error(`Generated persona ${fill.who} collides with an existing persona.`);
+    }
     MOCK_PERSONAS.push({
-        id: nickname,
-        platformUserPublicId: mockUuid(`lol:platform:${nickname}`),
-        playerPublicId: mockUuid(`lol:player:${nickname}`),
-        nickname,
-        discriminator: String(3001 + index).padStart(4, "0"),
-        gameName: nickname,
-        tagLine,
+        id: fill.who,
+        platformUserPublicId: mockUuid(`lol:platform:${fill.who}`),
+        playerPublicId: mockUuid(`lol:player:${fill.who}`),
+        nickname: fill.who,
+        discriminator: fill.discriminator,
+        gameName: fill.gameName,
+        tagLine: fill.tagLine,
     });
 }
 
