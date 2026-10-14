@@ -316,7 +316,10 @@ export const MOCK_PERSONAS: MockPersona[] = [
     },
 ];
 
-/** Older cast so a dedicated search tab has a second page. */
+/**
+ * Older cast so a dedicated search tab has a second page, and enough laners that fill rosters
+ * never stack one player into many teams (see `orgs.ts`).
+ */
 const SEARCH_FILL = [
     ["Arden", "EUW"],
     ["Blythe", "NA1"],
@@ -330,6 +333,21 @@ const SEARCH_FILL = [
     ["Jorah", "NA1"],
     ["Keira", "KR1"],
     ["Lumen", "EUNE"],
+    ["Merin", "EUW"],
+    ["Nalia", "NA1"],
+    ["Oskar", "KR1"],
+    ["Perrin", "EUNE"],
+    ["Quenna", "EUW"],
+    ["Rhosyn", "NA1"],
+    ["Sable", "KR1"],
+    ["Tamsin", "EUNE"],
+    ["Ulric", "EUW"],
+    ["Veda", "NA1"],
+    ["Wynn", "KR1"],
+    ["Xara", "EUNE"],
+    ["Yorick", "EUW"],
+    ["Zephyr", "NA1"],
+    ["Auden", "KR1"],
 ] as const;
 
 for (const [index, [nickname, tagLine]] of SEARCH_FILL.entries()) {

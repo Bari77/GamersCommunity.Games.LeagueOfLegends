@@ -5,7 +5,7 @@ import { TeamSheetDto } from "@features/teams/dto/team-sheet.dto";
 import { TeamMemberDto } from "@features/teams/dto/team-member.dto";
 import { mockUuid } from "./ids";
 import { mockPlayerOptions } from "./options";
-import { mockPlayerSheet, sheetByNickname } from "./players";
+import { allPlayerSheets, mockPlayerSheet, sheetByNickname } from "./players";
 
 export const TEAM_PUBLIC_ID = mockUuid("lol:team:Nightveil");
 export const IRON_CIRCUIT_TEAM_PUBLIC_ID = mockUuid("lol:team:Iron Circuit");
@@ -242,9 +242,11 @@ export const mockTeamSheets: TeamSheetDto[] = [
 
 export const mockTeamSummaries: TeamSummaryDto[] = mockTeamSheets.map(toSummary);
 
-const FILL_TEAM_POOL = ["Nyxara", "Vexthorn", "Lirael", "Kaelith", "Soryn", "Quill", "Dravik", "Myrren", "Calyx", "Bramble"];
-const FILL_TEAM_LANES = ["top", "jungle", "mid", "bottom", "support"] as const;
+/** Real players juggle scrims for one roster, two or three at most — mocks must not exceed that. */
+const MAX_TEAMS_PER_PLAYER = 3;
+const MAX_MAIN_SEATS_PER_PLAYER = 2;
 const FILL_TEAM_REGIONS = ["euw", "eune", "na", "kr"];
+/** Enough extra rosters for the Teams search tab to need a second page. */
 const FILL_TEAM_NAMES = [
     "Ash Choir",
     "Blue Wardens",
@@ -262,48 +264,95 @@ const FILL_TEAM_NAMES = [
     "North Gate",
     "Open Nexus",
     "Pale Engage",
-    "Quiet Reset",
-    "Red Tempo",
-    "Soft Throw",
-    "Third Drake",
-    "Under Turret",
-    "Void Tempo",
-    "White Ward",
-    "Yellow Trinket",
-    "Zero Sum",
-    "Arc Second",
-    "Baron Bait",
-    "Crash Course",
-    "Deep Vision",
-    "Even Trade",
-    "First Blood",
-    "Good Angle",
-    "Hard Reset",
-    "Inner Turret",
-    "Jungle Gap",
-    "Last Pick",
 ];
 
+type TeamLoad = Record<"teams" | "mains", number>;
+
+function teamLoads(teams: TeamSheetDto[]): Map<string, TeamLoad> {
+    const loads = new Map<string, TeamLoad>();
+    for (const team of teams) {
+        for (const member of team.members ?? []) {
+            const load = loads.get(member.nickname) ?? { teams: 0, mains: 0 };
+            load.teams++;
+            if (isPlayerSlot(member.rank) && member.rosterKind === "main") {
+                load.mains++;
+            }
+            loads.set(member.nickname, load);
+        }
+    }
+    return loads;
+}
+
+/** Least-committed persona who plays `lane` (primary first, then secondary), so fill rosters stay realistic. */
+function pickFillPlayer(lane: string, loads: Map<string, TeamLoad>, roster: Set<string>, teamName: string): string {
+    const candidates = allPlayerSheets()
+        .filter((sheet) => !roster.has(sheet.nickname))
+        .map((sheet) => ({
+            nickname: sheet.nickname,
+            fit:
+                sheet.primaryLane?.code === lane ? 0 : sheet.secondaryLanes?.some((item) => item.code === lane) ? 1 : 2,
+            load: loads.get(sheet.nickname) ?? { teams: 0, mains: 0 },
+        }))
+        .filter(
+            ({ fit, load }) => fit < 2 && load.teams < MAX_TEAMS_PER_PLAYER && load.mains < MAX_MAIN_SEATS_PER_PLAYER,
+        )
+        .sort(
+            (left, right) =>
+                left.load.teams - right.load.teams ||
+                left.fit - right.fit ||
+                left.load.mains - right.load.mains ||
+                left.nickname.localeCompare(right.nickname),
+        );
+    const pick = candidates[0];
+    if (!pick) {
+        throw new Error(`${teamName}: no ${lane} persona left under the team cap — add personas instead of reusing.`);
+    }
+    return pick.nickname;
+}
+
+function assertRealisticMemberships(teams: TeamSheetDto[]): void {
+    for (const [nickname, load] of teamLoads(teams)) {
+        if (load.teams > MAX_TEAMS_PER_PLAYER || load.mains > MAX_MAIN_SEATS_PER_PLAYER) {
+            throw new Error(
+                `${nickname} is in ${load.teams} teams (${load.mains} as main) — keep players to a few rosters.`,
+            );
+        }
+    }
+}
+
+const fillLoads = teamLoads(mockTeamSheets);
 for (const [index, entitled] of FILL_TEAM_NAMES.entries()) {
+    const roster = new Set<string>();
+    const members: MemberSeed[] = MAIN_LANES.map((lane, laneIndex) => {
+        const who = pickFillPlayer(lane, fillLoads, roster, entitled);
+        roster.add(who);
+        const load = fillLoads.get(who) ?? { teams: 0, mains: 0 };
+        fillLoads.set(who, { teams: load.teams + 1, mains: load.mains + 1 });
+        return {
+            who,
+            rank: laneIndex === index % MAIN_LANES.length ? "captain" : "player",
+            lane,
+            rosterKind: "main",
+            joinedAt: new Date(Date.UTC(2024, index % 12, 3 + laneIndex, 19, 0, 0)).toISOString(),
+        };
+    });
     const sheet = buildTeam({
         publicId: mockUuid(`lol:team:${entitled}`),
         entitled,
         discriminator: String(1100 + index).padStart(4, "0"),
-        tag: entitled.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase(),
+        tag: entitled
+            .replace(/[^A-Za-z]/g, "")
+            .slice(0, 2)
+            .toUpperCase(),
         sentence: "Scrim block, two nights a week.",
         regionCode: FILL_TEAM_REGIONS[index % FILL_TEAM_REGIONS.length],
         creationDate: new Date(Date.UTC(2023, index % 12, 1 + (index % 27), 18, 0, 0)).toISOString(),
-        members: FILL_TEAM_LANES.map((lane, laneIndex) => ({
-            who: FILL_TEAM_POOL[(index + laneIndex) % FILL_TEAM_POOL.length],
-            rank: laneIndex === 0 ? "captain" : "player",
-            lane,
-            rosterKind: "main" as const,
-            joinedAt: "2023-06-01T12:00:00.000Z",
-        })),
+        members,
     });
     mockTeamSheets.push(sheet);
     mockTeamSummaries.push(toSummary(sheet));
 }
+assertRealisticMemberships(mockTeamSheets);
 
 const quill = sheetByNickname("Quill");
 
