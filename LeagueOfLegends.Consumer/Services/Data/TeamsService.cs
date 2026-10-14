@@ -135,7 +135,21 @@ public class TeamsService(LeagueOfLegendsDbContext context, ITeamWhispers whispe
     {
         var members = await _context.TeamMembers.AsNoTracking()
             .Where(m => m.IdTeam == teamId)
-            .OrderBy(m => m.IdTeamRankNavigation.SortOrder)
+            .OrderBy(m => m.IdTeamRankNavigation.Code == TeamRankCodes.Coach
+                ? 0
+                : m.IdTeamRankNavigation.Code == TeamRankCodes.Manager
+                    ? 1
+                    : 2)
+            .ThenBy(m => m.IdLaneNavigation != null
+                ? m.IdLaneNavigation.SortOrder
+                : m.IdPlayerNavigation.IdPrimaryLaneNavigation != null
+                    ? m.IdPlayerNavigation.IdPrimaryLaneNavigation.SortOrder
+                    : 99)
+            .ThenBy(m => m.RosterKind == RosterKindCodes.Main
+                ? 0
+                : m.RosterKind == RosterKindCodes.Sub
+                    ? 1
+                    : 2)
             .ThenBy(m => m.CreationDate)
             .Select(m => new
             {

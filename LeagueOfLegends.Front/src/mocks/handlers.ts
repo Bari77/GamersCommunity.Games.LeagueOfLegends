@@ -40,6 +40,7 @@ import {
     mockTeamSheet,
     mockTeamSheets,
     mockTeamSummaries,
+    sortRosterMembers,
     TEAM_PUBLIC_ID,
     teamSheetByPublicId,
 } from "./catalog/orgs";
@@ -110,6 +111,7 @@ function withViewer(team: TeamSheetDto): TeamSheetDto {
     );
     return {
         ...team,
+        members: sortRosterMembers(team.members ?? []),
         viewerRank: member?.rank ?? null,
         viewerApplicationStatus: application?.status ?? null,
         viewerApplicationPublicId: application?.publicId ?? null,

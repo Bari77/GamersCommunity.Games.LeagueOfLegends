@@ -29,6 +29,23 @@ function isPlayerSlot(rank: string): boolean {
     return rank === "captain" || rank === "player";
 }
 
+/** Coach, manager, then seats top → support, main before sub. */
+export function sortRosterMembers(members: TeamMemberDto[]): TeamMemberDto[] {
+    const group = (rank: string) => (rank === "coach" ? 0 : rank === "manager" ? 1 : 2);
+    const lane = (code: string | null | undefined) => {
+        const index = MAIN_LANES.indexOf(code as (typeof MAIN_LANES)[number]);
+        return index === -1 ? MAIN_LANES.length : index;
+    };
+    const kind = (value: string | null | undefined) => (value === "main" ? 0 : value === "sub" ? 1 : 2);
+    return [...members].sort(
+        (a, b) =>
+            group(a.rank) - group(b.rank) ||
+            lane(a.laneCode) - lane(b.laneCode) ||
+            kind(a.rosterKind) - kind(b.rosterKind) ||
+            a.joinedAt.localeCompare(b.joinedAt),
+    );
+}
+
 function memberFromSheet(seed: TeamMemberSeed, current = mockPlayerSheet): TeamMemberDto {
     const sheet = sheetByNickname(seed.who, current);
     const playerSlot = isPlayerSlot(seed.rank);
@@ -102,7 +119,7 @@ function buildTeam(opts: {
     viewerRank?: string | null;
     pendingApplicationCount?: number;
 }): TeamSheetDto {
-    const members = opts.members.map((seed) => memberFromSheet(seed));
+    const members = sortRosterMembers(opts.members.map((seed) => memberFromSheet(seed)));
     assertCoherentRoster(opts.entitled, members);
     return {
         publicId: opts.publicId,
