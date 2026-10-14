@@ -22,8 +22,7 @@ export const EMPTY_CRITERIA: SearchCriteria = {
     lookingForTeam: false,
 };
 
-/** Rows per type on the overview, which hands over to a dedicated tab rather than paginating. */
-const OVERVIEW_TAKE = 3;
+/** First page of each type. Further pages stay on the dedicated tab. */
 const PAGE_SIZE = 20;
 
 /**
@@ -88,7 +87,7 @@ export class GlobalSearchStore {
         this.$criteria.set(criteria);
         this.$loading.set(true);
 
-        const take = criteria.scope === "all" ? OVERVIEW_TAKE : PAGE_SIZE;
+        const take = PAGE_SIZE;
 
         try {
             const [teams, players] = await Promise.all([

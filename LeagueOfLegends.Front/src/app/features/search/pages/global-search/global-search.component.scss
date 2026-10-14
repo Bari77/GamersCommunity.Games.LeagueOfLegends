@@ -233,16 +233,36 @@
         box-shadow 0.15s ease;
 }
 
-.search-hit[data-tier="iron"] { --hit-accent: #9a9a9a; }
-.search-hit[data-tier="bronze"] { --hit-accent: #b88a5a; }
-.search-hit[data-tier="silver"] { --hit-accent: #b0c0cc; }
-.search-hit[data-tier="gold"] { --hit-accent: #d4af37; }
-.search-hit[data-tier="platinum"] { --hit-accent: #5ec8c8; }
-.search-hit[data-tier="emerald"] { --hit-accent: #3dbf7a; }
-.search-hit[data-tier="diamond"] { --hit-accent: #5aa8ff; }
-.search-hit[data-tier="master"] { --hit-accent: #9b59d0; }
-.search-hit[data-tier="grandmaster"] { --hit-accent: #c0392b; }
-.search-hit[data-tier="challenger"] { --hit-accent: #f1c40f; }
+.search-hit[data-tier="iron"] {
+    --hit-accent: #9a9a9a;
+}
+.search-hit[data-tier="bronze"] {
+    --hit-accent: #b88a5a;
+}
+.search-hit[data-tier="silver"] {
+    --hit-accent: #b0c0cc;
+}
+.search-hit[data-tier="gold"] {
+    --hit-accent: #d4af37;
+}
+.search-hit[data-tier="platinum"] {
+    --hit-accent: #5ec8c8;
+}
+.search-hit[data-tier="emerald"] {
+    --hit-accent: #3dbf7a;
+}
+.search-hit[data-tier="diamond"] {
+    --hit-accent: #5aa8ff;
+}
+.search-hit[data-tier="master"] {
+    --hit-accent: #9b59d0;
+}
+.search-hit[data-tier="grandmaster"] {
+    --hit-accent: #c0392b;
+}
+.search-hit[data-tier="challenger"] {
+    --hit-accent: #f1c40f;
+}
 
 .search-hit::before {
     content: "";

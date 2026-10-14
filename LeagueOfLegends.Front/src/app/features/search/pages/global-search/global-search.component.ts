@@ -15,7 +15,14 @@ import { PlayersService } from "@features/players/services/players.service";
 import { SearchHit } from "@features/search/models/search-hit.model";
 import { SearchCriteria } from "@features/search/models/search-criteria.model";
 import { GlobalSearchStore, SearchScope } from "@features/search/stores/global-search.store";
-import { NbButtonModule, NbCardModule, NbFormFieldModule, NbIconModule, NbInputModule, NbSelectModule } from "@nebular/theme";
+import {
+    NbButtonModule,
+    NbCardModule,
+    NbFormFieldModule,
+    NbIconModule,
+    NbInputModule,
+    NbSelectModule,
+} from "@nebular/theme";
 import { CreateSheetWallComponent } from "@shared/components/create-sheet-wall/create-sheet-wall.component";
 import { LaneIconComponent } from "@shared/components/lane-icon/lane-icon.component";
 import { RankEmblemComponent } from "@shared/components/rank-emblem/rank-emblem.component";
@@ -109,7 +116,6 @@ export class GlobalSearchComponent {
     /** Bound to the in-page field, which only commits to the URL on submit. */
     protected readonly term = signal("");
     protected readonly moreOpen = signal(false);
-    private readonly moreDismissed = signal(false);
     protected readonly creating = signal(false);
     protected readonly createErrorCode = signal<string | null>(null);
     protected readonly formOpen = signal(false);
@@ -175,6 +181,7 @@ export class GlobalSearchComponent {
             : [],
     );
 
+    private readonly moreDismissed = signal(false);
     private readonly players = inject(PlayersService);
     private readonly applications = inject(TeamApplicationsService);
     private readonly teams = inject(TeamsService);
