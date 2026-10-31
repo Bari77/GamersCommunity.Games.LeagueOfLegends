@@ -86,7 +86,14 @@
                         "polyfills": ["zone.js", "@angular/localize/init", "es-module-shims"]
                     },
                     "configurations": {
-                        "production": { "outputHashing": "all" },
+                        "production": {
+                            "outputHashing": "all",
+                            "optimization": {
+                                "scripts": true,
+                                "styles": true,
+                                "fonts": { "inline": false }
+                            }
+                        },
                         "development": {
                             "optimization": false,
                             "extractLicenses": false,
