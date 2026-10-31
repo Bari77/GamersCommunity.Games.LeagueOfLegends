@@ -65,7 +65,7 @@
         "@angular/build": "21.2.15",
         "@angular/cli": "21.2.15",
         "@angular/compiler-cli": "21.2.17",
-        "@bari77/babelary": "0.2.1",
+        "@bari77/babelary": "0.3.0",
         "@bari77/gc-lint": "^2.2.0",
         "@bari77/gc-workspace-editor": "^2.2.0",
         "@softarc/native-federation-orchestrator": "^4.2.2",
