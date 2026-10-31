@@ -1,0 +1,23 @@
+{
+    "lol": {
+        "links": {
+            "add": "Ajouter",
+            "empty": "Aucun lien partagé pour le moment.",
+            "error": {
+                "label": "Un libellé est obligatoire.",
+                "unknown": "Ce lien n'a pas pu être enregistré.",
+                "url": "Saisissez une adresse http(s) complète."
+            },
+            "field": {
+                "icon": "Icône",
+                "label": "Libellé"
+            },
+            "icon": {
+                "auto": "Automatique"
+            },
+            "moveDown": "Descendre",
+            "moveUp": "Monter",
+            "remove": "Supprimer"
+        }
+    }
+}

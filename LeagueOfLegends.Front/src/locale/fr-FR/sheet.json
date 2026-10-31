@@ -1,0 +1,23 @@
+{
+    "lol": {
+        "sheet": {
+            "login": "Se connecter",
+            "loginRequired": "Connectez-vous sur GamersCommunity pour ouvrir votre fiche joueur LoL.",
+            "prompt": {
+                "browse": "Continuer anonymement",
+                "create": "Créer ma fiche",
+                "creating": "Création…",
+                "heading": "Créer votre fiche joueur ?",
+                "message": "Une fiche joueur vous permet d'enregistrer vos lanes et vos champions, et de rejoindre une équipe. Sans fiche, vous pouvez tout de même parcourir le jeu librement.",
+                "optOut": "Ne plus demander"
+            },
+            "wall": {
+                "action": "Créer ma fiche",
+                "heading": "Pas encore de fiche joueur",
+                "homeMessage": "Créez votre fiche joueur pour participer à la communauté du jeu.",
+                "lfgMessage": "Créez votre fiche joueur pour publier dans ce chat.",
+                "message": "Créez votre fiche joueur pour afficher vos lanes et vos champions, et rejoindre une équipe."
+            }
+        }
+    }
+}

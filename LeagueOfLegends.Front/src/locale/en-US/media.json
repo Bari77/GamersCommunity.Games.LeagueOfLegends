@@ -1,0 +1,21 @@
+{
+    "lol": {
+        "media": {
+            "add": "Add",
+            "admin": {
+                "empty": "Nothing here yet. Add your first entry above."
+            },
+            "caption": "Caption",
+            "emptyPhoto": "No picture shared yet.",
+            "emptyStream": "No stream declared yet.",
+            "emptyVideo": "No video shared yet.",
+            "error": {
+                "tooMany": "You reached the maximum number of entries.",
+                "unknown": "This entry could not be saved.",
+                "url": "Enter a full http(s) address."
+            },
+            "remove": "Delete",
+            "share": "Public"
+        }
+    }
+}

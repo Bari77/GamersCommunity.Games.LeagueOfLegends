@@ -1,0 +1,110 @@
+{
+    "lol": {
+        "player": {
+            "champions": {
+                "add": "Add",
+                "empty": "No champion in the pool yet.",
+                "noMatch": " No champion matches. ",
+                "search": "Search a champion"
+            },
+            "field": {
+                "saveFailed": " Your change could not be saved. Please try again. "
+            },
+            "hero": {
+                "kicker": "Player sheet",
+                "profileHint": "Open the community profile",
+                "switch": "Switch to another game",
+                "unavailable": "Temporarily unavailable",
+                "unknown": "Unknown player"
+            },
+            "layout": {
+                "cancel": "Cancel",
+                "edit": "Edit",
+                "hint": "Drag a widget by its header to move it, or grab its bottom-right corner to resize it.",
+                "save": "Save",
+                "saveFailed": " Your layout could not be saved. Please try again. "
+            },
+            "nav": "Profile pages",
+            "noPresentation": "This player has not written a presentation yet.",
+            "notFound": "LoL player sheet not found.",
+            "page": {
+                "add": "New page",
+                "empty": "This page has no widget yet.",
+                "moveDown": "Move down",
+                "moveUp": "Move up",
+                "remove": "Delete page",
+                "visibility": {
+                    "friends": "My friends",
+                    "label": "Who can see this page",
+                    "private": "Only me",
+                    "public": "Everyone"
+                }
+            },
+            "platformProfile": " Platform profile ",
+            "presentation": {
+                "cancel": "Cancel",
+                "placeholder": "Tell others about yourself…",
+                "save": "Save"
+            },
+            "presentationIg": "In-game presentation",
+            "presentationIrl": "IRL presentation",
+            "since": "Member since",
+            "stats": {
+                "flex": "Flex",
+                "gameName": "Riot ID",
+                "primaryLane": "Primary lane",
+                "region": "Region",
+                "riotId": "Riot ID",
+                "secondaryLanes": "Secondary lanes",
+                "solo": "Solo/Duo",
+                "tagLine": "Tag",
+                "unranked": "Unranked"
+            },
+            "teams": {
+                "empty": "This player is not on a team yet."
+            },
+            "widget": {
+                "add": "Add a widget",
+                "champions": {
+                    "desc": "Mains, pool and champions you are learning.",
+                    "label": "Champions"
+                },
+                "done": "Done",
+                "editData": "Edit data",
+                "identity": {
+                    "desc": "Registration date and Platform profile link.",
+                    "label": "Identity"
+                },
+                "links": {
+                    "desc": "YouTube, X, Instagram, Discord…",
+                    "label": "Links"
+                },
+                "photos": "Photo gallery",
+                "remove": "Remove widget",
+                "settings": "Configure this widget",
+                "stats": {
+                    "desc": "Riot ID, region, lanes and ranks.",
+                    "label": "Stats"
+                },
+                "streams": {
+                    "desc": "Twitch channels saved on your profile.",
+                    "label": "My streams"
+                },
+                "teams": {
+                    "desc": "LoL teams this player belongs to.",
+                    "label": "Teams"
+                },
+                "title": {
+                    "hint": "Leave empty to drop the header.",
+                    "label": "Widget title"
+                },
+                "twitch": {
+                    "channel": "Channel or twitch.tv address",
+                    "desc": "Embeds a single channel of your choice.",
+                    "label": "Twitch player"
+                },
+                "videos": "Video gallery"
+            }
+        }
+    }
+}

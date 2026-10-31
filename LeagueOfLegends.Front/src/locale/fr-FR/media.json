@@ -1,0 +1,21 @@
+{
+    "lol": {
+        "media": {
+            "add": "Ajouter",
+            "admin": {
+                "empty": "Rien pour le moment. Ajoutez votre première entrée ci-dessus."
+            },
+            "caption": "Légende",
+            "emptyPhoto": "Aucune photo partagée pour le moment.",
+            "emptyStream": "Aucun stream déclaré pour le moment.",
+            "emptyVideo": "Aucune vidéo partagée pour le moment.",
+            "error": {
+                "tooMany": "Vous avez atteint le nombre maximum d'entrées.",
+                "unknown": "Cette entrée n'a pas pu être enregistrée.",
+                "url": "Saisissez une adresse http(s) complète."
+            },
+            "remove": "Supprimer",
+            "share": "Public"
+        }
+    }
+}

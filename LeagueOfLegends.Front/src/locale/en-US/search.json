@@ -1,0 +1,43 @@
+{
+    "lol": {
+        "search": {
+            "allLanes": "All lanes",
+            "allRegions": "All regions",
+            "allTiers": "All ranks",
+            "anyNeed": "Any roster need",
+            "anyRoster": "Any roster",
+            "anyTeamStatus": " On a team or not ",
+            "clear": "Clear",
+            "empty": "Nothing matches these criteria.",
+            "fewerFilters": "Fewer filters",
+            "group": {
+                "players": "Players",
+                "teams": "Teams"
+            },
+            "lanePlaceholder": "Lane",
+            "loadMore": "Load more",
+            "lookingForTeam": "Looking for a team",
+            "memberCount": "members",
+            "minMembers": "Min. members",
+            "moreFilters": "More filters",
+            "needPlaceholder": "Needs lane",
+            "openRoster": "Open roster",
+            "placeholder": "Name, or Name#1234",
+            "playerSlots": "players",
+            "regionPlaceholder": "Region",
+            "rosterPlaceholder": "Roster",
+            "seeAll": "See all",
+            "submit": "Search",
+            "subtitle": " Find a team or a player. Type a full handle such as Name#1234 to jump straight to it. ",
+            "tab": {
+                "all": "All",
+                "players": "Players",
+                "teams": "Teams"
+            },
+            "tabsLabel": "Result type",
+            "teamPlaceholder": "Team",
+            "tierPlaceholder": "Rank",
+            "title": "Search"
+        }
+    }
+}

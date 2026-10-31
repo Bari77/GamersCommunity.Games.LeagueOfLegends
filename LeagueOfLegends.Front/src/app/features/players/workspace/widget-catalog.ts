@@ -28,7 +28,7 @@ export const gameWorkspaceRegistry = {
     catalog: [
         {
             type: PLAYER_WIDGETS.identity,
-            label: $localize`:@@lol.player.widget.identity:Identity`,
+            label: $localize`:@@lol.player.widget.identity.label:Identity`,
             description: $localize`:@@lol.player.widget.identity.desc:Registration date and Platform profile link.`,
             cols: 4,
             rows: 3,
@@ -48,7 +48,7 @@ export const gameWorkspaceRegistry = {
         },
         {
             type: PLAYER_WIDGETS.stats,
-            label: $localize`:@@lol.player.widget.stats:Stats`,
+            label: $localize`:@@lol.player.widget.stats.label:Stats`,
             description: $localize`:@@lol.player.widget.stats.desc:Riot ID, region, lanes and ranks.`,
             cols: 12,
             rows: 6,
@@ -56,7 +56,7 @@ export const gameWorkspaceRegistry = {
         },
         {
             type: PLAYER_WIDGETS.teams,
-            label: $localize`:@@lol.player.widget.teams:Teams`,
+            label: $localize`:@@lol.player.widget.teams.label:Teams`,
             description: $localize`:@@lol.player.widget.teams.desc:LoL teams this player belongs to.`,
             cols: 12,
             rows: 5,
@@ -64,7 +64,7 @@ export const gameWorkspaceRegistry = {
         },
         {
             type: PLAYER_WIDGETS.champions,
-            label: $localize`:@@lol.player.widget.champions:Champions`,
+            label: $localize`:@@lol.player.widget.champions.label:Champions`,
             description: $localize`:@@lol.player.widget.champions.desc:Mains, pool and champions you are learning.`,
             cols: 12,
             rows: 7,
@@ -84,14 +84,14 @@ export const gameWorkspaceRegistry = {
         },
         {
             type: PLAYER_WIDGETS.streams,
-            label: $localize`:@@lol.player.widget.streams:My streams`,
+            label: $localize`:@@lol.player.widget.streams.label:My streams`,
             description: $localize`:@@lol.player.widget.streams.desc:Twitch channels saved on your profile.`,
             cols: 12,
             rows: 6,
         },
         {
             type: PLAYER_WIDGETS.twitch,
-            label: $localize`:@@lol.player.widget.twitch:Twitch player`,
+            label: $localize`:@@lol.player.widget.twitch.label:Twitch player`,
             description: $localize`:@@lol.player.widget.twitch.desc:Embeds a single channel of your choice.`,
             cols: 6,
             rows: 5,
@@ -106,7 +106,7 @@ export const gameWorkspaceRegistry = {
         },
         {
             type: PLAYER_WIDGETS.links,
-            label: $localize`:@@lol.player.widget.links:Links`,
+            label: $localize`:@@lol.player.widget.links.label:Links`,
             description: $localize`:@@lol.player.widget.links.desc:YouTube, X, Instagram, Discord…`,
             cols: 6,
             rows: 3,

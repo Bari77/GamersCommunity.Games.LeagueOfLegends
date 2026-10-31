@@ -1,0 +1,45 @@
+{
+    "lol": {
+        "home": {
+            "lfg": {
+                "bodyPlaceholder": "Saisissez un message…",
+                "cooldown": "Veuillez patienter",
+                "cooldownHint": " avant de publier à nouveau.",
+                "empty": "Aucun message pour le moment. Dites bonjour !",
+                "error": {
+                    "banned": "Votre compte est banni.",
+                    "muted": "Vous êtes réduit au silence et ne pouvez pas publier de messages LFG.",
+                    "unavailable": " La publication est indisponible pour le moment. Veuillez réessayer plus tard. ",
+                    "unknown": "Le message n'a pas pu être envoyé."
+                },
+                "label": "Recherche de groupe",
+                "live": "En direct",
+                "loadingOlder": "Chargement des messages précédents…",
+                "login": "Connectez-vous",
+                "loginHint": " pour rejoindre le chat LFG global.",
+                "muted": "Vous êtes réduit au silence et ne pouvez pas publier de messages LFG.",
+                "newMessages": "Nouveaux messages",
+                "realtime": {
+                    "connecting": "Connexion au chat LFG en direct…",
+                    "offline": "Les mises à jour en direct sont indisponibles. Les nouveaux messages peuvent apparaître avec du retard."
+                }
+            },
+            "players": {
+                "empty": "Aucune fiche joueur pour le moment.",
+                "label": "Derniers joueurs"
+            },
+            "recruit": {
+                "label": "Recrutement d'équipe",
+                "noTeam": "Seuls les capitaines, coachs et managers d'équipe peuvent publier ici.",
+                "pickTeam": "Choisissez l'équipe pour laquelle vous publiez afin d'activer la saisie.",
+                "teamPicker": "Publier en tant que…"
+            },
+            "teams": {
+                "cta": "Découvrir cette équipe",
+                "empty": "Aucune équipe pour le moment.",
+                "label": "Dernières équipes",
+                "players": "joueurs"
+            }
+        }
+    }
+}

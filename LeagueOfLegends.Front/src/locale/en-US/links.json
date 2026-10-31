@@ -1,0 +1,23 @@
+{
+    "lol": {
+        "links": {
+            "add": "Add",
+            "empty": "No link shared yet.",
+            "error": {
+                "label": "A label is required.",
+                "unknown": "This link could not be saved.",
+                "url": "Enter a full http(s) address."
+            },
+            "field": {
+                "icon": "Icon",
+                "label": "Label"
+            },
+            "icon": {
+                "auto": "Automatic"
+            },
+            "moveDown": "Move down",
+            "moveUp": "Move up",
+            "remove": "Delete"
+        }
+    }
+}

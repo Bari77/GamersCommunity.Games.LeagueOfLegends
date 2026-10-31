@@ -1,0 +1,110 @@
+{
+    "lol": {
+        "player": {
+            "champions": {
+                "add": "Ajouter",
+                "empty": "Aucun champion dans le pool pour le moment.",
+                "noMatch": " Aucun champion ne correspond. ",
+                "search": "Rechercher un champion"
+            },
+            "field": {
+                "saveFailed": " Votre modification n'a pas pu être enregistrée. Veuillez réessayer. "
+            },
+            "hero": {
+                "kicker": "Fiche joueur",
+                "profileHint": "Ouvrir le profil communautaire",
+                "switch": "Changer de jeu",
+                "unavailable": "Temporairement indisponible",
+                "unknown": "Joueur inconnu"
+            },
+            "layout": {
+                "cancel": "Annuler",
+                "edit": "Modifier",
+                "hint": "Glissez un widget par son en-tête pour le déplacer, ou attrapez son coin inférieur droit pour le redimensionner.",
+                "save": "Enregistrer",
+                "saveFailed": " Votre disposition n'a pas pu être enregistrée. Veuillez réessayer. "
+            },
+            "nav": "Pages du profil",
+            "noPresentation": "Ce joueur n'a pas encore rédigé de présentation.",
+            "notFound": "Fiche joueur LoL introuvable.",
+            "page": {
+                "add": "Nouvelle page",
+                "empty": "Cette page ne contient encore aucun widget.",
+                "moveDown": "Descendre",
+                "moveUp": "Monter",
+                "remove": "Supprimer la page",
+                "visibility": {
+                    "friends": "Mes amis",
+                    "label": "Qui peut voir cette page",
+                    "private": "Moi uniquement",
+                    "public": "Tout le monde"
+                }
+            },
+            "platformProfile": " Profil Platform ",
+            "presentation": {
+                "cancel": "Annuler",
+                "placeholder": "Parlez de vous aux autres…",
+                "save": "Enregistrer"
+            },
+            "presentationIg": "Présentation en jeu",
+            "presentationIrl": "Présentation IRL",
+            "since": "Membre depuis le",
+            "stats": {
+                "flex": "Flex",
+                "gameName": "Riot ID",
+                "primaryLane": "Lane principale",
+                "region": "Région",
+                "riotId": "Riot ID",
+                "secondaryLanes": "Lanes secondaires",
+                "solo": "Solo/Duo",
+                "tagLine": "Tag",
+                "unranked": "Non classé"
+            },
+            "teams": {
+                "empty": "Ce joueur ne fait encore partie d'aucune équipe."
+            },
+            "widget": {
+                "add": "Ajouter un widget",
+                "champions": {
+                    "desc": "Mains, pool et champions en cours d'apprentissage.",
+                    "label": "Champions"
+                },
+                "done": "Terminé",
+                "editData": "Modifier les données",
+                "identity": {
+                    "desc": "Date d'inscription et lien vers le profil Platform.",
+                    "label": "Identité"
+                },
+                "links": {
+                    "desc": "YouTube, X, Instagram, Discord…",
+                    "label": "Liens"
+                },
+                "photos": "Galerie photo",
+                "remove": "Retirer le widget",
+                "settings": "Configurer ce widget",
+                "stats": {
+                    "desc": "Riot ID, région, lanes et rangs.",
+                    "label": "Statistiques"
+                },
+                "streams": {
+                    "desc": "Chaînes Twitch enregistrées sur votre profil.",
+                    "label": "Mes streams"
+                },
+                "teams": {
+                    "desc": "Équipes LoL dont ce joueur fait partie.",
+                    "label": "Équipes"
+                },
+                "title": {
+                    "hint": "Laissez vide pour supprimer l'en-tête.",
+                    "label": "Titre du widget"
+                },
+                "twitch": {
+                    "channel": "Chaîne ou adresse twitch.tv",
+                    "desc": "Intègre une chaîne de votre choix.",
+                    "label": "Lecteur Twitch"
+                },
+                "videos": "Galerie vidéo"
+            }
+        }
+    }
+}

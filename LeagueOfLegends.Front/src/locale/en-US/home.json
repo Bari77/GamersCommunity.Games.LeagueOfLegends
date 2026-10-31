@@ -1,0 +1,45 @@
+{
+    "lol": {
+        "home": {
+            "lfg": {
+                "bodyPlaceholder": "Type a message…",
+                "cooldown": "Please wait",
+                "cooldownHint": " before posting again.",
+                "empty": "No messages yet. Say hello!",
+                "error": {
+                    "banned": "Your account is banned.",
+                    "muted": "You are muted and cannot post LFG messages.",
+                    "unavailable": " Publishing is unavailable right now. Please try again later. ",
+                    "unknown": "The message could not be sent."
+                },
+                "label": "Looking for group",
+                "live": "Live",
+                "loadingOlder": "Loading older messages…",
+                "login": "Log in",
+                "loginHint": " to join the global LFG chat.",
+                "muted": "You are muted and cannot post LFG messages.",
+                "newMessages": "New messages",
+                "realtime": {
+                    "connecting": "Connecting to live LFG chat…",
+                    "offline": "Live updates are unavailable. New messages may appear with a delay."
+                }
+            },
+            "players": {
+                "empty": "No player sheets yet.",
+                "label": "Latest players"
+            },
+            "recruit": {
+                "label": "Team recruitment",
+                "noTeam": "Only team captains, coaches and managers can post here.",
+                "pickTeam": "Pick the team you are posting for to enable the composer.",
+                "teamPicker": "Post as…"
+            },
+            "teams": {
+                "cta": "Discover this team",
+                "empty": "No teams yet.",
+                "label": "Latest teams",
+                "players": "players"
+            }
+        }
+    }
+}

@@ -10,7 +10,7 @@
 
     <div class="lol-hub__grid" [attr.aria-busy]="feedLoading() ? 'true' : null">
         <nb-card class="lol-hub__rail">
-            <nb-card-header i18n="@@lol.home.players">Latest players</nb-card-header>
+            <nb-card-header i18n="@@lol.home.players.label">Latest players</nb-card-header>
             <nb-card-body>
                 @if (feedLoading()) {
                     <div class="lol-hub__row-skeletons" aria-hidden="true">
@@ -28,7 +28,7 @@
         </nb-card>
 
         <nb-card class="lol-hub__rail">
-            <nb-card-header i18n="@@lol.home.teams">Latest teams</nb-card-header>
+            <nb-card-header i18n="@@lol.home.teams.label">Latest teams</nb-card-header>
             <nb-card-body>
                 @if (feedLoading()) {
                     <div class="lol-hub__row-skeletons" aria-hidden="true">

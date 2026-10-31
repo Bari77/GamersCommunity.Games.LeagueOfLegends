@@ -1,0 +1,43 @@
+{
+    "lol": {
+        "search": {
+            "allLanes": "Toutes les lanes",
+            "allRegions": "Toutes les régions",
+            "allTiers": "Tous les rangs",
+            "anyNeed": "Tous les besoins de roster",
+            "anyRoster": "Tous les rosters",
+            "anyTeamStatus": " Avec ou sans équipe ",
+            "clear": "Effacer",
+            "empty": "Aucun résultat pour ces critères.",
+            "fewerFilters": "Moins de filtres",
+            "group": {
+                "players": "Joueurs",
+                "teams": "Équipes"
+            },
+            "lanePlaceholder": "Lane",
+            "loadMore": "Charger plus",
+            "lookingForTeam": "Cherche une équipe",
+            "memberCount": "membres",
+            "minMembers": "Membres min.",
+            "moreFilters": "Plus de filtres",
+            "needPlaceholder": "Lane recherchée",
+            "openRoster": "Roster ouvert",
+            "placeholder": "Nom, ou Nom#1234",
+            "playerSlots": "joueurs",
+            "regionPlaceholder": "Région",
+            "rosterPlaceholder": "Roster",
+            "seeAll": "Tout voir",
+            "submit": "Rechercher",
+            "subtitle": " Trouvez une équipe ou un joueur. Saisissez un identifiant complet comme Nom#1234 pour y accéder directement. ",
+            "tab": {
+                "all": "Tout",
+                "players": "Joueurs",
+                "teams": "Équipes"
+            },
+            "tabsLabel": "Type de résultat",
+            "teamPlaceholder": "Équipe",
+            "tierPlaceholder": "Rang",
+            "title": "Recherche"
+        }
+    }
+}

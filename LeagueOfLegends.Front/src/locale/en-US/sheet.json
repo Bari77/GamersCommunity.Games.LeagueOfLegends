@@ -1,0 +1,23 @@
+{
+    "lol": {
+        "sheet": {
+            "login": "Log in",
+            "loginRequired": "Log in on GamersCommunity to open your LoL player sheet.",
+            "prompt": {
+                "browse": "Keep browsing anonymously",
+                "create": "Create my profile",
+                "creating": "Creating…",
+                "heading": "Create your player profile?",
+                "message": "A player profile lets you register your lanes, your champions and join a team. Without one you can still browse the game freely.",
+                "optOut": "Don't ask again"
+            },
+            "wall": {
+                "action": "Create my profile",
+                "heading": "No player profile yet",
+                "homeMessage": "Create your player profile to take part in the game community.",
+                "lfgMessage": "Create your player profile to post in this chat.",
+                "message": "Create your player profile to show your lanes, your champions and join a team."
+            }
+        }
+    }
+}

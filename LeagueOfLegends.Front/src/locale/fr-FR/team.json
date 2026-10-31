@@ -1,0 +1,243 @@
+{
+    "lol": {
+        "team": {
+            "admin": {
+                "disbandAction": "Dissoudre",
+                "disbandConfirm": " Saisissez l'identifiant de l'équipe pour confirmer ",
+                "disbandText": " Les candidatures, annonces et le roster sont supprimés définitivement. ",
+                "disbandTitle": "Dissoudre l'équipe",
+                "save": "Enregistrer",
+                "title": "Paramètres de l'équipe"
+            },
+            "applications": {
+                "accept": "Accepter",
+                "empty": " Aucune candidature en attente. ",
+                "error": {
+                    "alreadyMember": " Ce joueur a rejoint l'équipe entre-temps. ",
+                    "closed": " Cette candidature a déjà été traitée. ",
+                    "staffTaken": "Ce poste du staff est déjà occupé.",
+                    "unknown": "La décision n'a pas pu être enregistrée."
+                },
+                "reject": "Refuser",
+                "title": "Candidatures"
+            },
+            "apply": {
+                "error": {
+                    "alreadyMember": " Vous faites déjà partie de cette équipe. ",
+                    "alreadyPending": " Vous avez déjà une candidature en attente pour cette équipe. ",
+                    "muted": "Vous êtes réduit au silence et ne pouvez pas postuler pour le moment.",
+                    "unknown": "La candidature n'a pas pu être envoyée.",
+                    "validation": " Une candidature de joueur nécessite une lane, et le message ne peut pas être vide. "
+                },
+                "lane": "Lane visée",
+                "message": "Message",
+                "messagePlaceholder": "Présentez-vous au staff…",
+                "rank": "Postuler en tant que",
+                "sent": " Votre candidature attend une décision du staff. ",
+                "submit": "Envoyer la candidature",
+                "title": "Postuler dans cette équipe",
+                "withdraw": "Retirer"
+            },
+            "directory": {
+                "found": "Fonder une équipe",
+                "loginToFound": "Connectez-vous pour fonder une équipe",
+                "pendingTitle": " Candidatures en attente de réponse ",
+                "sheetWall": "Créez votre fiche joueur pour fonder une équipe ou en rejoindre une."
+            },
+            "error": {
+                "captainCannotLeave": " Transférez le rôle de capitaine avant de quitter l'équipe. ",
+                "confirmation": "L'identifiant saisi ne correspond pas à l'équipe.",
+                "createFailed": "L'équipe n'a pas pu être créée.",
+                "invalidName": " Le nom de l'équipe doit comporter entre 3 et 50 caractères. Le tag utilise 2 à 5 lettres ou chiffres. ",
+                "nameExhausted": " Trop d'équipes portent ce nom. Veuillez en choisir un autre. ",
+                "rankRequired": " Votre rang ne permet plus cette action. ",
+                "saveFailed": "La modification n'a pas pu être enregistrée."
+            },
+            "form": {
+                "cancel": "Annuler",
+                "name": "Nom de l'équipe",
+                "nameHint": " Un numéro est ajouté au nom pour garder un identifiant unique, comme T1#1274. ",
+                "sentence": "Phrase d'accroche",
+                "sentencePlaceholder": "Phrase d'accroche de l'équipe…",
+                "submit": "Fonder l'équipe",
+                "tag": "Tag court",
+                "tagHint": " Facultatif, 2 à 5 lettres ou chiffres. La région de l'équipe est reprise de votre profil. "
+            },
+            "hero": {
+                "close": "Fermer",
+                "edit": "Modifier",
+                "kicker": "Fiche équipe",
+                "members": "membres",
+                "players": "joueurs"
+            },
+            "layout": {
+                "cancel": "Annuler",
+                "edit": "Modifier",
+                "hint": "Glissez un widget par son en-tête pour le déplacer, ou attrapez son coin inférieur droit pour le redimensionner.",
+                "save": "Enregistrer",
+                "saveFailed": " Votre mise en page n'a pas pu être enregistrée. Veuillez réessayer. "
+            },
+            "links": {
+                "admin": {
+                    "empty": "Aucun lien pour le moment. Ajoutez le premier ci-dessus."
+                },
+                "empty": "Aucun lien partagé pour le moment.",
+                "error": {
+                    "rank": "Seuls les managers peuvent modifier les liens de l'équipe.",
+                    "tooMany": "Cette équipe a atteint le nombre maximum de liens."
+                },
+                "field": {
+                    "label": {
+                        "hint": "Notre Discord"
+                    }
+                }
+            },
+            "members": {
+                "empty": "Aucun membre pour le moment."
+            },
+            "nav": "Pages de l'équipe",
+            "noSentence": "Cette équipe n'a pas encore rédigé de présentation.",
+            "notFound": "Équipe introuvable.",
+            "page": {
+                "add": "Nouvelle page",
+                "empty": "Cette page n'a encore aucun widget.",
+                "moveDown": "Descendre",
+                "moveUp": "Monter",
+                "remove": "Supprimer la page",
+                "visibility": {
+                    "captain": "Capitaine uniquement",
+                    "coach": "Staff",
+                    "label": "Qui peut voir cette page",
+                    "manager": "Managers",
+                    "player": "Membres",
+                    "public": "Public"
+                }
+            },
+            "rank": {
+                "captain": "Capitaine",
+                "coach": "Coach",
+                "manager": "Manager",
+                "player": "Joueur"
+            },
+            "roster": {
+                "cancel": "Annuler",
+                "confirm": {
+                    "leave": {
+                        "heading": "Quitter l'équipe ?",
+                        "message": "Quitter cette équipe ? Vous pourrez la rejoindre plus tard si vous êtes invité."
+                    },
+                    "rank": {
+                        "action": "Changer de rang",
+                        "heading": "Changer de rang ?",
+                        "message": "Passer {$name} au rang {$rank} ?"
+                    },
+                    "remove": {
+                        "heading": "Exclure ce membre ?",
+                        "message": "Exclure {$name} de l'équipe ?"
+                    },
+                    "transfer": {
+                        "heading": "Transférer le rôle de capitaine ?",
+                        "message": "Nommer {$name} nouveau capitaine ? Vous deviendrez joueur."
+                    }
+                },
+                "kick": "Exclure",
+                "lane": "Lane",
+                "leave": "Quitter",
+                "main": "Titulaire",
+                "rank": "Rang",
+                "sub": "Remplaçant",
+                "transfer": "Nommer capitaine"
+            },
+            "sheet": {
+                "sheetWall": "Créez votre fiche joueur pour postuler dans cette équipe."
+            },
+            "since": "Créée le",
+            "stats": {
+                "founded": "Fondée le",
+                "mains": "Titulaires",
+                "members": "Membres",
+                "players": "Joueurs",
+                "region": "Région"
+            },
+            "wall": {
+                "approve": "Approuver",
+                "bodyPlaceholder": "Partagez quelque chose avec l'équipe…",
+                "delete": "Supprimer",
+                "edit": "Modifier",
+                "empty": "Le mur est vide pour le moment.",
+                "error": {
+                    "banned": "Votre compte est banni.",
+                    "body": "Une publication doit contenir un message.",
+                    "member": "Seuls les membres peuvent publier sur ce mur.",
+                    "muted": "Vous êtes réduit au silence et ne pouvez pas publier pour le moment.",
+                    "unavailable": " La publication est indisponible pour le moment. Veuillez réessayer plus tard. ",
+                    "unknown": "La publication n'a pas pu être enregistrée."
+                },
+                "loadMore": "Charger plus",
+                "publish": "Publier",
+                "queue": "En attente de validation",
+                "queueEmpty": "Rien en attente de décision.",
+                "queued": "Envoyé. Le staff va l'examiner sous peu.",
+                "reject": "Refuser",
+                "save": "Enregistrer",
+                "send": "Envoyer pour validation",
+                "title": "Mur de l'équipe"
+            },
+            "widget": {
+                "add": "Ajouter un widget",
+                "applications": {
+                    "desc": "Seul le staff voit ce widget.",
+                    "hidden": " Seul le staff voit les candidatures. ",
+                    "label": "Candidatures",
+                    "preview": " Les candidatures en attente apparaissent ici pour le staff. "
+                },
+                "done": "Terminé",
+                "editData": "Modifier les données",
+                "links": {
+                    "desc": "Discord, réseaux sociaux…",
+                    "label": "Liens"
+                },
+                "media": {
+                    "add": "Ajouter un média",
+                    "empty": "Rien pour le moment.",
+                    "title": "Légende"
+                },
+                "photos": "Galerie photo",
+                "presentation": {
+                    "desc": "La phrase d'accroche que lisent les visiteurs, modifiable depuis le widget.",
+                    "label": "Présentation"
+                },
+                "recruitment": {
+                    "desc": "Permet à un visiteur de postuler comme joueur ou membre du staff.",
+                    "label": "Recrutement",
+                    "member": "Vous faites déjà partie de cette équipe.",
+                    "preview": " Les visiteurs postulent ici comme joueur, coach ou manager. "
+                },
+                "remove": "Retirer le widget",
+                "roster": "Roster",
+                "settings": "Configurer ce widget",
+                "stats": {
+                    "desc": "Région, joueurs, titulaires et date de fondation.",
+                    "label": "Statistiques"
+                },
+                "title": {
+                    "hint": "Laissez vide pour masquer l'en-tête.",
+                    "label": "Titre du widget"
+                },
+                "twitch": {
+                    "channel": "Chaîne ou adresse twitch.tv",
+                    "desc": "Intègre la chaîne sur laquelle l'équipe streame.",
+                    "label": "Lecteur Twitch"
+                },
+                "videos": {
+                    "desc": "Clips et VOD YouTube, Vimeo, Twitch.",
+                    "label": "Galerie vidéo"
+                },
+                "wall": {
+                    "label": "Mur de l'équipe",
+                    "preview": " Les publications approuvées arrivent ici. Le staff valide d'abord les messages des joueurs. "
+                }
+            }
+        }
+    }
+}

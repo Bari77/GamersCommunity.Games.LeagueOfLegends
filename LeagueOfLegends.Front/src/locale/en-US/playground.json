@@ -1,0 +1,44 @@
+{
+    "lol": {
+        "playground": {
+            "banner": "League of Legends",
+            "breadcrumb": {
+                "game": "League of Legends",
+                "home": "Home"
+            },
+            "nav": {
+                "players": "Players",
+                "sections": "Game sections",
+                "sheet": "My profile",
+                "teams": "Teams"
+            },
+            "persona": {
+                "detail": {
+                    "flex": "Flex",
+                    "lanes": "Lanes",
+                    "mains": "Mains",
+                    "solo": "Solo/Duo",
+                    "teams": "Teams"
+                },
+                "noMain": "No main yet",
+                "noTeam": "No team",
+                "primary": "primary",
+                "stat": {
+                    "champions": "Champions",
+                    "mains": "Mains",
+                    "teams": "Teams"
+                },
+                "unranked": "Unranked"
+            },
+            "search": "Search a player or a team",
+            "session": {
+                "findPlaceholder": "Name, team, rank, champion…"
+            },
+            "user": {
+                "hint": " In production this page lives on the Platform. The playground only stubs it so game links keep working. ",
+                "sheet": "Open the game sheet",
+                "title": "Community profile"
+            }
+        }
+    }
+}
